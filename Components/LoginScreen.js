@@ -14,6 +14,12 @@ class LoginScreen extends Component {
     componentDidMount() {
         AsyncStorage.getItem('userId').then((value) => {
             this.setState({ userId: value, is_fetching_done: true });
+            this.props.navigation.dispatch(
+                StackActions.reset({
+                    index: 0,
+                    actions: [NavigationActions.navigate({ routeName: "HomeScreen", params: { sender: this.state.userId } })]
+                })
+            );
         });
     }
 
@@ -57,14 +63,6 @@ class LoginScreen extends Component {
         );
     }
     render() {
-        if (this.state.userId) {
-            this.props.navigation.dispatch(
-                StackActions.reset({
-                    index: 0,
-                    actions: [NavigationActions.navigate({ routeName: "HomeScreen", params: { sender: this.state.userId } })]
-                })
-            );
-        }
         if (!this.state.is_fetching_done) {
             return (
                 <StatusBar

@@ -84,7 +84,7 @@ export default class HomeScreen extends React.Component {
                 <FlatList
                     data={this.state.contacts}
                     renderItem={this.renderName.bind(this)}
-                    extradata={this.state.contacts}
+                    extradata={this.state}
                     ref={ref => this.flatList = ref}
                     onContentSizeChange={() => this.flatList.scrollToEnd({ animated: true })}
                     onLayout={() => this.flatList.scrollToEnd({ animated: true })}
