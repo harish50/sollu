@@ -14,12 +14,14 @@ class LoginScreen extends Component {
     componentDidMount() {
         AsyncStorage.getItem('userId').then((value) => {
             this.setState({ userId: value, is_fetching_done: true });
-            this.props.navigation.dispatch(
-                StackActions.reset({
-                    index: 0,
-                    actions: [NavigationActions.navigate({ routeName: "HomeScreen", params: { sender: this.state.userId } })]
-                })
-            );
+            if (value.length > 1) {
+                this.props.navigation.dispatch(
+                    StackActions.reset({
+                        index: 0,
+                        actions: [NavigationActions.navigate({ routeName: "HomeScreen", params: { sender: this.state.userId } })]
+                    })
+                );
+            }
         });
     }
 
@@ -53,6 +55,7 @@ class LoginScreen extends Component {
                 headerBackTitle: "Back",
                 headerTintColor: "white",
                 headerStyle: {
+                    fontFamily: 'Roboto-Bold',
                     backgroundColor: '#cc504e',
                 },
                 headerTitleStyle: {

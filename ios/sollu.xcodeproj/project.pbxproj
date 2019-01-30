@@ -5,7 +5,6 @@
 	};
 	objectVersion = 46;
 	objects = {
-
 /* Begin PBXBuildFile section */
 		00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302AC1ABCB8CE00DB3ED1 /* libRCTActionSheet.a */; };
 		00C302E71ABCBA2D00DB3ED1 /* libRCTGeolocation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302BA1ABCB90400DB3ED1 /* libRCTGeolocation.a */; };
@@ -49,6 +48,11 @@
 		ADBDB9381DFEBF1600ED6528 /* libRCTBlob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ADBDB9271DFEBF0700ED6528 /* libRCTBlob.a */; };
 		B9C7609F220D4767BFF933D2 /* libAppCenterReactNative.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D32B87F53E994C508FF2C39F /* libAppCenterReactNative.a */; };
 		EB1B2E411854D085E939B8C0 /* libPods-sollu.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DA8B4D5E86E07190B45D79C0 /* libPods-sollu.a */; };
+		B6ABEFDDD84448B8816695F8 /* Roboto-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9307E1A889CD42E0A3C6284F /* Roboto-Bold.ttf */; };
+		2F36E78398434AABBC33B07F /* Roboto-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6EFADC4C1055422CAAF54D3E /* Roboto-Light.ttf */; };
+		B19897A5397B4C85A44AC16A /* Roboto-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B8439D08013441A5A516007A /* Roboto-Medium.ttf */; };
+		9983F474339A417ABD80D3B8 /* Roboto-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F4E6C268E0D34993B1A1C2C7 /* Roboto-Regular.ttf */; };
+		C9566343E3FB4F2D8150C6DC /* Roboto-Thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9F43A89EED48436980C79778 /* Roboto-Thin.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -413,6 +417,11 @@
 		DACF850B57D717C59F8D6411 /* Pods-solluTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-solluTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-solluTests/Pods-solluTests.release.xcconfig"; sourceTree = "<group>"; };
 		F5C9EAC52D9911A2819CA4B3 /* Pods-sollu.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-sollu.debug.xcconfig"; path = "Pods/Target Support Files/Pods-sollu/Pods-sollu.debug.xcconfig"; sourceTree = "<group>"; };
 		F6952B7B1DE44FF7938B6E9E /* libRNGestureHandler.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNGestureHandler.a; sourceTree = "<group>"; };
+		9307E1A889CD42E0A3C6284F /* Roboto-Bold.ttf */ = {isa = PBXFileReference; name = "Roboto-Bold.ttf"; path = "../assets/fonts/Roboto-Bold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		6EFADC4C1055422CAAF54D3E /* Roboto-Light.ttf */ = {isa = PBXFileReference; name = "Roboto-Light.ttf"; path = "../assets/fonts/Roboto-Light.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		B8439D08013441A5A516007A /* Roboto-Medium.ttf */ = {isa = PBXFileReference; name = "Roboto-Medium.ttf"; path = "../assets/fonts/Roboto-Medium.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		F4E6C268E0D34993B1A1C2C7 /* Roboto-Regular.ttf */ = {isa = PBXFileReference; name = "Roboto-Regular.ttf"; path = "../assets/fonts/Roboto-Regular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		9F43A89EED48436980C79778 /* Roboto-Thin.ttf */ = {isa = PBXFileReference; name = "Roboto-Thin.ttf"; path = "../assets/fonts/Roboto-Thin.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -709,6 +718,7 @@
 				E4C6EECF21D8ECFB0046CF4D /* Recovered References */,
 				579F382BF86F4E2EB2660B11 /* AppCenter-Config.plist */,
 				2989A74AA9D9D0FEFFEC3CFF /* Pods */,
+				AC421A11057049CB9096B85A /* Resources */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -762,6 +772,19 @@
 			);
 			name = Products;
 			sourceTree = "<group>";
+		};
+		AC421A11057049CB9096B85A /* Resources */ = {
+			isa = "PBXGroup";
+			children = (
+				9307E1A889CD42E0A3C6284F /* Roboto-Bold.ttf */,
+				6EFADC4C1055422CAAF54D3E /* Roboto-Light.ttf */,
+				B8439D08013441A5A516007A /* Roboto-Medium.ttf */,
+				F4E6C268E0D34993B1A1C2C7 /* Roboto-Regular.ttf */,
+				9F43A89EED48436980C79778 /* Roboto-Thin.ttf */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+			path = "";
 		};
 /* End PBXGroup section */
 
@@ -1278,6 +1301,11 @@
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
 				4C1EFDF4CD554BB3A4C6A905 /* AppCenter-Config.plist in Resources */,
+				B6ABEFDDD84448B8816695F8 /* Roboto-Bold.ttf in Resources */,
+				2F36E78398434AABBC33B07F /* Roboto-Light.ttf in Resources */,
+				B19897A5397B4C85A44AC16A /* Roboto-Medium.ttf in Resources */,
+				9983F474339A417ABD80D3B8 /* Roboto-Regular.ttf in Resources */,
+				C9566343E3FB4F2D8150C6DC /* Roboto-Thin.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

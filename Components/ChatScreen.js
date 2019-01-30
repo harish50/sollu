@@ -42,6 +42,7 @@ export default class ChatScreen extends React.Component {
                 headerBackTitle: "Back",
                 headerTintColor: "white",
                 headerStyle: {
+                    fontFamily: 'Roboto-Bold',
                     backgroundColor: '#cc504e'
                 },
             }
@@ -57,7 +58,11 @@ export default class ChatScreen extends React.Component {
             messageboxstyle = styles.receiverMessageContainer;
             messagetextstyle = styles.receiverMessage;
         }
-        const time = item.createdAt.getHours() + ":" + item.createdAt.getMinutes();
+        let minutes = '' + item.createdAt.getMinutes();
+        if (minutes.length < 2) minutes = '0' + minutes;
+        let hours = '' + item.createdAt.getHours();
+        if (hours.length < 2) hours = '0' + hours;
+        const time = hours + ":" + minutes;
         return (
             <View style={[messageboxstyle, styles.chatBox]}>
                 <Image style={styles.iconContainer} source={require('../Icon/userIcon1.png')} />
@@ -86,21 +91,21 @@ export default class ChatScreen extends React.Component {
         const keyboardVerticalOffset = Platform.OS === 'ios' ? Header.HEIGHT + 20 : 0;
         const padding = Platform.OS === 'ios' ? "padding" : '';
         return (
-            <View style={styles.container}>
-                <FlatList
-                    data={this.state.messages}
-                    renderItem={this.renderItem.bind(this)}
-                    extraData={this.state}
-                    keyExtractor={(item, index) => index.toString()}
-                    ref={ref => this.flatList = ref}
-                    onContentSizeChange={() => this.flatList.scrollToEnd({ animated: false })}
-                    onLayout={() => this.flatList.scrollToEnd({ animated: true })}
-                />
-                <KeyboardAvoidingView
-                    keyboardVerticalOffset={keyboardVerticalOffset}
-                    behavior={padding}
-                >
-                    <SafeAreaView forceInset={{ bottom: 'never' }}>
+            <SafeAreaView style={styles.safeAreaView}>
+                <View style={styles.container}>
+                    <FlatList
+                        data={this.state.messages}
+                        renderItem={this.renderItem.bind(this)}
+                        extraData={this.state}
+                        keyExtractor={(item, index) => index.toString()}
+                        ref={ref => this.flatList = ref}
+                        onContentSizeChange={() => this.flatList.scrollToEnd({ animated: false })}
+                        onLayout={() => this.flatList.scrollToEnd({ animated: true })}
+                    />
+                    <KeyboardAvoidingView
+                        keyboardVerticalOffset={keyboardVerticalOffset}
+                        behavior={padding}
+                    >
                         <View style={styles.footer}>
                             <TextInput
                                 value={this.state.typing}
@@ -113,9 +118,9 @@ export default class ChatScreen extends React.Component {
                                 <Text style={styles.send}>Send</Text>
                             </TouchableOpacity>
                         </View>
-                    </SafeAreaView>
-                </KeyboardAvoidingView>
-            </View>
+                    </KeyboardAvoidingView>
+                </View>
+            </SafeAreaView>
         );
     }
 }

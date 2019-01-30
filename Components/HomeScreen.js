@@ -73,6 +73,7 @@ export default class HomeScreen extends React.Component {
                 headerBackTitle: "Back",
                 headerTintColor: "white",
                 headerStyle: {
+                    fontFamily: 'Roboto-Bold',
                     backgroundColor: '#cc504e'
                 },
             }
@@ -85,9 +86,6 @@ export default class HomeScreen extends React.Component {
                     data={this.state.contacts}
                     renderItem={this.renderName.bind(this)}
                     extradata={this.state}
-                    ref={ref => this.flatList = ref}
-                    onContentSizeChange={() => this.flatList.scrollToEnd({ animated: true })}
-                    onLayout={() => this.flatList.scrollToEnd({ animated: true })}
                 />
             </View>
         );

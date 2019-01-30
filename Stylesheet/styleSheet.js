@@ -45,11 +45,13 @@ export default StyleSheet.create({
         paddingHorizontal: 20,
         paddingVertical: 10,
         fontSize: 18,
+        fontFamily: 'Roboto-Regular',
         flex: 1,
     },
     send: {
         alignSelf: 'center',
-        color: 'lightseagreen',
+        fontFamily: 'Roboto-Bold',
+        color: '#cc504e',
         fontSize: 16,
         fontWeight: 'bold',
         padding: 20,
@@ -74,6 +76,7 @@ export default StyleSheet.create({
         fontSize: 18,
         height: 50,
         flexDirection: "row",
+        fontFamily: 'Roboto-medium'
     },
     separator: {
         justifyContent: 'space-between',
@@ -121,11 +124,13 @@ export default StyleSheet.create({
     },
     senderMessage: {
         paddingRight: 10,
-        marginLeft: 60
+        marginLeft: 60,
+        fontFamily: 'Roboto-Regular'
     },
     receiverMessage: {
         paddingLeft: 10,
-        marginRight: 60
+        marginRight: 60,
+        fontFamily: 'Roboto-Regular'
     },
 
     mainBox: {
@@ -157,4 +162,8 @@ export default StyleSheet.create({
         flex: 1,
         fontSize: 20,
     },
+    safeAreaView: {
+        flex: 1,
+        backgroundColor: '#f1f1f1',
+    }
 });
