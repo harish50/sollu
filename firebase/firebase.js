@@ -5,7 +5,7 @@ let config = {
     authDomain: "chatbox-992a8.firebaseapp.com",
     databaseURL: "https://chatbox-992a8.firebaseio.com",
     projectId: "chatbox-992a8",
-    storageBucket: "",
+    storageBucket: "chatbox-992a8.appspot.com",
     messagingSenderId: "545822368567"
 };
 firebase.initializeApp(config);
