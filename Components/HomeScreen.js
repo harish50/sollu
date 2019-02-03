@@ -48,6 +48,11 @@ export default class HomeScreen extends React.Component {
                             }
                         }
                     }
+                    const self_contact = {
+                        key: this.props.navigation.getParam("sender"),
+                        name: "You",
+                    };
+                    localContacts.push(self_contact);
                     this.setState({
                         contacts: localContacts
                     })

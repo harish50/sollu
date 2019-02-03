@@ -84,7 +84,9 @@ export default class ChatScreen extends React.Component {
         };
         db.ref('registeredUsers').child(info.sender).child("chat").child(info.receiver.item.key).push(msg);
         msg._id = 1;
-        db.ref('registeredUsers').child(info.receiver.item.key).child("chat").child(info.sender).push(msg);
+        if (info.receiver.item.key !== info.sender) {
+            db.ref('registeredUsers').child(info.receiver.item.key).child("chat").child(info.sender).push(msg);
+        }
         this.setState({ typing: '' });
     }
     render() {
