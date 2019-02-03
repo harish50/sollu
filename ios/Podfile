@@ -13,6 +13,10 @@ target 'sollu' do
   
 
   platform :ios, '9.0'
+
+  pod 'Firebase/Core'
+  pod 'Firebase/Messaging'
+  
   target 'solluTests' do
     inherit! :search_paths
     # Pods for testing
