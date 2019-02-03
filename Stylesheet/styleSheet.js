@@ -165,5 +165,15 @@ export default StyleSheet.create({
     safeAreaView: {
         flex: 1,
         backgroundColor: '#f1f1f1',
-    }
+    },
+    selfMessageContainer: {
+        alignItems: "center",
+        flexDirection: "row",
+        borderBottomColor: "rgba(92,94,94,0.5)",
+        borderBottomWidth: 0.5,
+    },
+    selfTextContainer: {
+        fontSize: 16,
+        fontFamily: 'Roboto-Regular',
+    },
 });
