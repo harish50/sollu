@@ -6,7 +6,12 @@ import firebase from '../firebase/firebase';
 
 export default class HomeScreen extends React.Component {
     state = {
-        contacts: []
+        contacts: [
+            {
+                key: this.props.navigation.getParam("sender"),
+                name: "You",
+            }
+        ]
     };
     async requestContactsPermission() {
         try {
@@ -49,7 +54,7 @@ export default class HomeScreen extends React.Component {
                         }
                     }
                     this.setState({
-                        contacts: localContacts
+                        contacts: [...this.state.contacts, ...localContacts]
                     })
                 });
             }
