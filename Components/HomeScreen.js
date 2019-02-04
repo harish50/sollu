@@ -3,6 +3,7 @@ import { View, Text, FlatList, TouchableOpacity, Platform, PermissionsAndroid } 
 import styles from "../Stylesheet/styleSheet";
 import Contacts from 'react-native-contacts';
 import firebase from '../firebase/firebase';
+import Profile from './Profile';
 
 export default class HomeScreen extends React.Component {
     state = {
@@ -72,6 +73,7 @@ export default class HomeScreen extends React.Component {
         );
     }
     static navigationOptions = ({ navigation }) => {
+        let props = navigation;
         return (
             {
                 headerTitle: 'Sollu',
@@ -79,8 +81,10 @@ export default class HomeScreen extends React.Component {
                 headerTintColor: "white",
                 headerStyle: {
                     fontFamily: 'Roboto-Bold',
-                    backgroundColor: '#cc504e'
+                    backgroundColor: '#cc504e',
+                    height: 60,
                 },
+                headerRight: (<Profile sender={props.getParam("sender")} navigation={props} />),
             }
         );
     };
