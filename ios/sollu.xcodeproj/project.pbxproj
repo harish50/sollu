@@ -26,6 +26,7 @@
 		140ED2AC1D01E1AD002B40FF /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
 		146834051AC3E58100842450 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
 		1D5ACCBFED5C463CB621F4F7 /* libRCTContacts.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 96E4A400EA964A84AC5CA0E0 /* libRCTContacts.a */; };
+		1F29F7F32208A9D3007AE9A9 /* libRNImagePicker.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F29F7F22208A9A3007AE9A9 /* libRNImagePicker.a */; };
 		1F77809721FD795C004FB05A /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F77809621FD795C004FB05A /* StoreKit.framework */; };
 		1FDA2B3322072AB40032A8B9 /* libRNFetchBlob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1FDA2B3122072A940032A8B9 /* libRNFetchBlob.a */; };
 		2D02E4BC1E0B4A80006451C7 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
@@ -120,6 +121,13 @@
 			proxyType = 2;
 			remoteGlobalIDString = 83CBBA2E1A601D0E00E9B192;
 			remoteInfo = React;
+		};
+		1F29F7F12208A9A3007AE9A9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1F29F7C22208A9A3007AE9A9 /* RNImagePicker.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 014A3B5C1C6CF33500B6D375;
+			remoteInfo = RNImagePicker;
 		};
 		1FB212AA21FF327700DC46FA /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -398,6 +406,7 @@
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = sollu/main.m; sourceTree = "<group>"; };
 		146833FF1AC3E56700842450 /* React.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = React.xcodeproj; path = "../node_modules/react-native/React/React.xcodeproj"; sourceTree = "<group>"; };
 		16A1ADA1BF4CEC6EF0ACEC51 /* Pods-sollu-tvOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-sollu-tvOS.debug.xcconfig"; path = "Pods/Target Support Files/Pods-sollu-tvOS/Pods-sollu-tvOS.debug.xcconfig"; sourceTree = "<group>"; };
+		1F29F7C22208A9A3007AE9A9 /* RNImagePicker.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNImagePicker.xcodeproj; path = "../node_modules/react-native-image-picker/ios/RNImagePicker.xcodeproj"; sourceTree = "<group>"; };
 		1F77809621FD795C004FB05A /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		1FDA2B0322072A930032A8B9 /* RNFetchBlob.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNFetchBlob.xcodeproj; path = "../node_modules/react-native-fetch-blob/ios/RNFetchBlob.xcodeproj"; sourceTree = "<group>"; };
 		2D02E47B1E0B4A5D006451C7 /* sollu-tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "sollu-tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -448,6 +457,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1F29F7F32208A9D3007AE9A9 /* libRNImagePicker.a in Frameworks */,
 				1FDA2B3322072AB40032A8B9 /* libRNFetchBlob.a in Frameworks */,
 				ADBDB9381DFEBF1600ED6528 /* libRCTBlob.a in Frameworks */,
 				11D1A2F320CAFA9E000508D9 /* libRCTAnimation.a in Frameworks */,
@@ -615,6 +625,14 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		1F29F7C32208A9A3007AE9A9 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				1F29F7F22208A9A3007AE9A9 /* libRNImagePicker.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		1FB212A321FF327700DC46FA /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -696,6 +714,7 @@
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				1F29F7C22208A9A3007AE9A9 /* RNImagePicker.xcodeproj */,
 				1FDA2B0322072A930032A8B9 /* RNFetchBlob.xcodeproj */,
 				5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */,
 				146833FF1AC3E56700842450 /* React.xcodeproj */,
@@ -1001,6 +1020,10 @@
 					ProductGroup = E4C6EEF521D8ED250046CF4D /* Products */;
 					ProjectRef = 77502BD7A1E44EFC9374F18B /* RNGestureHandler.xcodeproj */;
 				},
+				{
+					ProductGroup = 1F29F7C32208A9A3007AE9A9 /* Products */;
+					ProjectRef = 1F29F7C22208A9A3007AE9A9 /* RNImagePicker.xcodeproj */;
+				},
 			);
 			projectRoot = "";
 			targets = (
@@ -1067,6 +1090,13 @@
 			fileType = archive.ar;
 			path = libReact.a;
 			remoteRef = 146834031AC3E56700842450 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		1F29F7F22208A9A3007AE9A9 /* libRNImagePicker.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRNImagePicker.a;
+			remoteRef = 1F29F7F12208A9A3007AE9A9 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		1FB212AB21FF327700DC46FA /* libAppCenterReactNative.a */ = {
