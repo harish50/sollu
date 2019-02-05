@@ -9,7 +9,9 @@ export default class Profile extends Component {
         profilePic: "https://firebasestorage.googleapis.com/v0/b/chatbox-992a8.appspot.com/o/images%2FgeneralUserIcon.png?alt=media&token=5aca0ddf-29f1-48f8-aa7d-78996b5a81a3",
     }
     handleProfilePress = () => {
-        this.props.navigation.navigate('ProfilePage', { phoneNo: this.props.sender });
+        if (typeof this.props.navigation !== 'undefined') {
+            this.props.navigation.navigate('ProfilePage', { phoneNo: this.props.sender });
+        }
     }
     async componentDidMount() {
         let imageRef = firebase.database().ref('registeredUserProfileInfo');

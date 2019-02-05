@@ -67,7 +67,8 @@ export default class HomeScreen extends React.Component {
             receiver: contact
         }
         return (
-            <TouchableOpacity onPress={() => this.props.navigation.navigate('ChatScreen', { info: info, contactName: contact.item.name })} style={styles.separator}>
+            <TouchableOpacity onPress={() => this.props.navigation.navigate('ChatScreen', { info: info, contactName: contact.item.name })} style={styles.contactContainer}>
+                <Profile sender={contact.item.key} />
                 <Text style={styles.item}> {contact.item.name} </Text>
             </TouchableOpacity>
         );
