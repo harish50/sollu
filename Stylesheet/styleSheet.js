@@ -72,32 +72,21 @@ export default StyleSheet.create({
         height: 24,
     },
     item: {
-        padding: 10,
         fontSize: 18,
-        height: 50,
-        flexDirection: "row",
         fontFamily: 'Roboto-medium'
     },
-    separator: {
-        justifyContent: 'space-between',
-        padding: 10,
-        height: 50,
+    contactContainer: {
+        flex: 1,
+        flexDirection: 'row',
+        alignItems: "center",
+        height: 60,
         borderBottomColor: "rgba(92,94,94,0.5)",
-        borderBottomWidth: 0.25
-    },
-    button: {
-        paddingTop: 10,
-        paddingBottom: 10,
-        borderRadius: 5,
-        marginBottom: 20,
-        width: 125,
-        height: 45
+        borderBottomWidth: 0.30
     },
     text: {
         color: '#fff',
         textAlign: 'center',
         fontSize: 20,
-
     },
     senderMessageContainer: {
         flex: 1,
@@ -175,5 +164,13 @@ export default StyleSheet.create({
     selfTextContainer: {
         fontSize: 16,
         fontFamily: 'Roboto-Regular',
+    },
+    button: {
+        paddingTop: 10,
+        paddingBottom: 10,
+        borderRadius: 5,
+        marginBottom: 20,
+        width: 125,
+        height: 45
     },
 });

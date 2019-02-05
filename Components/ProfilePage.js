@@ -23,7 +23,7 @@ var options = {
 export default class ProfilePage extends Component {
     state = {
         image_uri: "",
-        gender: '',
+        gender: "Select Gender",
         isProfileSet: false
     };
 
@@ -50,7 +50,8 @@ export default class ProfilePage extends Component {
         let profileimageRef = db.ref('registeredUserProfileInfo').child(phoneNo)
         profileimageRef.on('value', (snapshot) => {
             let user = snapshot.val();
-            let gender = user !== null ? user.Gender : "";
+            let gender = user !== null ? user.Gender : "Select Gender";
+            gender = typeof gender !== 'undefined' ? gender : "Select Gender";
             if (user !== null) {
                 if ((typeof user.imageURL === 'undefined' && typeof user.Gender === 'undefined')) {
                     user_pic = "https://firebasestorage.googleapis.com/v0/b/chatbox-992a8.appspot.com/o/images%2FgeneralUserIcon.png?alt=media&token=5aca0ddf-29f1-48f8-aa7d-78996b5a81a3"
