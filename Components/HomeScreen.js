@@ -8,12 +8,7 @@ import Profile from './Profile';
 
 export default class HomeScreen extends React.Component {
     state = {
-        contacts: [
-            {
-                key: this.props.navigation.getParam("sender"),
-                name: "You",
-            }
-        ]
+        contacts: []
     };
     async requestContactsPermission() {
         try {
@@ -33,6 +28,10 @@ export default class HomeScreen extends React.Component {
         }
         let db = firebase.database();
         let localContacts = [];
+        localContacts.push( {
+            key: this.props.navigation.getParam("sender"),
+            name: "You",
+        })
         Contacts.getAll((err, contacts) => {
             if (err) throw err;
             else {
@@ -91,7 +90,7 @@ export default class HomeScreen extends React.Component {
         );
     };
     render() {
-        if(this.state.contacts.length === 1){
+        if(this.state.contacts.length === 0){
            return(<View style={[styles.loadingIcon, styles.loadShape]}>
                    <ActivityIndicator size="large" color='#cc504e' />
            </View>
