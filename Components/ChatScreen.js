@@ -11,11 +11,44 @@ export default class ChatScreen extends React.Component {
         super(props);
         this.state = {
             typing: "",
-            messages: []
+            messages: [],
+            colourDifference:false
         };
         this.sendMessage = this.sendMessage.bind(this);
+        this.isColorDiffers=this.isColorDiffers.bind(this);
     }
+
+    isColorDiffers(){
+        let colorDifference=false;
+        let { navigation } = this.props;
+        const info = navigation.getParam('info');
+        console.log(info.receiver.item.key);
+        console.log(info.sender);
+        const senderInfoRef = firebase.database().ref('registeredUserProfileInfo').child(info.sender);
+        const receiverInfoRef = firebase.database().ref('registeredUserProfileInfo').child(info.receiver.item.key);
+        senderInfoRef.on('value', (senderSnap) => {
+            let sender = senderSnap.val();
+            receiverInfoRef.on('value',(receiverSnap)=>{
+                let receiver = receiverSnap.val()
+                if((sender.imageURL===undefined && receiver.imageURL===undefined)){
+                    if((sender.Gender===undefined && receiver.Gender===undefined) || (sender.Gender===receiver.Gender)){
+
+                        console.log("Genders :"+sender.Gender+" "+receiver.Gender);
+                        colorDifference=true;
+                    }
+                }else if(sender.imageURL===receiver.imageURL){
+                    colorDifference=true;
+                }
+            })
+        })
+        this.setState({
+            colourDifference:colorDifference
+        });
+
+    }
+
     componentDidMount() {
+        this.isColorDiffers();
         const db = firebase.database();
         let { navigation } = this.props;
         const info = navigation.getParam('info');
@@ -72,13 +105,32 @@ export default class ChatScreen extends React.Component {
         let hours = '' + item.createdAt.getHours();
         if (hours.length < 2) hours = '0' + hours;
         const time = hours + ":" + minutes;
-        return (
-            <View style={messageboxstyle}>
-                {/*<Image style={styles.iconContainer} source={require('../Icon/userIcon1.png')} />*/}
-                <Profile sender={phoneNo} />
-                <Text style={messagetextstyle}>{item.text + " " + time}</Text>
-            </View>
-        );
+        console.log(this.state.colourDifference);
+        if(this.state.colourDifference){
+            console.log("color difference should be there");
+            if(item._id === 2){
+                borderColor: '#0000FF'
+            }
+            else{
+                borderColor: '#FF0000'
+            }
+            return (
+                <View style={messageboxstyle}>
+                    {/*<Image style={styles.iconContainer} source={require('../Icon/userIcon1.png')} />*/}
+                    <Profile sender={phoneNo} style={{,borderWidth: 20}}/>
+                    <Text style={messagetextstyle}>{item.text + " " + time}</Text>
+                </View>
+            );
+        }
+        else{
+            return (
+                <View style={messageboxstyle}>
+                    {/*<Image style={styles.iconContainer} source={require('../Icon/userIcon1.png')} />*/}
+                    <Profile sender={phoneNo} />
+                    <Text style={messagetextstyle}>{item.text + " " + time}</Text>
+                </View>
+            );
+        }
     };
     sendMessage() {
         if (this.state.typing.trim() === '') {
