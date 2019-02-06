@@ -1,9 +1,10 @@
 import React from "react";
-import { View, Text, FlatList, TouchableOpacity, Platform, PermissionsAndroid } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, Platform, PermissionsAndroid,ActivityIndicator,StyleSheet } from 'react-native';
 import styles from "../Stylesheet/styleSheet";
 import Contacts from 'react-native-contacts';
 import firebase from '../firebase/firebase';
 import Profile from './Profile';
+
 
 export default class HomeScreen extends React.Component {
     state = {
@@ -90,15 +91,22 @@ export default class HomeScreen extends React.Component {
         );
     };
     render() {
-        return (
-            <View>
-                <FlatList
-                    data={this.state.contacts}
-                    renderItem={this.renderName.bind(this)}
-                    extradata={this.state}
-                />
-            </View>
-        );
+        if(this.state.contacts.length === 1){
+           return(<View style={[styles.loadingIcon, styles.loadShape]}>
+                   <ActivityIndicator size="large" color='#cc504e' />
+           </View>
+           );
+        }else{
+            return (
+                <View>
+                    <FlatList
+                        data={this.state.contacts}
+                        renderItem={this.renderName.bind(this)}
+                        extradata={this.state}
+                    />
+                </View>
+            );
+        }
     }
 }
 
