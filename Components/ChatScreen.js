@@ -3,6 +3,7 @@ import { Platform, View, Text, TextInput, KeyboardAvoidingView, FlatList, Toucha
 import { SafeAreaView, Header } from 'react-navigation';
 import styles from "../Stylesheet/styleSheet";
 import firebase from "../firebase/firebase";
+import Profile from "./Profile";
 
 
 export default class ChatScreen extends React.Component {
@@ -51,16 +52,20 @@ export default class ChatScreen extends React.Component {
     renderItem({ item }) {
         let messageboxstyle;
         let messagetextstyle;
+        let { navigation } = this.props;
+        const info = navigation.getParam('info');
+        let phoneNo=info.sender;
         if (item._id === 0) {
             messageboxstyle = styles.selfMessageContainer;
             messagetextstyle = styles.selfTextContainer;
         }
-        else if (item._id === 1) {
+        else if (item._id === 2) {
             messageboxstyle = [styles.senderMessageContainer, styles.chatBox];
             messagetextstyle = styles.senderMessage;
         } else {
             messageboxstyle = [styles.receiverMessageContainer, styles.chatBox];
             messagetextstyle = styles.receiverMessage;
+            phoneNo=info.receiver.item.key;
         }
         let minutes = '' + item.createdAt.getMinutes();
         if (minutes.length < 2) minutes = '0' + minutes;
@@ -69,7 +74,8 @@ export default class ChatScreen extends React.Component {
         const time = hours + ":" + minutes;
         return (
             <View style={messageboxstyle}>
-                <Image style={styles.iconContainer} source={require('../Icon/userIcon1.png')} />
+                {/*<Image style={styles.iconContainer} source={require('../Icon/userIcon1.png')} />*/}
+                <Profile sender={phoneNo} />
                 <Text style={messagetextstyle}>{item.text + " " + time}</Text>
             </View>
         );

@@ -61,18 +61,20 @@ export default class HomeScreen extends React.Component {
             }
         })
     }
+
     renderName(contact) {
         let info = {
             sender: this.props.navigation.getParam("sender"),
             receiver: contact
-        }
+        };
         return (
-            <TouchableOpacity onPress={() => this.props.navigation.navigate('ChatScreen', { info: info, contactName: contact.item.name })} style={styles.contactContainer}>
+            <TouchableOpacity onPress={() => this.props.navigation.navigate('ChatScreen', { info: info, contactName: contact.item.name})} style={styles.contactContainer}>
                 <Profile sender={contact.item.key} />
                 <Text style={styles.item}> {contact.item.name} </Text>
             </TouchableOpacity>
         );
     }
+
     static navigationOptions = ({ navigation }) => {
         let props = navigation;
         return (
