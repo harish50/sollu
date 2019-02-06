@@ -183,11 +183,9 @@ export default StyleSheet.create({
         padding: 20
     },
     loadingText:{
-        flex:1 ,
-        justifyContent:'center',
-        flexDirection: 'row',
-        fontFamily: 'Roboto-Regular',
+        justifyContent: 'space-around',
         padding: 100,
         fontSize: 16,
+        fontFamily: 'Roboto-Regular',
     }
 });
