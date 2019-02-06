@@ -48,7 +48,7 @@ export default class ChatScreen extends React.Component {
             }
         );
     };
-  
+
     sendMessage() {
         if (this.state.typing.trim() === '') {
             return;
@@ -73,14 +73,6 @@ export default class ChatScreen extends React.Component {
         this.setState({ typing: '' });
     }
 
-    // renderDayMessagesMap = (dayMessages) => {
-    //     let result = dayMessages.map((message) => {
-    //         return this.renderItem(message)
-    //     });
-
-
-    //     return (result)
-    // }
     renderItem(item) {
         console.log(item);
         let messageboxstyle;
@@ -110,9 +102,11 @@ export default class ChatScreen extends React.Component {
     };
 
     renderDayMessages = (dayMessages, day) => {
-       dayMessages.map((message)=> {
-           return this.renderItem(message);
-       })
+        let result = (dayMessages.map((message) => {
+            <Text>{day}</Text>
+            return this.renderItem(message);
+        }))
+        return (result);
     }
 
     renderMessages = (messages) => {
@@ -122,7 +116,7 @@ export default class ChatScreen extends React.Component {
             preMsgDate = monthNames[messages[0].createdAt.getMonth()] + " " + messages[0].createdAt.getDate() + " " + messages[0].createdAt.getFullYear();
         }
         let dayMessages = [];
-         messages.map((message) => {
+        return messages.map((message) => {
             let fullDate = monthNames[message.createdAt.getMonth()] + " " + message.createdAt.getDate() + " " + message.createdAt.getFullYear();
             if (fullDate === preMsgDate) {
                 dayMessages.push(message);
@@ -135,7 +129,6 @@ export default class ChatScreen extends React.Component {
                 return result;
             }
         });
-        return this.renderDayMessages(dayMessages,preMsgDate);
     }
 
     render() {
