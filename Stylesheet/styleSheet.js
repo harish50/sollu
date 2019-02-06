@@ -181,5 +181,13 @@ export default StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-around',
         padding: 20
+    },
+    loadingText:{
+        flex:1 ,
+        justifyContent:'center',
+        flexDirection: 'row',
+        fontFamily: 'Roboto-Regular',
+        padding: 100,
+        fontSize: 16,
     }
 });

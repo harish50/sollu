@@ -91,12 +91,17 @@ export default class HomeScreen extends React.Component {
         );
     };
     render() {
-        if(this.state.contacts.length === 1){
+        if(this.state.contacts.length === 0){
            return(<View style={[styles.loadingIcon, styles.loadShape]}>
-                   <ActivityIndicator size="large" color='#cc504e' />
+                   <Text style={styles.loadingText}>No Registered Contacts</Text>
            </View>
            );
-        }else{
+        }else if(this.state.contacts.length === 1){
+            return(<View style={[styles.loadingIcon, styles.loadShape]}>
+                    <ActivityIndicator size="large" color='#cc504e' />
+                </View>
+            );
+        }else {
             return (
                 <View>
                     <FlatList
