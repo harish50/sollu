@@ -3,6 +3,7 @@ import { Platform, View, Text, TextInput, KeyboardAvoidingView, FlatList, Toucha
 import { SafeAreaView, Header } from 'react-navigation';
 import styles from "../Stylesheet/styleSheet";
 import firebase from "../firebase/firebase";
+import Profile from "./Profile";
 
 
 export default class ChatScreen extends React.Component {
@@ -60,12 +61,20 @@ export default class ChatScreen extends React.Component {
     renderItem({ item }) {
         let messageboxstyle;
         let messagetextstyle;
-        if (item._id === 2) {
-            messageboxstyle = styles.senderMessageContainer;
+        let { navigation } = this.props;
+        const info = navigation.getParam('info');
+        let phoneNo=info.sender;
+        if (item._id === 0) {
+            messageboxstyle = styles.selfMessageContainer;
+            messagetextstyle = styles.selfTextContainer;
+        }
+        else if (item._id === 2) {
+            messageboxstyle = [styles.senderMessageContainer, styles.chatBox];
             messagetextstyle = styles.senderMessage;
         } else {
-            messageboxstyle = styles.receiverMessageContainer;
+            messageboxstyle = [styles.receiverMessageContainer, styles.chatBox];
             messagetextstyle = styles.receiverMessage;
+            phoneNo=info.receiver.item.key;
         }
         let minutes = '' + item.createdAt.getMinutes();
         if (minutes.length < 2) minutes = '0' + minutes;
@@ -73,8 +82,9 @@ export default class ChatScreen extends React.Component {
         if (hours.length < 2) hours = '0' + hours;
         const time = hours + ":" + minutes;
         return (
-            <View style={[messageboxstyle, styles.chatBox]}>
-                <Image style={styles.iconContainer} source={require('../Icon/userIcon1.png')} />
+            <View style={messageboxstyle}>
+                {/*<Image style={styles.iconContainer} source={require('../Icon/userIcon1.png')} />*/}
+                <Profile sender={phoneNo} />
                 <Text style={messagetextstyle}>{item.text + " " + time}</Text>
             </View>
         );
@@ -91,9 +101,15 @@ export default class ChatScreen extends React.Component {
             text: this.state.typing.trim(),
             createdAt: new Date().getTime(),
         };
-        db.ref('registeredUsers').child(info.sender).child("chat").child(info.receiver).push(msg);
-        msg._id = 1;
-        db.ref('registeredUsers').child(info.receiver).child("chat").child(info.sender).push(msg);
+        if (info.sender === info.receiver.item.key) {
+            msg._id = 0;
+            db.ref('registeredUsers').child(info.sender).child("chat").child(info.receiver.item.key).push(msg);
+        }
+        else {
+            db.ref('registeredUsers').child(info.sender).child("chat").child(info.receiver).push(msg);
+            msg._id = 1;
+            db.ref('registeredUsers').child(info.receiver).child("chat").child(info.sender).push(msg);
+        }
         this.setState({ typing: '' });
     }
     render() {

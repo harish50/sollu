@@ -1,9 +1,11 @@
 import React from "react";
-import { View, Text, FlatList, TouchableOpacity, AsyncStorage, Platform, PermissionsAndroid } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, Platform, PermissionsAndroid,ActivityIndicator,StyleSheet,AsyncStorage } from 'react-native';
 import styles from "../Stylesheet/styleSheet";
 import Contacts from 'react-native-contacts';
 import firebase from '../firebase/firebase';
+import Profile from './Profile';
 import Firebase from 'react-native-firebase';
+
 
 export default class HomeScreen extends React.Component {
     state = {
@@ -167,6 +169,10 @@ export default class HomeScreen extends React.Component {
         }
         let db = firebase.database();
         let localContacts = [];
+        localContacts.push( {
+            key: this.props.navigation.getParam("sender"),
+            name: "You",
+        })
         Contacts.getAll((err, contacts) => {
             if (err) throw err;
             else {
@@ -191,7 +197,7 @@ export default class HomeScreen extends React.Component {
                         }
                     }
                     this.setState({
-                        contacts: localContacts
+                        contacts: [...this.state.contacts, ...localContacts]
                     })
                 });
             }
@@ -199,6 +205,7 @@ export default class HomeScreen extends React.Component {
         this.checkPermission();
         this.createNotificationListeners();
     }
+
     renderName(contact) {
         let info = {
             sender: this.props.navigation.getParam("sender"),
@@ -208,12 +215,15 @@ export default class HomeScreen extends React.Component {
             <TouchableOpacity onPress={() => {
                 this.props.navigation.navigate('ChatScreen', { info: info, contactName: contact.item.name }, { onGoBack: () => this.updateCurrentUser() });
                 this.setState({ currentUser: contact.item.name })
-            }} style={styles.separator}>
+            }} style={styles.contactContainer}>    
+                <Profile sender={contact.item.key} />
                 <Text style={styles.item}> {contact.item.name} </Text>
             </TouchableOpacity>
         );
     }
+
     static navigationOptions = ({ navigation }) => {
+        let props = navigation;
         return (
             {
                 headerTitle: 'Sollu',
@@ -221,21 +231,36 @@ export default class HomeScreen extends React.Component {
                 headerTintColor: "white",
                 headerStyle: {
                     fontFamily: 'Roboto-Bold',
-                    backgroundColor: '#cc504e'
+                    backgroundColor: '#cc504e',
+                    height: 60,
                 },
+                headerRight: (<Profile sender={props.getParam("sender")} navigation={props} />),
             }
         );
     };
     render() {
-        return (
-            <View>
-                <FlatList
-                    data={this.state.contacts}
-                    renderItem={this.renderName.bind(this)}
-                    extradata={this.state}
-                />
-            </View>
-        );
+        if(this.state.contacts.length === 0) {
+            return (<View style={[styles.loadingIcon, styles.loadShape]}>
+                    <ActivityIndicator size="large" color='#cc504e'/>
+                </View>
+            );
+        }else if(this.state.contacts.length <= 0){
+            return(<View style={[styles.loadingIcon, styles.loadShape]}>
+                    <Text style={styles.loadingText}>No Registered Contacts</Text>
+
+                </View>
+            );
+        }else{
+            return (
+                <View>
+                    <FlatList
+                        data={this.state.contacts}
+                        renderItem={this.renderName.bind(this)}
+                        extradata={this.state}
+                    />
+                </View>
+            );
+        }
     }
 }
 
