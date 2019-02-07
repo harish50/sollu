@@ -1,18 +1,14 @@
 import React from "react";
-import { View, Text, FlatList, TouchableOpacity, Platform, PermissionsAndroid } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, Platform, PermissionsAndroid,ActivityIndicator,StyleSheet } from 'react-native';
 import styles from "../Stylesheet/styleSheet";
 import Contacts from 'react-native-contacts';
 import firebase from '../firebase/firebase';
 import Profile from './Profile';
 
+
 export default class HomeScreen extends React.Component {
     state = {
-        contacts: [
-            {
-                key: this.props.navigation.getParam("sender"),
-                name: "You",
-            }
-        ]
+        contacts: []
     };
     async requestContactsPermission() {
         try {
@@ -32,6 +28,10 @@ export default class HomeScreen extends React.Component {
         }
         let db = firebase.database();
         let localContacts = [];
+        localContacts.push( {
+            key: this.props.navigation.getParam("sender"),
+            name: "You",
+        })
         Contacts.getAll((err, contacts) => {
             if (err) throw err;
             else {
@@ -92,15 +92,28 @@ export default class HomeScreen extends React.Component {
         );
     };
     render() {
-        return (
-            <View>
-                <FlatList
-                    data={this.state.contacts}
-                    renderItem={this.renderName.bind(this)}
-                    extradata={this.state}
-                />
-            </View>
-        );
+        if(this.state.contacts.length === 0) {
+            return (<View style={[styles.loadingIcon, styles.loadShape]}>
+                    <ActivityIndicator size="large" color='#cc504e'/>
+                </View>
+            );
+        }else if(this.state.contacts.length <= 0){
+            return(<View style={[styles.loadingIcon, styles.loadShape]}>
+                    <Text style={styles.loadingText}>No Registered Contacts</Text>
+
+                </View>
+            );
+        }else{
+            return (
+                <View>
+                    <FlatList
+                        data={this.state.contacts}
+                        renderItem={this.renderName.bind(this)}
+                        extradata={this.state}
+                    />
+                </View>
+            );
+        }
     }
 }
 

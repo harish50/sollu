@@ -173,4 +173,19 @@ export default StyleSheet.create({
         width: 125,
         height: 45
     },
+    loadingIcon: {
+        flex: 1,
+        justifyContent: 'center',
+    },
+    loadShape: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        padding: 20
+    },
+    loadingText:{
+        justifyContent: 'space-around',
+        padding: 100,
+        fontSize: 16,
+        fontFamily: 'Roboto-Regular',
+    }
 });
