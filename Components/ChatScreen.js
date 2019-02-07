@@ -11,16 +11,15 @@ export default class ChatScreen extends React.Component {
         super(props);
         this.state = {
             typing: "",
-            messages: []
+            messages: [],
+            chatRef: null,
         };
         this.sendMessage = this.sendMessage.bind(this);
     }
-    componentDidMount() {
+    getChat = (sender, receiver) => {
         const db = firebase.database();
-        let { navigation } = this.props;
-        const info = navigation.getParam('info');
-        const taskRef = db.ref('registeredUsers').child(info.sender).child("chat").child(info.receiver.item.key);
-        taskRef.on('value', (data) => {
+        const chatRef = db.ref('registeredUsers').child(sender).child("chat").child(receiver);
+        chatRef.on('value', (data) => {
             let chatData = data.val();
             let Chat = []
             for (let chatID in chatData) {
@@ -32,9 +31,19 @@ export default class ChatScreen extends React.Component {
                 Chat.push(message);
             }
             this.setState({
-                messages: Chat
+                messages: Chat,
+                chatRef: chatRef,
             });
         });
+    }
+    componentWillReceiveProps(props) {
+        const info = props.navigation.getParam("info");
+        this.state.chatRef.off();
+        this.getChat(info.sender, info.receiver);
+    }
+    componentDidMount() {
+        const info = this.props.navigation.getParam("info")
+        this.getChat(info.sender, info.receiver);
     }
     static navigationOptions = ({ navigation }) => {
         return (
@@ -97,9 +106,9 @@ export default class ChatScreen extends React.Component {
             db.ref('registeredUsers').child(info.sender).child("chat").child(info.receiver.item.key).push(msg);
         }
         else {
-            db.ref('registeredUsers').child(info.sender).child("chat").child(info.receiver.item.key).push(msg);
+            db.ref('registeredUsers').child(info.sender).child("chat").child(info.receiver).push(msg);
             msg._id = 1;
-            db.ref('registeredUsers').child(info.receiver.item.key).child("chat").child(info.sender).push(msg);
+            db.ref('registeredUsers').child(info.receiver).child("chat").child(info.sender).push(msg);
         }
         this.setState({ typing: '' });
     }

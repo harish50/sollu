@@ -26,6 +26,8 @@
 		140ED2AC1D01E1AD002B40FF /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
 		146834051AC3E58100842450 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
 		1D5ACCBFED5C463CB621F4F7 /* libRCTContacts.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 96E4A400EA964A84AC5CA0E0 /* libRCTContacts.a */; };
+		1F04C05A2206E0C700302FF1 /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F04C02E2206E0C700302FF1 /* UserNotifications.framework */; };
+		1F5B90DC2206D24C009B1CA4 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1F5B90B02206D24C009B1CA4 /* GoogleService-Info.plist */; };
 		1F29F7F32208A9D3007AE9A9 /* libRNImagePicker.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F29F7F22208A9A3007AE9A9 /* libRNImagePicker.a */; };
 		1F77809721FD795C004FB05A /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F77809621FD795C004FB05A /* StoreKit.framework */; };
 		1FDA2B3322072AB40032A8B9 /* libRNFetchBlob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1FDA2B3122072A940032A8B9 /* libRNFetchBlob.a */; };
@@ -56,6 +58,7 @@
 		B9C7609F220D4767BFF933D2 /* libAppCenterReactNative.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D32B87F53E994C508FF2C39F /* libAppCenterReactNative.a */; };
 		C9566343E3FB4F2D8150C6DC /* Roboto-Thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9F43A89EED48436980C79778 /* Roboto-Thin.ttf */; };
 		EB1B2E411854D085E939B8C0 /* libPods-sollu.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DA8B4D5E86E07190B45D79C0 /* libPods-sollu.a */; };
+		F7F49E6F3512438BAB0FC540 /* libRNFirebase.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FBD618BE49714C918D73E231 /* libRNFirebase.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -122,6 +125,12 @@
 			remoteGlobalIDString = 83CBBA2E1A601D0E00E9B192;
 			remoteInfo = React;
 		};
+		1F04C0BB2206E26300302FF1 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 3055A5640675444C9638B98D /* RNFirebase.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 134814201AA4EA6300B7C361;
+			remoteInfo = RNFirebase;
 		1F29F7F12208A9A3007AE9A9 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 1F29F7C22208A9A3007AE9A9 /* RNImagePicker.xcodeproj */;
@@ -406,12 +415,16 @@
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = sollu/main.m; sourceTree = "<group>"; };
 		146833FF1AC3E56700842450 /* React.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = React.xcodeproj; path = "../node_modules/react-native/React/React.xcodeproj"; sourceTree = "<group>"; };
 		16A1ADA1BF4CEC6EF0ACEC51 /* Pods-sollu-tvOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-sollu-tvOS.debug.xcconfig"; path = "Pods/Target Support Files/Pods-sollu-tvOS/Pods-sollu-tvOS.debug.xcconfig"; sourceTree = "<group>"; };
+		1F04C02E2206E0C700302FF1 /* UserNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotifications.framework; path = System/Library/Frameworks/UserNotifications.framework; sourceTree = SDKROOT; };
+		1F5B90B02206D24C009B1CA4 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../Certs/Sollu/GoogleService-Info.plist"; sourceTree = "<group>"; };
+		1F5B90DD2206D26F009B1CA4 /* sollu.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = sollu.entitlements; path = sollu/sollu.entitlements; sourceTree = "<group>"; };
 		1F29F7C22208A9A3007AE9A9 /* RNImagePicker.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNImagePicker.xcodeproj; path = "../node_modules/react-native-image-picker/ios/RNImagePicker.xcodeproj"; sourceTree = "<group>"; };
 		1F77809621FD795C004FB05A /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		1FDA2B0322072A930032A8B9 /* RNFetchBlob.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNFetchBlob.xcodeproj; path = "../node_modules/react-native-fetch-blob/ios/RNFetchBlob.xcodeproj"; sourceTree = "<group>"; };
 		2D02E47B1E0B4A5D006451C7 /* sollu-tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "sollu-tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D02E4901E0B4A5D006451C7 /* sollu-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "sollu-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D16E6891FA4F8E400B85C8A /* libReact.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libReact.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		3055A5640675444C9638B98D /* RNFirebase.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNFirebase.xcodeproj; path = "../node_modules/react-native-firebase/ios/RNFirebase.xcodeproj"; sourceTree = "<group>"; };
 		386A48F3346E40EE8E069FC2 /* RCTContacts.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RCTContacts.xcodeproj; path = "../node_modules/react-native-contacts/ios/RCTContacts.xcodeproj"; sourceTree = "<group>"; };
 		3E4A794E1F6224117313FA6D /* Pods-sollu-tvOSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-sollu-tvOSTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-sollu-tvOSTests/Pods-sollu-tvOSTests.release.xcconfig"; sourceTree = "<group>"; };
 		3E635F538ED145EF8FDBCB17 /* AppCenterReactNativeAnalytics.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = AppCenterReactNativeAnalytics.xcodeproj; path = "../node_modules/appcenter-analytics/ios/AppCenterReactNativeAnalytics.xcodeproj"; sourceTree = "<group>"; };
@@ -441,6 +454,7 @@
 		F4E6C268E0D34993B1A1C2C7 /* Roboto-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Roboto-Regular.ttf"; path = "../assets/fonts/Roboto-Regular.ttf"; sourceTree = "<group>"; };
 		F5C9EAC52D9911A2819CA4B3 /* Pods-sollu.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-sollu.debug.xcconfig"; path = "Pods/Target Support Files/Pods-sollu/Pods-sollu.debug.xcconfig"; sourceTree = "<group>"; };
 		F6952B7B1DE44FF7938B6E9E /* libRNGestureHandler.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNGestureHandler.a; sourceTree = "<group>"; };
+		FBD618BE49714C918D73E231 /* libRNFirebase.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNFirebase.a; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -457,6 +471,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1F04C05A2206E0C700302FF1 /* UserNotifications.framework in Frameworks */,
 				1F29F7F32208A9D3007AE9A9 /* libRNImagePicker.a in Frameworks */,
 				1FDA2B3322072AB40032A8B9 /* libRNFetchBlob.a in Frameworks */,
 				ADBDB9381DFEBF1600ED6528 /* libRCTBlob.a in Frameworks */,
@@ -478,6 +493,7 @@
 				0FD91B7F58124259949E3DAF /* libAppCenterReactNativeAnalytics.a in Frameworks */,
 				871745B0502C45F5A19B68D5 /* libAppCenterReactNativeCrashes.a in Frameworks */,
 				EB1B2E411854D085E939B8C0 /* libPods-sollu.a in Frameworks */,
+				F7F49E6F3512438BAB0FC540 /* libRNFirebase.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -591,11 +607,13 @@
 		13B07FAE1A68108700A75B9A /* sollu */ = {
 			isa = PBXGroup;
 			children = (
+				1F5B90DD2206D26F009B1CA4 /* sollu.entitlements */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
+				1F5B90B02206D24C009B1CA4 /* GoogleService-Info.plist */,
 				13B07FB11A68108700A75B9A /* LaunchScreen.xib */,
 				13B07FB71A68108700A75B9A /* main.m */,
 			);
@@ -625,6 +643,10 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		1F04C08F2206E26300302FF1 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				1F04C0BC2206E26300302FF1 /* libRNFirebase.a */,
 		1F29F7C32208A9A3007AE9A9 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -683,6 +705,7 @@
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				1F04C02E2206E0C700302FF1 /* UserNotifications.framework */,
 				1F77809621FD795C004FB05A /* StoreKit.framework */,
 				2D16E6891FA4F8E400B85C8A /* libReact.a */,
 				DA8B4D5E86E07190B45D79C0 /* libPods-sollu.a */,
@@ -733,6 +756,7 @@
 				096C519B128E4B958F5B3946 /* AppCenterReactNative.xcodeproj */,
 				3E635F538ED145EF8FDBCB17 /* AppCenterReactNativeAnalytics.xcodeproj */,
 				D0F8614F4C3B46C5BF67620B /* AppCenterReactNativeCrashes.xcodeproj */,
+				3055A5640675444C9638B98D /* RNFirebase.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -804,6 +828,7 @@
 				D32B87F53E994C508FF2C39F /* libAppCenterReactNative.a */,
 				4E866E29012344308518F567 /* libAppCenterReactNativeAnalytics.a */,
 				696EFA044ABF4384B66B99F5 /* libAppCenterReactNativeCrashes.a */,
+				FBD618BE49714C918D73E231 /* libRNFirebase.a */,
 			);
 			name = "Recovered References";
 			sourceTree = "<group>";
@@ -920,7 +945,13 @@
 						DevelopmentTeam = J88NXXD5P6;
 						ProvisioningStyle = Manual;
 						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
 							com.apple.InAppPurchase = {
+								enabled = 1;
+							};
+							com.apple.Push = {
 								enabled = 1;
 							};
 						};
@@ -1013,6 +1044,8 @@
 					ProjectRef = 146833FF1AC3E56700842450 /* React.xcodeproj */;
 				},
 				{
+					ProductGroup = 1F04C08F2206E26300302FF1 /* Products */;
+					ProjectRef = 3055A5640675444C9638B98D /* RNFirebase.xcodeproj */;
 					ProductGroup = 1FDA2B0422072A930032A8B9 /* Products */;
 					ProjectRef = 1FDA2B0322072A930032A8B9 /* RNFetchBlob.xcodeproj */;
 				},
@@ -1092,6 +1125,11 @@
 			remoteRef = 146834031AC3E56700842450 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		1F04C0BC2206E26300302FF1 /* libRNFirebase.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRNFirebase.a;
+			remoteRef = 1F04C0BB2206E26300302FF1 /* PBXContainerItemProxy */;
 		1F29F7F22208A9A3007AE9A9 /* libRNImagePicker.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -1360,6 +1398,7 @@
 			files = (
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
+				1F5B90DC2206D24C009B1CA4 /* GoogleService-Info.plist in Resources */,
 				4C1EFDF4CD554BB3A4C6A905 /* AppCenter-Config.plist in Resources */,
 				B6ABEFDDD84448B8816695F8 /* Roboto-Bold.ttf in Resources */,
 				2F36E78398434AABBC33B07F /* Roboto-Light.ttf in Resources */,
@@ -1584,16 +1623,13 @@
 					"$(SRCROOT)/../node_modules/appcenter/ios/AppCenterReactNative",
 					"$(SRCROOT)/../node_modules/appcenter-analytics/ios/AppCenterReactNativeAnalytics",
 					"$(SRCROOT)/../node_modules/appcenter-crashes/ios/AppCenterReactNativeCrashes",
+					"$(SRCROOT)/../node_modules/react-native-firebase/ios/RNFirebase/**",
 				);
 				INFOPLIST_FILE = solluTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				OTHER_LDFLAGS = (
@@ -1619,16 +1655,13 @@
 					"$(SRCROOT)/../node_modules/appcenter/ios/AppCenterReactNative",
 					"$(SRCROOT)/../node_modules/appcenter-analytics/ios/AppCenterReactNativeAnalytics",
 					"$(SRCROOT)/../node_modules/appcenter-crashes/ios/AppCenterReactNativeCrashes",
+					"$(SRCROOT)/../node_modules/react-native-firebase/ios/RNFirebase/**",
 				);
 				INFOPLIST_FILE = solluTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				OTHER_LDFLAGS = (
@@ -1646,6 +1679,7 @@
 			baseConfigurationReference = F5C9EAC52D9911A2819CA4B3 /* Pods-sollu.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = sollu/sollu.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
@@ -1658,6 +1692,7 @@
 					"$(SRCROOT)/../node_modules/appcenter/ios/AppCenterReactNative",
 					"$(SRCROOT)/../node_modules/appcenter-analytics/ios/AppCenterReactNativeAnalytics",
 					"$(SRCROOT)/../node_modules/appcenter-crashes/ios/AppCenterReactNativeCrashes",
+					"$(SRCROOT)/../node_modules/react-native-firebase/ios/RNFirebase/**",
 				);
 				INFOPLIST_FILE = sollu/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1678,6 +1713,7 @@
 			baseConfigurationReference = A23C4D69254D431A040AA76A /* Pods-sollu.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = sollu/sollu.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
@@ -1690,6 +1726,7 @@
 					"$(SRCROOT)/../node_modules/appcenter/ios/AppCenterReactNative",
 					"$(SRCROOT)/../node_modules/appcenter-analytics/ios/AppCenterReactNativeAnalytics",
 					"$(SRCROOT)/../node_modules/appcenter-crashes/ios/AppCenterReactNativeCrashes",
+					"$(SRCROOT)/../node_modules/react-native-firebase/ios/RNFirebase/**",
 				);
 				INFOPLIST_FILE = sollu/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1726,15 +1763,12 @@
 					"$(SRCROOT)/../node_modules/appcenter/ios/AppCenterReactNative",
 					"$(SRCROOT)/../node_modules/appcenter-analytics/ios/AppCenterReactNativeAnalytics",
 					"$(SRCROOT)/../node_modules/appcenter-crashes/ios/AppCenterReactNativeCrashes",
+					"$(SRCROOT)/../node_modules/react-native-firebase/ios/RNFirebase/**",
 				);
 				INFOPLIST_FILE = "sollu-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				OTHER_LDFLAGS = (
@@ -1769,15 +1803,12 @@
 					"$(SRCROOT)/../node_modules/appcenter/ios/AppCenterReactNative",
 					"$(SRCROOT)/../node_modules/appcenter-analytics/ios/AppCenterReactNativeAnalytics",
 					"$(SRCROOT)/../node_modules/appcenter-crashes/ios/AppCenterReactNativeCrashes",
+					"$(SRCROOT)/../node_modules/react-native-firebase/ios/RNFirebase/**",
 				);
 				INFOPLIST_FILE = "sollu-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				OTHER_LDFLAGS = (
@@ -1811,15 +1842,12 @@
 					"$(SRCROOT)/../node_modules/appcenter/ios/AppCenterReactNative",
 					"$(SRCROOT)/../node_modules/appcenter-analytics/ios/AppCenterReactNativeAnalytics",
 					"$(SRCROOT)/../node_modules/appcenter-crashes/ios/AppCenterReactNativeCrashes",
+					"$(SRCROOT)/../node_modules/react-native-firebase/ios/RNFirebase/**",
 				);
 				INFOPLIST_FILE = "sollu-tvOSTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				OTHER_LDFLAGS = (
@@ -1853,15 +1881,12 @@
 					"$(SRCROOT)/../node_modules/appcenter/ios/AppCenterReactNative",
 					"$(SRCROOT)/../node_modules/appcenter-analytics/ios/AppCenterReactNativeAnalytics",
 					"$(SRCROOT)/../node_modules/appcenter-crashes/ios/AppCenterReactNativeCrashes",
+					"$(SRCROOT)/../node_modules/react-native-firebase/ios/RNFirebase/**",
 				);
 				INFOPLIST_FILE = "sollu-tvOSTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				OTHER_LDFLAGS = (

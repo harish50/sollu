@@ -44,6 +44,7 @@
 	<key>NSContactsUsageDescription</key>
 	<string>App works based on contacts. It reads the user contacts and checks whether user is registerd or not using the firebase api</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
+	<string/>
 	<string></string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>$(PRODUCT_NAME) would like to your microphone (for videos)</string>
@@ -58,6 +59,10 @@
 		<string>Roboto-Medium.ttf</string>
 		<string>Roboto-Regular.ttf</string>
 		<string>Roboto-Thin.ttf</string>
+	</array>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>remote-notification</string>
 	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>

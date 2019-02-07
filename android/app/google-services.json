@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "545822368567",
+    "firebase_url": "https://chatbox-992a8.firebaseio.com",
+    "project_id": "chatbox-992a8",
+    "storage_bucket": "chatbox-992a8.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:545822368567:android:cc20829ce2a1cc81",
+        "android_client_info": {
+          "package_name": "com.sollu"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "545822368567-2ui50qpdqtvcpd6h3q9mf61anfu06m3j.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDmP_R3fgVXw1E-Gg8QLDvlKLQnoTqJk6U"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

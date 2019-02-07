@@ -13,8 +13,9 @@ target 'sollu' do
   
 
   platform :ios, '9.0'
+  pod 'Firebase/Core'
+  pod 'Firebase/Messaging'
   pod 'react-native-image-picker', :path => '../node_modules/react-native-image-picker'
-
   target 'solluTests' do
     inherit! :search_paths
     # Pods for testing
