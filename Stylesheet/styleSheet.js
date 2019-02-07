@@ -173,4 +173,8 @@ export default StyleSheet.create({
         width: 125,
         height: 45
     },
+    dayAlignment: {
+        justifyContent: 'center',
+        alignItems: 'center'
+    }
 });

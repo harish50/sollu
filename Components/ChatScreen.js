@@ -73,8 +73,7 @@ export default class ChatScreen extends React.Component {
         this.setState({ typing: '' });
     }
 
-    renderItem(item) {
-        console.log(item);
+    renderItem({ item }) {
         let messageboxstyle;
         let messagetextstyle;
         if (item._id === 0) {
@@ -102,24 +101,46 @@ export default class ChatScreen extends React.Component {
     };
 
     renderDayMessages = (dayMessages, day) => {
-        let result = (dayMessages.map((message) => {
-            <Text>{day}</Text>
-            return this.renderItem(message);
-        }))
-        return (result);
+        let date = new Date();
+        const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        let today=monthNames[date.getMonth()]+" "+date.getDate() + " " + date.getFullYear();
+        let YesterdayDate =date.getDate()-1;
+        let yesterday =monthNames[date.getMonth()]+" "+YesterdayDate+ " " + date.getFullYear()
+        if(day===today) {
+            day='Today'
+        }
+        if(day===yesterday) {
+            day='Yesterday'
+        }
+        return (
+            <View>
+                <View style={styles.dayAlignment}>
+                    <Text>{day}</Text>
+                </View>
+                    <FlatList
+                        data={dayMessages}
+                        renderItem={(item) => this.renderItem(item)}
+                        keyExtractor={(item, index) => index.toString()}
+                    />
+            </View>
+        )
     }
 
     renderMessages = (messages) => {
         let preMsgDate;
-        const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+        const messageLen = messages.length;
+        const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sep", "Oct", "Nov", "Dec"];
         if (messages[0]) {
             preMsgDate = monthNames[messages[0].createdAt.getMonth()] + " " + messages[0].createdAt.getDate() + " " + messages[0].createdAt.getFullYear();
         }
         let dayMessages = [];
-        return messages.map((message) => {
+        return messages.map((message, i) => {
             let fullDate = monthNames[message.createdAt.getMonth()] + " " + message.createdAt.getDate() + " " + message.createdAt.getFullYear();
             if (fullDate === preMsgDate) {
                 dayMessages.push(message);
+                if (messageLen === i + 1) {
+                    return (this.renderDayMessages(dayMessages, preMsgDate));
+                }
             }
             else {
                 let result = this.renderDayMessages(dayMessages, preMsgDate);
