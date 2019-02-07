@@ -63,7 +63,7 @@ export default class ChatScreen extends React.Component {
         let messagetextstyle;
         let { navigation } = this.props;
         const info = navigation.getParam('info');
-        let phoneNo=info.sender;
+        let phoneNo = info.sender;
         if (item._id === 0) {
             messageboxstyle = styles.selfMessageContainer;
             messagetextstyle = styles.selfTextContainer;
@@ -74,7 +74,7 @@ export default class ChatScreen extends React.Component {
         } else {
             messageboxstyle = [styles.receiverMessageContainer, styles.chatBox];
             messagetextstyle = styles.receiverMessage;
-            phoneNo=info.receiver.item.key;
+            phoneNo = info.receiver;
         }
         let minutes = '' + item.createdAt.getMinutes();
         if (minutes.length < 2) minutes = '0' + minutes;
@@ -101,9 +101,9 @@ export default class ChatScreen extends React.Component {
             text: this.state.typing.trim(),
             createdAt: new Date().getTime(),
         };
-        if (info.sender === info.receiver.item.key) {
+        if (info.sender === info.receiver) {
             msg._id = 0;
-            db.ref('registeredUsers').child(info.sender).child("chat").child(info.receiver.item.key).push(msg);
+            db.ref('registeredUsers').child(info.sender).child("chat").child(info.receiver).push(msg);
         }
         else {
             db.ref('registeredUsers').child(info.sender).child("chat").child(info.receiver).push(msg);
