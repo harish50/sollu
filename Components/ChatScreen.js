@@ -15,12 +15,9 @@ export default class ChatScreen extends React.Component {
         };
         this.sendMessage = this.sendMessage.bind(this);
     }
-    getChat = () => {
+    getChat = (sender, receiver) => {
         const db = firebase.database();
-        let { navigation } = this.props;
-        const info = navigation.getParam('info');
-        console.log(info, "asd");
-        const chatRef = db.ref('registeredUsers').child(info.sender).child("chat").child(info.receiver);
+        const chatRef = db.ref('registeredUsers').child(sender).child("chat").child(receiver);
         chatRef.on('value', (data) => {
             let chatData = data.val();
             let Chat = []
@@ -38,15 +35,14 @@ export default class ChatScreen extends React.Component {
             });
         });
     }
-    componentWillReceiveProps() {
+    componentWillReceiveProps(props) {
+        const info = props.navigation.getParam("info");
         this.state.chatRef.off();
-        this.getChat();
+        this.getChat(info.sender, info.receiver);
     }
     componentDidMount() {
-        this.getChat();
-    }
-    componentWillUnmount() {
-        this.state.chatRef.off();
+        const info = this.props.navigation.getParam("info")
+        this.getChat(info.sender, info.receiver);
     }
     static navigationOptions = ({ navigation }) => {
         return (

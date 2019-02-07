@@ -67,16 +67,20 @@ export default class HomeScreen extends React.Component {
             // if(appState==='foreground'){console.log("Foreground")}
             if (Platform.OS === 'android') {
                 const contactName = await AsyncStorage.getItem(notification.data.sender);
+                const data = {
+                    sender: notification.data.receiver,
+                    receiver: notification.data.sender,
+                }
                 if (contactName === this.state.currentUser) {
                     return;
                 }
                 const localNotification = new Firebase.notifications.Notification({
-                    sound: 'default',
                     show_in_foreground: true,
                 }).setNotificationId(notification.notificationId)
                     .setTitle(contactName)
                     .setBody(notification.body)
-                    .setData(notification.data)
+                    .setData(data)
+                    .setSound('default')
                     .android.setAutoCancel(true)
                     .android.setChannelId(channel.channelId)
                     .android.setPriority(Firebase.notifications.Android.Priority.High);
@@ -84,6 +88,19 @@ export default class HomeScreen extends React.Component {
                 Firebase.notifications().displayNotification(localNotification)
                     .catch(err => console.error("cant send"));
 
+            }
+            else if (Platform.OS === 'ios') {
+                const localNotification = new Firebase.notifications.Notification({
+                    show_in_foreground: true,
+                }).setNotificationId(notification.notificationId)
+                    .setTitle(contactName)
+                    .setSubtitle(notification.subtitle)
+                    .setBody(notification.body)
+                    .setData(data)
+                    .setSound('default')
+                    .ios.setBadge(notification.ios.badge);
+                Firebase.notifications().displayNotification(localNotification)
+                    .catch(err => console.error("cant send"));
             }
         });
 
@@ -93,13 +110,13 @@ export default class HomeScreen extends React.Component {
         this.notificationOpenedListener = Firebase.notifications().onNotificationOpened(async (notificationOpen) => {
             const notification = notificationOpen.notification;
             const data = notification.data;
-            console.log(data);
-            const contactName = await AsyncStorage.getItem(data.sender);
+            console.log(data, "notification open back");
+            const contactName = await AsyncStorage.getItem(data.receiver);
             let info = {
                 receiver: data.receiver,
                 sender: data.sender,
             }
-            this.props.navigation.navigate('ChatScreen', { info: info, contactName: contactName });
+            this.props.navigation.navigate('ChatScreen', { info: info, contactName: contactName }, { onGoBack: () => this.updateCurrentUser() });
         });
 
         /*
@@ -109,13 +126,13 @@ export default class HomeScreen extends React.Component {
         if (notificationOpen) {
             const notification = notificationOpen.notification;
             const data = notification.data;
-            console.log(data);
-            const contactName = await AsyncStorage.getItem(data.sender);
+            console.log(data, "notification close");
+            const contactName = await AsyncStorage.getItem(data.receiver);
             let info = {
                 receiver: data.receiver,
                 sender: data.sender,
             }
-            this.props.navigation.navigate('ChatScreen', { info: info, contactName: contactName });
+            this.props.navigation.navigate('ChatScreen', { info: info, contactName: contactName }, { onGoBack: () => this.updateCurrentUser() });
         }
         /*
         * Triggered for data only payload in foreground
@@ -124,6 +141,9 @@ export default class HomeScreen extends React.Component {
             //process data message
             console.log(JSON.stringify(message));
         });
+    }
+    updateCurrentUser() {
+        this.setState({ currentUser: '' });
     }
 
     showAlert(title, body) {
@@ -186,7 +206,7 @@ export default class HomeScreen extends React.Component {
         }
         return (
             <TouchableOpacity onPress={() => {
-                this.props.navigation.navigate('ChatScreen', { info: info, contactName: contact.item.name });
+                this.props.navigation.navigate('ChatScreen', { info: info, contactName: contact.item.name }, { onGoBack: () => this.updateCurrentUser() });
                 this.setState({ currentUser: contact.item.name })
             }} style={styles.separator}>
                 <Text style={styles.item}> {contact.item.name} </Text>
