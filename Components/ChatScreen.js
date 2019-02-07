@@ -1,5 +1,14 @@
 import React from "react";
-import { Platform, View, Text, TextInput, KeyboardAvoidingView, FlatList, TouchableOpacity, Image } from 'react-native';
+import {
+    Platform,
+    View,
+    Text,
+    TextInput,
+    KeyboardAvoidingView,
+    FlatList,
+    TouchableOpacity,
+    ImageBackground,
+} from 'react-native';
 import { SafeAreaView, Header } from 'react-navigation';
 import styles from "../Stylesheet/styleSheet";
 import firebase from "../firebase/firebase";
@@ -19,25 +28,21 @@ export default class ChatScreen extends React.Component {
     }
 
     isColorDiffers(){
-        let colorDifference=false;
+        let colorDifference = false;
         let { navigation } = this.props;
         const info = navigation.getParam('info');
-        console.log(info.receiver.item.key);
-        console.log(info.sender);
         const senderInfoRef = firebase.database().ref('registeredUserProfileInfo').child(info.sender);
         const receiverInfoRef = firebase.database().ref('registeredUserProfileInfo').child(info.receiver.item.key);
         senderInfoRef.on('value', (senderSnap) => {
             let sender = senderSnap.val();
             receiverInfoRef.on('value',(receiverSnap)=>{
                 let receiver = receiverSnap.val()
-                if((sender.imageURL===undefined && receiver.imageURL===undefined)){
-                    if((sender.Gender===undefined && receiver.Gender===undefined) || (sender.Gender===receiver.Gender)){
-
-                        console.log("Genders :"+sender.Gender+" "+receiver.Gender);
-                        colorDifference=true;
+                if((sender.imageURL === undefined && receiver.imageURL === undefined)){
+                    if((sender.Gender === undefined && receiver.Gender === undefined) || (sender.Gender === receiver.Gender)){
+                        colorDifference = true;
                     }
-                }else if(sender.imageURL===receiver.imageURL){
-                    colorDifference=true;
+                }else if(sender.imageURL === receiver.imageURL){
+                    colorDifference = true;
                 }
             })
         })
@@ -105,19 +110,21 @@ export default class ChatScreen extends React.Component {
         let hours = '' + item.createdAt.getHours();
         if (hours.length < 2) hours = '0' + hours;
         const time = hours + ":" + minutes;
-        console.log(this.state.colourDifference);
         if(this.state.colourDifference){
-            console.log("color difference should be there");
+            let Icon;
             if(item._id === 2){
-                borderColor: '#0000FF'
+                Icon = require('../Icon/blue_colour.jpg')
             }
             else{
-                borderColor: '#FF0000'
+                Icon= require('../Icon/red_color.png')
             }
             return (
                 <View style={messageboxstyle}>
-                    {/*<Image style={styles.iconContainer} source={require('../Icon/userIcon1.png')} />*/}
-                    <Profile sender={phoneNo} style={{,borderWidth: 20}}/>
+                    <View>
+                        <ImageBackground source={Icon}  style={styles.chatIcon} imageStyle={{borderRadius:100}}>
+                        <Profile sender={phoneNo}/>
+                        </ImageBackground>
+                    </View>
                     <Text style={messagetextstyle}>{item.text + " " + time}</Text>
                 </View>
             );
@@ -125,7 +132,6 @@ export default class ChatScreen extends React.Component {
         else{
             return (
                 <View style={messageboxstyle}>
-                    {/*<Image style={styles.iconContainer} source={require('../Icon/userIcon1.png')} />*/}
                     <Profile sender={phoneNo} />
                     <Text style={messagetextstyle}>{item.text + " " + time}</Text>
                 </View>
