@@ -175,6 +175,7 @@ export default StyleSheet.create({
     },
     dayAlignment: {
         justifyContent: 'center',
-        alignItems: 'center'
-    }
+        alignItems: 'center',
+        paddingTop: 5
+    },
 });

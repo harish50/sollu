@@ -1,5 +1,5 @@
 import React from "react";
-import { Platform, View, Text, TextInput, KeyboardAvoidingView, FlatList, TouchableOpacity, Image } from 'react-native';
+import { Platform, View, Text, TextInput, KeyboardAvoidingView, FlatList, TouchableOpacity, Image, ScrollView } from 'react-native';
 import { SafeAreaView, Header } from 'react-navigation';
 import styles from "../Stylesheet/styleSheet";
 import firebase from "../firebase/firebase";
@@ -103,25 +103,26 @@ export default class ChatScreen extends React.Component {
     renderDayMessages = (dayMessages, day) => {
         let date = new Date();
         const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sep", "Oct", "Nov", "Dec"];
-        let today=monthNames[date.getMonth()]+" "+date.getDate() + " " + date.getFullYear();
-        let YesterdayDate =date.getDate()-1;
-        let yesterday =monthNames[date.getMonth()]+" "+YesterdayDate+ " " + date.getFullYear()
-        if(day===today) {
-            day='Today'
+        let today = monthNames[date.getMonth()] + " " + date.getDate() + " " + date.getFullYear();
+        let YesterdayDate = date.getDate() - 1;
+        let yesterday = monthNames[date.getMonth()] + " " + YesterdayDate + " " + date.getFullYear()
+        if (day === today) {
+            day = 'Today'
         }
-        if(day===yesterday) {
-            day='Yesterday'
+        if (day === yesterday) {
+            day = 'Yesterday'
         }
         return (
             <View>
                 <View style={styles.dayAlignment}>
                     <Text>{day}</Text>
                 </View>
-                    <FlatList
-                        data={dayMessages}
-                        renderItem={(item) => this.renderItem(item)}
-                        keyExtractor={(item, index) => index.toString()}
-                    />
+                <FlatList
+                    data={dayMessages}
+                    renderItem={(item) => this.renderItem(item)}
+                    keyExtractor={(item, index) => index.toString()}
+                    scrollEnabled="false"
+                />
             </View>
         )
     }
@@ -129,17 +130,20 @@ export default class ChatScreen extends React.Component {
     renderMessages = (messages) => {
         let preMsgDate;
         const messageLen = messages.length;
+        console.log(messageLen);
         const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sep", "Oct", "Nov", "Dec"];
         if (messages[0]) {
             preMsgDate = monthNames[messages[0].createdAt.getMonth()] + " " + messages[0].createdAt.getDate() + " " + messages[0].createdAt.getFullYear();
         }
         let dayMessages = [];
         return messages.map((message, i) => {
+            console.log(i);
             let fullDate = monthNames[message.createdAt.getMonth()] + " " + message.createdAt.getDate() + " " + message.createdAt.getFullYear();
             if (fullDate === preMsgDate) {
                 dayMessages.push(message);
-                if (messageLen === i + 1) {
-                    return (this.renderDayMessages(dayMessages, preMsgDate));
+                if (messageLen == (i+1)) {
+                    console.log("if loop"+i);
+                    return this.renderDayMessages(dayMessages, preMsgDate);
                 }
             }
             else {
@@ -147,6 +151,10 @@ export default class ChatScreen extends React.Component {
                 dayMessages = [];
                 preMsgDate = fullDate;
                 dayMessages.push(message);
+                if (messageLen == (i+1)) {
+                    console.log("if loop"+i);
+                    return this.renderDayMessages(dayMessages, preMsgDate);
+                }
                 return result;
             }
         });
@@ -159,7 +167,10 @@ export default class ChatScreen extends React.Component {
             <SafeAreaView style={styles.safeAreaView}>
                 <View style={styles.container}>
                     <View style={styles.container}>
-                        {this.renderMessages(this.state.messages)}
+                        <ScrollView>
+                            {this.renderMessages(this.state.messages)}
+                        </ScrollView>
+
                     </View>
 
                     <KeyboardAvoidingView
