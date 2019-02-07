@@ -10,16 +10,18 @@ export default class ChatScreen extends React.Component {
         super(props);
         this.state = {
             typing: "",
-            messages: []
+            messages: [],
+            chatRef: null,
         };
         this.sendMessage = this.sendMessage.bind(this);
     }
-    componentDidMount() {
+    getChat = () => {
         const db = firebase.database();
         let { navigation } = this.props;
         const info = navigation.getParam('info');
-        const taskRef = db.ref('registeredUsers').child(info.sender).child("chat").child(info.receiver.item.key);
-        taskRef.on('value', (data) => {
+        console.log(info, "asd");
+        const chatRef = db.ref('registeredUsers').child(info.sender).child("chat").child(info.receiver);
+        chatRef.on('value', (data) => {
             let chatData = data.val();
             let Chat = []
             for (let chatID in chatData) {
@@ -31,9 +33,20 @@ export default class ChatScreen extends React.Component {
                 Chat.push(message);
             }
             this.setState({
-                messages: Chat
+                messages: Chat,
+                chatRef: chatRef,
             });
         });
+    }
+    componentWillReceiveProps() {
+        this.state.chatRef.off();
+        this.getChat();
+    }
+    componentDidMount() {
+        this.getChat();
+    }
+    componentWillUnmount() {
+        this.state.chatRef.off();
     }
     static navigationOptions = ({ navigation }) => {
         return (
@@ -51,7 +64,7 @@ export default class ChatScreen extends React.Component {
     renderItem({ item }) {
         let messageboxstyle;
         let messagetextstyle;
-        if (item._id === 1) {
+        if (item._id === 2) {
             messageboxstyle = styles.senderMessageContainer;
             messagetextstyle = styles.senderMessage;
         } else {
@@ -82,9 +95,9 @@ export default class ChatScreen extends React.Component {
             text: this.state.typing.trim(),
             createdAt: new Date().getTime(),
         };
-        db.ref('registeredUsers').child(info.sender).child("chat").child(info.receiver.item.key).push(msg);
+        db.ref('registeredUsers').child(info.sender).child("chat").child(info.receiver).push(msg);
         msg._id = 1;
-        db.ref('registeredUsers').child(info.receiver.item.key).child("chat").child(info.sender).push(msg);
+        db.ref('registeredUsers').child(info.receiver).child("chat").child(info.sender).push(msg);
         this.setState({ typing: '' });
     }
     render() {
