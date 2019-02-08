@@ -46,7 +46,6 @@ export default class ProfilePage extends Component {
         let user_pic = '';
         let db = firebase.database();
         let phoneNo = this.props.navigation.getParam("phoneNo")
-        console.log(phoneNo)
         let profileimageRef = db.ref('registeredUserProfileInfo').child(phoneNo)
         profileimageRef.on('value', (snapshot) => {
             let user = snapshot.val();
@@ -98,7 +97,6 @@ export default class ProfilePage extends Component {
                         let profileimageRef = db.ref('registeredUserProfileInfo')
                         let phoneNo = this.props.navigation.getParam("phoneNo")
                         profileimageRef.child(phoneNo).child('imageURL').set(url);
-                        console.log("sd : " + url)
                     });
                 })
                 .catch((error) => {

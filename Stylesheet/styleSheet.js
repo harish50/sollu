@@ -173,6 +173,15 @@ export default StyleSheet.create({
         width: 125,
         height: 45
     },
+    dayAlignment: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingTop: 5
+    },
+    DayTextStyle: {
+        fontWeight: 'bold',
+        fontFamily: 'Roboto-Regular'
+    },
     loadingIcon: {
         flex: 1,
         justifyContent: 'center',

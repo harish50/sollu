@@ -1,5 +1,5 @@
 import React from "react";
-import { Platform, View, Text, TextInput, KeyboardAvoidingView, FlatList, TouchableOpacity, Image } from 'react-native';
+import { Platform, View, Text, TextInput, KeyboardAvoidingView, FlatList, TouchableOpacity, Image, ScrollView } from 'react-native';
 import { SafeAreaView, Header } from 'react-navigation';
 import styles from "../Stylesheet/styleSheet";
 import firebase from "../firebase/firebase";
@@ -58,6 +58,31 @@ export default class ChatScreen extends React.Component {
             }
         );
     };
+
+    sendMessage() {
+        if (this.state.typing.trim() === '') {
+            return;
+        }
+        let { navigation } = this.props;
+        let db = firebase.database();
+        const info = navigation.getParam('info');
+        let msg = {
+            _id: 2,
+            text: this.state.typing.trim(),
+            createdAt: new Date().getTime(),
+        };
+        if (info.sender === info.receiver.item.key) {
+            msg._id = 0;
+            db.ref('registeredUsers').child(info.sender).child("chat").child(info.receiver.item.key).push(msg);
+        }
+        else {
+            db.ref('registeredUsers').child(info.sender).child("chat").child(info.receiver.item.key).push(msg);
+            msg._id = 1;
+            db.ref('registeredUsers').child(info.receiver.item.key).child("chat").child(info.sender).push(msg);
+        }
+        this.setState({ typing: '' });
+    }
+
     renderItem({ item }) {
         let messageboxstyle;
         let messagetextstyle;
@@ -89,44 +114,78 @@ export default class ChatScreen extends React.Component {
             </View>
         );
     };
-    sendMessage() {
-        if (this.state.typing.trim() === '') {
-            return;
+
+    renderDayMessages = (dayMessages, day) => {
+        let date = new Date();
+        const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        let today = monthNames[date.getMonth()] + " " + date.getDate() + " " + date.getFullYear();
+        let YesterdayDate = date.getDate() - 1;
+        let yesterday = monthNames[date.getMonth()] + " " + YesterdayDate + " " + date.getFullYear()
+        if (day === today) {
+            day = 'Today'
         }
-        let { navigation } = this.props;
-        let db = firebase.database();
-        const info = navigation.getParam('info');
-        let msg = {
-            _id: 2,
-            text: this.state.typing.trim(),
-            createdAt: new Date().getTime(),
-        };
-        if (info.sender === info.receiver) {
-            msg._id = 0;
-            db.ref('registeredUsers').child(info.sender).child("chat").child(info.receiver).push(msg);
+        if (day === yesterday) {
+            day = 'Yesterday'
         }
-        else {
-            db.ref('registeredUsers').child(info.sender).child("chat").child(info.receiver).push(msg);
-            msg._id = 1;
-            db.ref('registeredUsers').child(info.receiver).child("chat").child(info.sender).push(msg);
-        }
-        this.setState({ typing: '' });
+        return (
+            <View>
+                <View style={styles.dayAlignment}>
+                    <Text style={styles.DayTextStyle}>{day}</Text>
+                </View>
+                <FlatList
+                    data={dayMessages}
+                    renderItem={(item) => this.renderItem(item)}
+                    keyExtractor={(item, index) => index.toString()}
+                    scrollEnabled="false"
+                />
+            </View>
+        )
     }
+
+    renderMessages = (messages) => {
+        let preMsgDate;
+        const messageLen = messages.length;
+        console.log(messageLen);
+        const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        if (messages[0]) {
+            preMsgDate = monthNames[messages[0].createdAt.getMonth()] + " " + messages[0].createdAt.getDate() + " " + messages[0].createdAt.getFullYear();
+        }
+        let dayMessages = [];
+        return messages.map((message, i) => {
+            console.log(i);
+            let fullDate = monthNames[message.createdAt.getMonth()] + " " + message.createdAt.getDate() + " " + message.createdAt.getFullYear();
+            if (fullDate === preMsgDate) {
+                dayMessages.push(message);
+                if (messageLen == (i + 1)) {
+                    return this.renderDayMessages(dayMessages, preMsgDate);
+                }
+            }
+            else {
+                let result = this.renderDayMessages(dayMessages, preMsgDate);
+                dayMessages = [];
+                preMsgDate = fullDate;
+                dayMessages.push(message);
+                if (messageLen == (i + 1)) {
+                    return this.renderDayMessages(dayMessages, preMsgDate);
+                }
+                return result;
+            }
+        });
+    }
+
     render() {
         const keyboardVerticalOffset = Platform.OS === 'ios' ? Header.HEIGHT + 20 : 0;
         const padding = Platform.OS === 'ios' ? "padding" : '';
         return (
             <SafeAreaView style={styles.safeAreaView}>
                 <View style={styles.container}>
-                    <FlatList
-                        data={this.state.messages}
-                        renderItem={this.renderItem.bind(this)}
-                        extraData={this.state}
-                        keyExtractor={(item, index) => index.toString()}
-                        ref={ref => this.flatList = ref}
-                        onContentSizeChange={() => this.flatList.scrollToEnd({ animated: false })}
-                        onLayout={() => this.flatList.scrollToEnd({ animated: true })}
-                    />
+                    <View style={styles.container}>
+                        <ScrollView>
+                            {this.renderMessages(this.state.messages)}
+                        </ScrollView>
+
+                    </View>
+
                     <KeyboardAvoidingView
                         keyboardVerticalOffset={keyboardVerticalOffset}
                         behavior={padding}
