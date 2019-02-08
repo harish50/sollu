@@ -181,5 +181,20 @@ export default StyleSheet.create({
     DayTextStyle: {
         fontWeight: 'bold',
         fontFamily: 'Roboto-Regular'
+    },
+    loadingIcon: {
+        flex: 1,
+        justifyContent: 'center',
+    },
+    loadShape: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        padding: 20
+    },
+    loadingText:{
+        justifyContent: 'space-around',
+        padding: 100,
+        fontSize: 16,
+        fontFamily: 'Roboto-Regular',
     }
 });
