@@ -178,4 +178,8 @@ export default StyleSheet.create({
         alignItems: 'center',
         paddingTop: 5
     },
+    DayTextStyle: {
+        fontWeight: 'bold',
+        fontFamily: 'Roboto-Regular'
+    }
 });

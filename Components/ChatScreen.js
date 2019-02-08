@@ -115,7 +115,7 @@ export default class ChatScreen extends React.Component {
         return (
             <View>
                 <View style={styles.dayAlignment}>
-                    <Text>{day}</Text>
+                    <Text style={styles.DayTextStyle}>{day}</Text>
                 </View>
                 <FlatList
                     data={dayMessages}
@@ -141,8 +141,7 @@ export default class ChatScreen extends React.Component {
             let fullDate = monthNames[message.createdAt.getMonth()] + " " + message.createdAt.getDate() + " " + message.createdAt.getFullYear();
             if (fullDate === preMsgDate) {
                 dayMessages.push(message);
-                if (messageLen == (i+1)) {
-                    console.log("if loop"+i);
+                if (messageLen == (i + 1)) {
                     return this.renderDayMessages(dayMessages, preMsgDate);
                 }
             }
@@ -151,8 +150,7 @@ export default class ChatScreen extends React.Component {
                 dayMessages = [];
                 preMsgDate = fullDate;
                 dayMessages.push(message);
-                if (messageLen == (i+1)) {
-                    console.log("if loop"+i);
+                if (messageLen == (i + 1)) {
                     return this.renderDayMessages(dayMessages, preMsgDate);
                 }
                 return result;
