@@ -1,5 +1,5 @@
 import React from "react";
-import { Platform, View, Text, TextInput, KeyboardAvoidingView, FlatList, TouchableOpacity, Image, ScrollView } from 'react-native';
+import { Platform, View, Text, TextInput, KeyboardAvoidingView, FlatList, TouchableOpacity, Image, ImageBackground, ScrollView } from 'react-native';
 import { SafeAreaView, Header } from 'react-navigation';
 import styles from "../Stylesheet/styleSheet";
 import firebase from "../firebase/firebase";
@@ -12,11 +12,38 @@ export default class ChatScreen extends React.Component {
         this.state = {
             typing: "",
             messages: [],
+            colourDifference:false
             chatRef: null,
         };
         this.sendMessage = this.sendMessage.bind(this);
+        this.isColorDiffers=this.isColorDiffers.bind(this);
     }
-    getChat = (sender, receiver) => {
+  
+    isColorDiffers(){
+        let colorDifference = false;
+        let { navigation } = this.props;
+        const info = navigation.getParam('info');
+        const senderInfoRef = firebase.database().ref('registeredUserProfileInfo').child(info.sender);
+        const receiverInfoRef = firebase.database().ref('registeredUserProfileInfo').child(info.receiver.item.key);
+        senderInfoRef.on('value', (senderSnap) => {
+            let sender = senderSnap.val();
+            receiverInfoRef.on('value',(receiverSnap)=>{
+                let receiver = receiverSnap.val()
+                if((sender.imageURL === undefined && receiver.imageURL === undefined)){
+                    if((sender.Gender === undefined && receiver.Gender === undefined) || (sender.Gender === receiver.Gender)){
+                        colorDifference = true;
+                    }
+                } else if(sender.imageURL === receiver.imageURL){
+                    colorDifference = true;
+                }
+            })
+        })
+        this.setState({
+            colourDifference:colorDifference
+        });
+
+    }     
+        getChat = (sender, receiver) => {
         const db = firebase.database();
         const chatRef = db.ref('registeredUsers').child(sender).child("chat").child(receiver);
         chatRef.on('value', (data) => {
@@ -42,6 +69,7 @@ export default class ChatScreen extends React.Component {
         this.getChat(info.sender, info.receiver);
     }
     componentDidMount() {
+        this.isColorDiffers();
         const info = this.props.navigation.getParam("info")
         this.getChat(info.sender, info.receiver);
     }
@@ -106,13 +134,33 @@ export default class ChatScreen extends React.Component {
         let hours = '' + item.createdAt.getHours();
         if (hours.length < 2) hours = '0' + hours;
         const time = hours + ":" + minutes;
-        return (
-            <View style={messageboxstyle}>
-                {/*<Image style={styles.iconContainer} source={require('../Icon/userIcon1.png')} />*/}
-                <Profile sender={phoneNo} />
-                <Text style={messagetextstyle}>{item.text + " " + time}</Text>
-            </View>
-        );
+        if(this.state.colourDifference){
+            let Icon;
+            if(item._id === 2){
+                Icon = require('../Icon/blue_colour.jpg')
+            }
+            else{
+                Icon= require('../Icon/red_color.png')
+            }
+            return (
+                <View style={messageboxstyle}>
+                    <View>
+                        <ImageBackground source={Icon}  style={styles.chatIcon} imageStyle={{borderRadius:100}}>
+                        <Profile sender={phoneNo}/>
+                        </ImageBackground>
+                    </View>
+                    <Text style={messagetextstyle}>{item.text + " " + time}</Text>
+                </View>
+            );
+        }
+        else{
+            return (
+                <View style={messageboxstyle}>
+                    <Profile sender={phoneNo} />
+                    <Text style={messagetextstyle}>{item.text + " " + time}</Text>
+                </View>
+            );
+        }
     };
 
     renderDayMessages = (dayMessages, day) => {

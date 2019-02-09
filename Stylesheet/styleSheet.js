@@ -164,6 +164,7 @@ export default StyleSheet.create({
     selfTextContainer: {
         fontSize: 16,
         fontFamily: 'Roboto-Regular',
+        marginLeft:10
     },
     button: {
         paddingTop: 10,
@@ -172,6 +173,11 @@ export default StyleSheet.create({
         marginBottom: 20,
         width: 125,
         height: 45
+    },
+    chatIcon: {
+        width: 55,
+        height: 55,
+        borderRadius: 60,
     },
     dayAlignment: {
         justifyContent: 'center',
