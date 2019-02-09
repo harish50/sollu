@@ -179,4 +179,28 @@ export default StyleSheet.create({
         height: 55,
         borderRadius: 60,
     },
+    dayAlignment: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingTop: 5
+    },
+    DayTextStyle: {
+        fontWeight: 'bold',
+        fontFamily: 'Roboto-Regular'
+    },
+    loadingIcon: {
+        flex: 1,
+        justifyContent: 'center',
+    },
+    loadShape: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        padding: 20
+    },
+    loadingText:{
+        justifyContent: 'space-around',
+        padding: 100,
+        fontSize: 16,
+        fontFamily: 'Roboto-Regular',
+    }
 });
