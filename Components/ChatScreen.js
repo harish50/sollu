@@ -12,7 +12,7 @@ export default class ChatScreen extends React.Component {
         this.state = {
             typing: "",
             messages: [],
-            colourDifference:false
+            colourDifference:false,
             chatRef: null,
         };
         this.sendMessage = this.sendMessage.bind(this);
@@ -137,7 +137,7 @@ export default class ChatScreen extends React.Component {
         if(this.state.colourDifference){
             let Icon;
             if(item._id === 2){
-                Icon = require('../Icon/blue_colour.jpg')
+                Icon = require('../Icon/plane-blue-background.jpg')
             }
             else{
                 Icon= require('../Icon/red_color.png')
