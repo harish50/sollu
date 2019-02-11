@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, FlatList, TouchableOpacity, Platform, PermissionsAndroid,ActivityIndicator,StyleSheet,AsyncStorage } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, Platform, PermissionsAndroid, ActivityIndicator, StyleSheet, AsyncStorage } from 'react-native';
 import styles from "../Stylesheet/styleSheet";
 import Contacts from 'react-native-contacts';
 import firebase from '../firebase/firebase';
@@ -13,7 +13,6 @@ export default class HomeScreen extends React.Component {
         currentUser: '',
     };
 
-    //1
     async checkPermission() {
         const enabled = await Firebase.messaging().hasPermission();
         if (enabled) {
@@ -23,13 +22,11 @@ export default class HomeScreen extends React.Component {
         }
     }
 
-    //3
     async getToken() {
         let fcmToken = await AsyncStorage.getItem('fcmToken');
         if (!fcmToken) {
             fcmToken = await Firebase.messaging().getToken();
             if (fcmToken) {
-                // user has a device token
                 await AsyncStorage.setItem('fcmToken', fcmToken);
             }
         }
@@ -37,14 +34,11 @@ export default class HomeScreen extends React.Component {
         firebase.database().ref('registeredUserProfileInfo').child(user).child("pushToken").set(fcmToken);
     }
 
-    //2
     async requestPermission() {
         try {
             await Firebase.messaging().requestPermission();
-            // User has authorised
             this.getToken();
         } catch (error) {
-            // User has rejected permissions
             console.log('permission rejected');
         }
     }
@@ -54,65 +48,45 @@ export default class HomeScreen extends React.Component {
     }
 
     async createNotificationListeners() {
-        /*
-        * Triggered when a particular notification has been received in foreground
-        * */
-
         const channel = new Firebase.notifications.Android.Channel(
             '001',
             'Channel Name',
             Firebase.notifications.Android.Importance.Max
         ).setDescription('A natural description of the channel');
         Firebase.notifications().android.createChannel(channel);
+
         this.notificationListener = Firebase.notifications().onNotification(async (notification) => {
-            console.log("Frontgrond");
-            // if(appState==='foreground'){console.log("Foreground")}
+
+            const contactName = await AsyncStorage.getItem(notification.data.sender);
+            const data = {
+                sender: notification.data.receiver,
+                receiver: notification.data.sender,
+            }
+            if (contactName === this.state.currentUser) {
+                return;
+            }
+            const localNotification = new Firebase.notifications.Notification({
+                show_in_foreground: true,
+            }).setNotificationId(notification.notificationId)
+                .setTitle(contactName)
+                .setBody(notification.body)
+                .setData(data)
+                .setSound('default');
             if (Platform.OS === 'android') {
-                const contactName = await AsyncStorage.getItem(notification.data.sender);
-                const data = {
-                    sender: notification.data.receiver,
-                    receiver: notification.data.sender,
-                }
-                if (contactName === this.state.currentUser) {
-                    return;
-                }
-                const localNotification = new Firebase.notifications.Notification({
-                    show_in_foreground: true,
-                }).setNotificationId(notification.notificationId)
-                    .setTitle(contactName)
-                    .setBody(notification.body)
-                    .setData(data)
-                    .setSound('default')
-                    .android.setAutoCancel(true)
+                localNotification.android.setAutoCancel(true)
                     .android.setChannelId(channel.channelId)
                     .android.setPriority(Firebase.notifications.Android.Priority.High);
-
-                Firebase.notifications().displayNotification(localNotification)
-                    .catch(err => console.error("cant send"));
-
             }
             else if (Platform.OS === 'ios') {
-                const localNotification = new Firebase.notifications.Notification({
-                    show_in_foreground: true,
-                }).setNotificationId(notification.notificationId)
-                    .setTitle(contactName)
-                    .setSubtitle(notification.subtitle)
-                    .setBody(notification.body)
-                    .setData(data)
-                    .setSound('default')
-                    .ios.setBadge(notification.ios.badge);
-                Firebase.notifications().displayNotification(localNotification)
-                    .catch(err => console.error("cant send"));
+                localNotification.ios.setBadge(notification.ios.badge);
             }
+            Firebase.notifications().displayNotification(localNotification)
+                .catch(err => console.error("cant send"));
         });
 
-        /*
-        * If your app is in background, you can listen for when a notification is clicked / tapped / opened as follows:
-        * */
         this.notificationOpenedListener = Firebase.notifications().onNotificationOpened(async (notificationOpen) => {
             const notification = notificationOpen.notification;
             const data = notification.data;
-            console.log(data, "notification open back");
             const contactName = await AsyncStorage.getItem(data.receiver);
             let info = {
                 receiver: data.receiver,
@@ -121,35 +95,21 @@ export default class HomeScreen extends React.Component {
             this.props.navigation.navigate('ChatScreen', { info: info, contactName: contactName }, { onGoBack: () => this.updateCurrentUser() });
         });
 
-        /*
-        * If your app is closed, you can check if it was opened by a notification being clicked / tapped / opened as follows:
-        * */
         const notificationOpen = await Firebase.notifications().getInitialNotification();
         if (notificationOpen) {
             const notification = notificationOpen.notification;
             const data = notification.data;
-            console.log(data, "notification close");
-            const contactName = await AsyncStorage.getItem(data.receiver);
+            const contactName = await AsyncStorage.getItem(data.sender);
             let info = {
-                receiver: data.receiver,
-                sender: data.sender,
+                receiver: data.sender,
+                sender: data.receiver,
             }
             this.props.navigation.navigate('ChatScreen', { info: info, contactName: contactName }, { onGoBack: () => this.updateCurrentUser() });
         }
-        /*
-        * Triggered for data only payload in foreground
-        * */
-        this.messageListener = Firebase.messaging().onMessage((message) => {
-            //process data message
-            console.log(JSON.stringify(message));
-        });
+
     }
     updateCurrentUser() {
         this.setState({ currentUser: '' });
-    }
-
-    showAlert(title, body) {
-        alert(title + body);
     }
     async requestContactsPermission() {
         try {
@@ -169,7 +129,7 @@ export default class HomeScreen extends React.Component {
         }
         let db = firebase.database();
         let localContacts = [];
-        localContacts.push( {
+        localContacts.push({
             key: this.props.navigation.getParam("sender"),
             name: "You",
         })
@@ -215,7 +175,7 @@ export default class HomeScreen extends React.Component {
             <TouchableOpacity onPress={() => {
                 this.props.navigation.navigate('ChatScreen', { info: info, contactName: contact.item.name }, { onGoBack: () => this.updateCurrentUser() });
                 this.setState({ currentUser: contact.item.name })
-            }} style={styles.contactContainer}>    
+            }} style={styles.contactContainer}>
                 <Profile sender={contact.item.key} />
                 <Text style={styles.item}> {contact.item.name} </Text>
             </TouchableOpacity>
@@ -239,18 +199,18 @@ export default class HomeScreen extends React.Component {
         );
     };
     render() {
-        if(this.state.contacts.length === 0) {
+        if (this.state.contacts.length === 0) {
             return (<View style={[styles.loadingIcon, styles.loadShape]}>
-                    <ActivityIndicator size="large" color='#cc504e'/>
-                </View>
+                <ActivityIndicator size="large" color='#cc504e' />
+            </View>
             );
-        }else if(this.state.contacts.length <= 0){
-            return(<View style={[styles.loadingIcon, styles.loadShape]}>
-                    <Text style={styles.loadingText}>No Registered Contacts</Text>
+        } else if (this.state.contacts.length <= 0) {
+            return (<View style={[styles.loadingIcon, styles.loadShape]}>
+                <Text style={styles.loadingText}>No Registered Contacts</Text>
 
-                </View>
+            </View>
             );
-        }else{
+        } else {
             return (
                 <View>
                     <FlatList

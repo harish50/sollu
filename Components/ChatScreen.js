@@ -55,6 +55,7 @@ export default class ChatScreen extends React.Component {
                     fontFamily: 'Roboto-Bold',
                     backgroundColor: '#cc504e'
                 },
+                headerRight: (<Profile sender={navigation.getParam("info").receiver} />),
             }
         );
     };
@@ -71,14 +72,14 @@ export default class ChatScreen extends React.Component {
             text: this.state.typing.trim(),
             createdAt: new Date().getTime(),
         };
-        if (info.sender === info.receiver.item.key) {
+        if (info.sender === info.receiver) {
             msg._id = 0;
-            db.ref('registeredUsers').child(info.sender).child("chat").child(info.receiver.item.key).push(msg);
+            db.ref('registeredUsers').child(info.sender).child("chat").child(info.receiver).push(msg);
         }
         else {
-            db.ref('registeredUsers').child(info.sender).child("chat").child(info.receiver.item.key).push(msg);
+            db.ref('registeredUsers').child(info.sender).child("chat").child(info.receiver).push(msg);
             msg._id = 1;
-            db.ref('registeredUsers').child(info.receiver.item.key).child("chat").child(info.sender).push(msg);
+            db.ref('registeredUsers').child(info.receiver).child("chat").child(info.sender).push(msg);
         }
         this.setState({ typing: '' });
     }
@@ -136,7 +137,7 @@ export default class ChatScreen extends React.Component {
                     data={dayMessages}
                     renderItem={(item) => this.renderItem(item)}
                     keyExtractor={(item, index) => index.toString()}
-                    scrollEnabled="false"
+                    scrollEnabled={false}
                 />
             </View>
         )
@@ -145,14 +146,12 @@ export default class ChatScreen extends React.Component {
     renderMessages = (messages) => {
         let preMsgDate;
         const messageLen = messages.length;
-        console.log(messageLen);
         const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sep", "Oct", "Nov", "Dec"];
         if (messages[0]) {
             preMsgDate = monthNames[messages[0].createdAt.getMonth()] + " " + messages[0].createdAt.getDate() + " " + messages[0].createdAt.getFullYear();
         }
         let dayMessages = [];
         return messages.map((message, i) => {
-            console.log(i);
             let fullDate = monthNames[message.createdAt.getMonth()] + " " + message.createdAt.getDate() + " " + message.createdAt.getFullYear();
             if (fullDate === preMsgDate) {
                 dayMessages.push(message);
@@ -180,7 +179,11 @@ export default class ChatScreen extends React.Component {
             <SafeAreaView style={styles.safeAreaView}>
                 <View style={styles.container}>
                     <View style={styles.container}>
-                        <ScrollView>
+                        <ScrollView
+                            ref={ref => this.scrollView = ref}
+                            onContentSizeChange={(contentWidth, contentHeight) => {
+                                this.scrollView.scrollToEnd({ animated: false });
+                            }}>
                             {this.renderMessages(this.state.messages)}
                         </ScrollView>
 

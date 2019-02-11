@@ -28,6 +28,7 @@
 		1D5ACCBFED5C463CB621F4F7 /* libRCTContacts.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 96E4A400EA964A84AC5CA0E0 /* libRCTContacts.a */; };
 		1F04C05A2206E0C700302FF1 /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F04C02E2206E0C700302FF1 /* UserNotifications.framework */; };
 		1F29F7F32208A9D3007AE9A9 /* libRNImagePicker.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F29F7F22208A9A3007AE9A9 /* libRNImagePicker.a */; };
+		1F3271472211AD6E00831BEF /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1F3271192211AD6E00831BEF /* GoogleService-Info.plist */; };
 		1F77809721FD795C004FB05A /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F77809621FD795C004FB05A /* StoreKit.framework */; };
 		1FDA2B3322072AB40032A8B9 /* libRNFetchBlob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1FDA2B3122072A940032A8B9 /* libRNFetchBlob.a */; };
 		2D02E4BC1E0B4A80006451C7 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
@@ -417,6 +418,7 @@
 		16A1ADA1BF4CEC6EF0ACEC51 /* Pods-sollu-tvOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-sollu-tvOS.debug.xcconfig"; path = "Pods/Target Support Files/Pods-sollu-tvOS/Pods-sollu-tvOS.debug.xcconfig"; sourceTree = "<group>"; };
 		1F04C02E2206E0C700302FF1 /* UserNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotifications.framework; path = System/Library/Frameworks/UserNotifications.framework; sourceTree = SDKROOT; };
 		1F29F7C22208A9A3007AE9A9 /* RNImagePicker.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNImagePicker.xcodeproj; path = "../node_modules/react-native-image-picker/ios/RNImagePicker.xcodeproj"; sourceTree = "<group>"; };
+		1F3271192211AD6E00831BEF /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "sollu/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		1F5B90DD2206D26F009B1CA4 /* sollu.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = sollu.entitlements; path = sollu/sollu.entitlements; sourceTree = "<group>"; };
 		1F77809621FD795C004FB05A /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		1FDA2B0322072A930032A8B9 /* RNFetchBlob.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNFetchBlob.xcodeproj; path = "../node_modules/react-native-fetch-blob/ios/RNFetchBlob.xcodeproj"; sourceTree = "<group>"; };
@@ -782,6 +784,7 @@
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				E4C6EECF21D8ECFB0046CF4D /* Recovered References */,
 				579F382BF86F4E2EB2660B11 /* AppCenter-Config.plist */,
+				1F3271192211AD6E00831BEF /* GoogleService-Info.plist */,
 				2989A74AA9D9D0FEFFEC3CFF /* Pods */,
 				AC421A11057049CB9096B85A /* Resources */,
 			);
@@ -1404,6 +1407,7 @@
 			files = (
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
+				1F3271472211AD6E00831BEF /* GoogleService-Info.plist in Resources */,
 				4C1EFDF4CD554BB3A4C6A905 /* AppCenter-Config.plist in Resources */,
 				B6ABEFDDD84448B8816695F8 /* Roboto-Bold.ttf in Resources */,
 				2F36E78398434AABBC33B07F /* Roboto-Light.ttf in Resources */,
