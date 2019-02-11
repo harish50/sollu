@@ -12,38 +12,38 @@ export default class ChatScreen extends React.Component {
         this.state = {
             typing: "",
             messages: [],
-            colourDifference:false,
+            colourDifference: false,
             chatRef: null,
         };
         this.sendMessage = this.sendMessage.bind(this);
-        this.isColorDiffers=this.isColorDiffers.bind(this);
+        this.isColorDiffers = this.isColorDiffers.bind(this);
     }
-  
-    isColorDiffers(){
+
+    isColorDiffers() {
         let colorDifference = false;
         let { navigation } = this.props;
         const info = navigation.getParam('info');
         const senderInfoRef = firebase.database().ref('registeredUserProfileInfo').child(info.sender);
-        const receiverInfoRef = firebase.database().ref('registeredUserProfileInfo').child(info.receiver.item.key);
+        const receiverInfoRef = firebase.database().ref('registeredUserProfileInfo').child(info.receiver);
         senderInfoRef.on('value', (senderSnap) => {
             let sender = senderSnap.val();
-            receiverInfoRef.on('value',(receiverSnap)=>{
+            receiverInfoRef.on('value', (receiverSnap) => {
                 let receiver = receiverSnap.val()
-                if((sender.imageURL === undefined && receiver.imageURL === undefined)){
-                    if((sender.Gender === undefined && receiver.Gender === undefined) || (sender.Gender === receiver.Gender)){
+                if ((sender.imageURL === undefined && receiver.imageURL === undefined)) {
+                    if ((sender.Gender === undefined && receiver.Gender === undefined) || (sender.Gender === receiver.Gender)) {
                         colorDifference = true;
                     }
-                } else if(sender.imageURL === receiver.imageURL){
+                } else if (sender.imageURL === receiver.imageURL) {
                     colorDifference = true;
                 }
             })
         })
         this.setState({
-            colourDifference:colorDifference
+            colourDifference: colorDifference
         });
 
-    }     
-        getChat = (sender, receiver) => {
+    }
+    getChat = (sender, receiver) => {
         const db = firebase.database();
         const chatRef = db.ref('registeredUsers').child(sender).child("chat").child(receiver);
         chatRef.on('value', (data) => {
@@ -135,26 +135,26 @@ export default class ChatScreen extends React.Component {
         let hours = '' + item.createdAt.getHours();
         if (hours.length < 2) hours = '0' + hours;
         const time = hours + ":" + minutes;
-        if(this.state.colourDifference){
+        if (this.state.colourDifference) {
             let Icon;
-            if(item._id === 2){
+            if (item._id === 2) {
                 Icon = require('../Icon/plane-blue-background.jpg')
             }
-            else{
-                Icon= require('../Icon/red_color.png')
+            else {
+                Icon = require('../Icon/red_color.png')
             }
             return (
                 <View style={messageboxstyle}>
                     <View>
-                        <ImageBackground source={Icon}  style={styles.chatIcon} imageStyle={{borderRadius:100}}>
-                        <Profile sender={phoneNo}/>
+                        <ImageBackground source={Icon} style={styles.chatIcon} imageStyle={{ borderRadius: 100 }}>
+                            <Profile sender={phoneNo} />
                         </ImageBackground>
                     </View>
                     <Text style={messagetextstyle}>{item.text + " " + time}</Text>
                 </View>
             );
         }
-        else{
+        else {
             return (
                 <View style={messageboxstyle}>
                     <Profile sender={phoneNo} />
