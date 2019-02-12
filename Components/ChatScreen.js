@@ -25,10 +25,13 @@ export default class ChatScreen extends React.Component {
         const info = navigation.getParam('info');
         const senderInfoRef = firebase.database().ref('registeredUserProfileInfo').child(info.sender);
         const receiverInfoRef = firebase.database().ref('registeredUserProfileInfo').child(info.receiver);
-        senderInfoRef.on('value', (senderSnap) => {
+        senderInfoRef.once('value', (senderSnap) => {
             let sender = senderSnap.val();
             receiverInfoRef.on('value', (receiverSnap) => {
                 let receiver = receiverSnap.val()
+                if (receiver === null) {
+                    return;
+                }
                 if ((sender.imageURL === undefined && receiver.imageURL === undefined)) {
                     if ((sender.Gender === undefined && receiver.Gender === undefined) || (sender.Gender === receiver.Gender)) {
                         colorDifference = true;
@@ -64,6 +67,7 @@ export default class ChatScreen extends React.Component {
         });
     }
     componentWillReceiveProps(props) {
+        this.isColorDiffers();
         const info = props.navigation.getParam("info");
         this.state.chatRef.off();
         this.getChat(info.sender, info.receiver);
@@ -81,7 +85,8 @@ export default class ChatScreen extends React.Component {
                 headerTintColor: "white",
                 headerStyle: {
                     fontFamily: 'Roboto-Bold',
-                    backgroundColor: '#cc504e'
+                    backgroundColor: '#cc504e',
+                    height: 60,
                 },
                 headerRight: (<Profile sender={navigation.getParam("info").receiver} />),
             }

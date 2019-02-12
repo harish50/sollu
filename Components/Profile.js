@@ -46,7 +46,7 @@ export default class Profile extends Component {
     render() {
         return (
             <View>
-                <TouchableOpacity onPress ={this.handleProfilePress}>
+                <TouchableOpacity onPress={this.handleProfilePress}>
                     <Image style={styles.profileIcon} source={{ uri: this.state.profilePic }} />
                 </TouchableOpacity>
             </View>
@@ -58,13 +58,13 @@ const styles = StyleSheet.create(
     {
         profileIcon: {
             alignSelf: 'center',
-            borderRadius: 30,
+            borderRadius: 25,
             width: 50,
             height: 50,
-            marginRight:5,
-            marginLeft:5,
-            marginTop:2,
-            marginBottom:3,
+            marginRight: 5,
+            marginLeft: 5,
+            marginTop: 2,
+            marginBottom: 3,
         }
     }
 )
