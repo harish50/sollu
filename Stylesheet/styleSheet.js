@@ -192,15 +192,11 @@ export default StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
     },
-    loadShape: {
-        flexDirection: 'row',
-        justifyContent: 'space-around',
-        padding: 20
+    loadingtextbox :{
+        fontSize:22,
+        fontFamily:'Roboto-Regular',
+        marginTop:10,
+        textAlign:'center',
+        color:"#000000"
     },
-    loadingText:{
-        justifyContent: 'space-around',
-        padding: 100,
-        fontSize: 16,
-        fontFamily: 'Roboto-Regular',
-    }
 });
