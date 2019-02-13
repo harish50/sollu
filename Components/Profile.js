@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, TouchableOpacity, Image, StyleSheet } from 'react-native';
+import { View, TouchableOpacity, Image, StyleSheet,ActivityIndicator } from 'react-native';
 import firebase from '../firebase/firebase';
 
 
@@ -44,13 +44,20 @@ export default class Profile extends Component {
         });
     }
     render() {
-        return (
+        if (!this.state.isProfilePicSet) {
+            return (<View style={styles.loadingIcon}>
+                    <ActivityIndicator size="large" color='#cc504e'/>
+                </View>
+            );
+        } else{
+            return(
             <View>
                 <TouchableOpacity onPress={this.handleProfilePress}>
-                    <Image style={styles.profileIcon} source={{ uri: this.state.profilePic }} />
+                    <Image style={styles.profileIcon} source={{uri: this.state.profilePic}}/>
                 </TouchableOpacity>
             </View>
-        )
+          )
+       }
     }
 }
 

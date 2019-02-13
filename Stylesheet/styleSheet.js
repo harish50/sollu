@@ -202,5 +202,12 @@ export default StyleSheet.create({
         padding: 100,
         fontSize: 16,
         fontFamily: 'Roboto-Regular',
+    },
+    loadingtextbox:{
+        textAlign:'center',
+        fontSize:22,
+        fontFamily:'Roboto-regular',
+        color:'#000000',
+        marginTop:10
     }
 });

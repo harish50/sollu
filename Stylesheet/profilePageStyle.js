@@ -45,7 +45,7 @@ export default StyleSheet.create({
         color: "red",
         marginTop: 10
     },
-    placeholder: {
+    iconPlaceholder: {
         alignSelf: 'center',
         borderColor: "black",
         backgroundColor: "#eee",
@@ -53,6 +53,9 @@ export default StyleSheet.create({
         width: 200,
         height: 200,
         marginTop: 50,
+    },
+    loadingPosition:{
+        marginTop:80
     },
     button: {
         width: "80%",
