@@ -200,8 +200,13 @@ export default class HomeScreen extends React.Component {
     };
     render() {
         if (this.state.contacts.length === 0) {
-            return (<View style={[styles.loadingIcon, styles.loadShape]}>
+            return (<View style={styles.loadingIcon}>
                 <ActivityIndicator size="large" color='#cc504e' />
+                    <View>
+                        <Text style={styles.loadingtextbox}>
+                            Loading Contacts...
+                        </Text>
+                    </View>
             </View>
             );
         } else if (this.state.contacts.length <= 0) {

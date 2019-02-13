@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, View, Image, TouchableOpacity, Platform } from 'react-native';
+import { Text, View, Image, TouchableOpacity, Platform,ActivityIndicator } from 'react-native';
 import ImagePicker from "react-native-image-picker";
 import firebase from "../firebase/firebase";
 import RNFetchBlob from 'react-native-fetch-blob';
@@ -42,7 +42,7 @@ export default class ProfilePage extends Component {
         );
     };
 
-    componentDidMount() {
+    componentWillMount() {
         let user_pic = '';
         let db = firebase.database();
         let phoneNo = this.props.navigation.getParam("phoneNo")
@@ -82,12 +82,16 @@ export default class ProfilePage extends Component {
             let uploadBlob = null;
             const uploadUri = Platform.OS === 'ios' ? imageURI.replace('file://', '') : imageURI
             const imageRef = firebase.storage().ref('images').child(fileName);
+            console.log("pushed filename to firebase")
             fs.readFile(uploadUri, 'base64')
                 .then((data) => {
                     return Blob.build(data, { type: `${mime};BASE64` })
                 })
                 .then((blob) => {
                     uploadBlob = blob
+                    this.setState({
+                        isProfileSet: false
+                    })
                     return imageRef.put(blob, { contentType: mime })
                 })
                 .then(() => {
@@ -100,7 +104,7 @@ export default class ProfilePage extends Component {
                     });
                 })
                 .catch((error) => {
-                    reject(error)
+                    console.log(" reject error occured")
                 })
         })
 
@@ -110,15 +114,12 @@ export default class ProfilePage extends Component {
             if (responce.didCancel) {
                 console.log("User cancelled!");
             } else if (responce.error) {
-                console.log("Error", responce.error);
+                console.log("Error");
             } else {
+                console.log("is picking image ? ")
                 this.uploadImage(responce.uri, responce.fileName)
-                    .then(url => {
-                        this.setState({
-                            image_uri: responce.uri
-                        })
-                    })
-                    .catch(error => console.log(error))
+                    .catch(error => console.log("Replace error from pickImage Handler"))
+                console.log("After catch")
             }
         });
     }
@@ -130,27 +131,33 @@ export default class ProfilePage extends Component {
     }
 
     render() {
-        return (
-            <View style={styles.container}>
-                <View>
-                    <View style={styles.imageContainer}>
-                        <TouchableOpacity onPress={this.pickImageHandler.bind(this)}>
-                            <Image style={styles.placeholder} source={{ uri: this.state.image_uri }} />
-                        </TouchableOpacity>
-                    </View>
-                    <View style={styles.dropdowncontainer}>
-                        <Picker
-                            selectedValue={this.state.gender}
-                            onValueChange={this.genderChange}
-                            style={styles.picker}
-                            textStyle={styles.pickerText}>
-                            <Picker.Item label="Select Gender" value="Select Gender" />
-                            <Picker.Item label="Male" value="Male" />
-                            <Picker.Item label="Female" value="Female" />
-                        </Picker>
+        console.log("image_uri")
+        console.log(this.state.image_uri)
+            return (
+                <View style={styles.container}>
+                    <View>
+                        <View style={styles.imageContainer}>
+                            { (!this.state.isProfileSet ) ? <View style={styles.iconPlaceholder}>
+                                    <ActivityIndicator size="large" color='#cc504e' style={styles.loadingPosition}/>
+                                </View>:
+                                <TouchableOpacity onPress={this.pickImageHandler.bind(this)}>
+                                    <Image style={styles.iconPlaceholder} source={{uri: this.state.image_uri}}/>
+                                </TouchableOpacity>
+                            }
+                            </View>
+                        <View style={styles.dropdowncontainer}>
+                            <Picker
+                                selectedValue={this.state.gender}
+                                onValueChange={this.genderChange}
+                                style={styles.picker}
+                                textStyle={styles.pickerText}>
+                                <Picker.Item label="Select Gender" value="Select Gender"/>
+                                <Picker.Item label="Male" value="Male"/>
+                                <Picker.Item label="Female" value="Female"/>
+                            </Picker>
+                        </View>
                     </View>
                 </View>
-            </View>
-        );
+            );
     }
 }
