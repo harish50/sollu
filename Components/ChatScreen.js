@@ -4,6 +4,7 @@ import { SafeAreaView, Header } from 'react-navigation';
 import styles from "../Stylesheet/styleSheet";
 import firebase from "../firebase/firebase";
 import Profile from "./Profile";
+import VideoCall from './VideoCall'
 
 
 export default class ChatScreen extends React.Component {
@@ -88,7 +89,8 @@ export default class ChatScreen extends React.Component {
                     backgroundColor: '#cc504e',
                     height: 60,
                 },
-                headerRight: (<Profile sender={navigation.getParam("info").receiver} />),
+                headerRight: ([<VideoCall/>,<Profile sender={navigation.getParam("info").receiver}/>]
+                ),
             }
         );
     };
@@ -155,7 +157,10 @@ export default class ChatScreen extends React.Component {
                             <Profile sender={phoneNo} />
                         </ImageBackground>
                     </View>
-                    <Text style={messagetextstyle}>{item.text + " " + time}</Text>
+                    <View>
+                    <Text style={messagetextstyle}>{item.text}</Text>
+                        <Text>{time}</Text>
+                    </View>
                 </View>
             );
         }
@@ -163,7 +168,10 @@ export default class ChatScreen extends React.Component {
             return (
                 <View style={messageboxstyle}>
                     <Profile sender={phoneNo} />
-                    <Text style={messagetextstyle}>{item.text + " " + time}</Text>
+                    <View>
+                    <Text style={messagetextstyle}>{item.text}</Text>
+                            <Text>{time}</Text>
+                    </View>
                 </View>
             );
         }

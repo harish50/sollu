@@ -164,7 +164,8 @@ export default StyleSheet.create({
     selfTextContainer: {
         fontSize: 16,
         fontFamily: 'Roboto-Regular',
-        marginLeft:10
+        marginLeft:10,
+        flexDirection: "row",
     },
     button: {
         paddingTop: 10,
@@ -209,5 +210,12 @@ export default StyleSheet.create({
         fontFamily:'Roboto-regular',
         color:'#000000',
         marginTop:10
-    }
+    },
+    profile:{
+        alignSelf:'center',
+        borderRadius: 50,
+        width:45,
+        height:45,
+        marginRight:5,
+    },
 });
