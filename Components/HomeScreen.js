@@ -6,7 +6,6 @@ import firebase from '../firebase/firebase';
 import Profile from './Profile';
 import Firebase from 'react-native-firebase';
 
-
 export default class HomeScreen extends React.Component {
     state = {
         contacts: [],
@@ -110,7 +109,37 @@ export default class HomeScreen extends React.Component {
     }
     updateCurrentUser() {
         this.setState({ currentUser: '' });
+        this.setState({ contacts: [] });
+        this.getOrderedLocalContacts();
     }
+
+    getPairID(sender,receiver){
+        let key='';
+        if (sender === receiver) {
+            key = sender;
+        } else if (sender > receiver) {
+            key = receiver + sender;
+        } else {
+            key = sender + receiver;
+        }
+        return key;
+    }
+
+     async getLastActiveTime(sender, receiver) {
+         let  lastchatTime=0;
+         let key = this.getPairID(sender, receiver);
+         await  firebase.database().ref('conversations').once('value',async (snap) => {
+             if (snap.hasChild(key)) {
+                 let time = snap.child(key).val().lastActiveTime;
+                 if (time){
+                     lastchatTime=time;
+                     return time;
+                 }
+             }
+         });
+         return lastchatTime;
+     }
+
     async requestContactsPermission() {
         try {
             const granted = await PermissionsAndroid.request(
@@ -121,22 +150,20 @@ export default class HomeScreen extends React.Component {
             return Platform.OS === "ios" ? true : false;
         }
     }
-    async componentDidMount() {
-        const permission = await this.requestContactsPermission();
-        if (!permission) {
-            alert(permission);
-            return;
-        }
+    getOrderedLocalContacts(){
         let db = firebase.database();
         let localContacts = [];
-        localContacts.push({
-            key: this.props.navigation.getParam("sender"),
-            name: "You",
-        })
+        let sender=this.props.navigation.getParam("sender");
         Contacts.getAll((err, contacts) => {
             if (err) throw err;
             else {
                 db.ref("registeredUsers").once('value', async (registeredUsers) => {
+                    const time= await this.getLastActiveTime(sender,sender);
+                    localContacts.push({
+                        key: sender,
+                        name: "You",
+                        lastActiveTime: time
+                    });
                     for (let i = 0; i < contacts.length; i++) {
                         if (contacts[i].phoneNumbers.length !== 0) {
                             let number = contacts[i].phoneNumbers[0].number.replace(/\D/g, '');
@@ -147,21 +174,32 @@ export default class HomeScreen extends React.Component {
                             number = trimmedNumber;
                             if (number) {
                                 if (number && registeredUsers.hasChild(number)) {
+                                    const time = await this.getLastActiveTime(sender,number);
                                     localContacts.push({
                                         key: number,
-                                        name: contacts[i].givenName
+                                        name: contacts[i].givenName,
+                                        lastActiveTime: time
                                     });
-                                    await AsyncStorage.setItem(number, contacts[i].givenName);
+                                    AsyncStorage.setItem(number, contacts[i].givenName);
                                 }
                             }
                         }
                     }
+                    localContacts.sort(function(contact1, contact2){return contact2.lastActiveTime - contact1.lastActiveTime});
                     this.setState({
                         contacts: [...this.state.contacts, ...localContacts]
                     })
                 });
             }
         })
+    }
+    async componentDidMount() {
+        const permission = await this.requestContactsPermission();
+        if (!permission) {
+            alert(permission);
+            return;
+        }
+        this.getOrderedLocalContacts();
         this.checkPermission();
         this.createNotificationListeners();
     }
@@ -173,7 +211,7 @@ export default class HomeScreen extends React.Component {
         }
         return (
             <TouchableOpacity onPress={() => {
-                this.props.navigation.navigate('ChatScreen', { info: info, contactName: contact.item.name }, { onGoBack: () => this.updateCurrentUser() });
+                this.props.navigation.navigate('ChatScreen', { info: info, contactName: contact.item.name ,  onGoBack: () => this.updateCurrentUser()});
                 this.setState({ currentUser: contact.item.name })
             }} style={styles.contactContainer}>
                 <Profile sender={contact.item.key} />

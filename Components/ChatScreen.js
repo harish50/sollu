@@ -1,9 +1,10 @@
 import React from "react";
 import { Platform, View, Text, TextInput, KeyboardAvoidingView, FlatList, TouchableOpacity, Image, ImageBackground, ScrollView } from 'react-native';
-import { SafeAreaView, Header } from 'react-navigation';
+import { SafeAreaView, Header, HeaderBackButton } from 'react-navigation';
 import styles from "../Stylesheet/styleSheet";
 import firebase from "../firebase/firebase";
 import Profile from "./Profile";
+import HomeScreen from "./HomeScreen";
 
 
 export default class ChatScreen extends React.Component {
@@ -15,10 +16,30 @@ export default class ChatScreen extends React.Component {
             colourDifference: false,
             chatRef: null,
         };
+        this.setLastActiveTime = this.setLastActiveTime.bind(this);
         this.sendMessage = this.sendMessage.bind(this);
         this.isColorDiffers = this.isColorDiffers.bind(this);
     }
 
+    getConvoPairID(){
+        let key='';
+        let { navigation } = this.props;
+        let info=navigation.getParam('info');
+        if (info.sender === info.receiver) {
+            key = info.sender;
+        }
+        else if (info.sender > info.receiver) {
+            key = info.receiver + info.sender;
+        }
+        else {
+            key = info.sender + info.receiver;
+        }
+        return key;
+    }
+    setLastActiveTime(time){
+        let key=this.getConvoPairID();
+        firebase.database().ref('conversations').child(key).set({'lastActiveTime': time});
+    }
     isColorDiffers() {
         let colorDifference = false;
         let { navigation } = this.props;
@@ -28,7 +49,7 @@ export default class ChatScreen extends React.Component {
         senderInfoRef.once('value', (senderSnap) => {
             let sender = senderSnap.val();
             receiverInfoRef.on('value', (receiverSnap) => {
-                let receiver = receiverSnap.val()
+                let receiver = receiverSnap.val();
                 if (receiver === null) {
                     return;
                 }
@@ -75,8 +96,13 @@ export default class ChatScreen extends React.Component {
     componentDidMount() {
         this.isColorDiffers();
         const info = this.props.navigation.getParam("info")
+        firebase.database().ref('conversations').once('value',(conversations)=>{
+            if(!conversations.hasChild(this.getConvoPairID()))
+                this.setLastActiveTime(0);
+        });
         this.getChat(info.sender, info.receiver);
     }
+
     static navigationOptions = ({ navigation }) => {
         return (
             {
@@ -89,6 +115,8 @@ export default class ChatScreen extends React.Component {
                     height: 60,
                 },
                 headerRight: (<Profile sender={navigation.getParam("info").receiver} />),
+                headerLeft: (<HeaderBackButton onPress={()=>{navigation.state.params.onGoBack();
+                    navigation.goBack();}}/>)
             }
         );
     };
@@ -108,12 +136,14 @@ export default class ChatScreen extends React.Component {
         if (info.sender === info.receiver) {
             msg._id = 0;
             db.ref('registeredUsers').child(info.sender).child("chat").child(info.receiver).push(msg);
+
         }
         else {
             db.ref('registeredUsers').child(info.sender).child("chat").child(info.receiver).push(msg);
             msg._id = 1;
             db.ref('registeredUsers').child(info.receiver).child("chat").child(info.sender).push(msg);
         }
+        this.setLastActiveTime(msg.createdAt);
         this.setState({ typing: '' });
     }
 
