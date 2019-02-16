@@ -155,7 +155,10 @@ export default class ChatScreen extends React.Component {
                             <Profile sender={phoneNo} />
                         </ImageBackground>
                     </View>
-                    <Text style={messagetextstyle}>{item.text + " " + time}</Text>
+                    <View  style={messagetextstyle}>
+                        <Text style={styles.messageStyle}>{item.text}</Text>
+                        <Text style={styles.timeStyle}>{time}</Text>
+                    </View>
                 </View>
             );
         }
@@ -163,7 +166,10 @@ export default class ChatScreen extends React.Component {
             return (
                 <View style={messageboxstyle}>
                     <Profile sender={phoneNo} />
-                    <Text style={messagetextstyle}>{item.text + " " + time}</Text>
+                    <View  style={messagetextstyle}>
+                        <Text style={styles.messageStyle}>{item.text}</Text>
+                        <Text style={styles.timeStyle}>{time}</Text>
+                    </View>
                 </View>
             );
         }

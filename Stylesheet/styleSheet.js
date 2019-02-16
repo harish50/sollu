@@ -92,11 +92,15 @@ export default StyleSheet.create({
         flex: 1,
         alignItems: "center",
         flexDirection: "row-reverse",
+        borderBottomColor: "rgba(92,94,94,0.5)",
+        borderBottomWidth: 0.5,
     },
     receiverMessageContainer: {
         flex: 1,
         alignItems: "center",
         flexDirection: "row",
+        borderBottomColor: "rgba(92,94,94,0.5)",
+        borderBottomWidth: 0.5,
     },
     chatBox: {
         flex: 1,
@@ -112,14 +116,18 @@ export default StyleSheet.create({
         height: 60
     },
     senderMessage: {
+        alignItems: 'center',
         paddingRight: 10,
         marginLeft: 60,
-        fontFamily: 'Roboto-Regular'
+        fontFamily: 'Roboto-Regular',
+        flexDirection: 'row'
     },
     receiverMessage: {
+        alignItems: 'center',
         paddingLeft: 10,
         marginRight: 60,
-        fontFamily: 'Roboto-Regular'
+        fontFamily: 'Roboto-Regular',
+        flexDirection: 'row'
     },
 
     mainBox: {
@@ -161,10 +169,23 @@ export default StyleSheet.create({
         borderBottomColor: "rgba(92,94,94,0.5)",
         borderBottomWidth: 0.5,
     },
+    messageStyle: {
+        textAlign: 'left',
+        color: 'black'
+    },
+    timeStyle:{
+      textAlign:'right',
+        fontSize: 10,
+        padding:6,
+        paddingTop: 10
+    },
     selfTextContainer: {
-        fontSize: 16,
+        alignItems: 'center',
+        fontSize: 24,
+        color: 'black',
         fontFamily: 'Roboto-Regular',
-        marginLeft:10
+        marginLeft:10,
+        flexDirection: 'row'
     },
     button: {
         paddingTop: 10,
