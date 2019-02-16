@@ -115,8 +115,11 @@ export default class ChatScreen extends React.Component {
                     height: 60,
                 },
                 headerRight: (<Profile sender={navigation.getParam("info").receiver} />),
-                headerLeft: (<HeaderBackButton onPress={()=>{navigation.state.params.onGoBack();
+                headerLeft: (
+                    <HeaderBackButton tintColor="white"
+                                      onPress={()=>{navigation.state.params.onGoBack();
                     navigation.goBack();}}/>)
+
             }
         );
     };
