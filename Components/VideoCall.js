@@ -7,7 +7,7 @@ export default class videoCall extends Component{
         return(
             <View>
                 <TouchableOpacity>
-                    <Image style={styles.profile} source={require('/Users/harikam/Desktop/Project/sollu/Icon/videocallicon.png')}/>
+                    <Image style={styles.profile} source={require('../Icon/videocallicon.png')}/>
                 </TouchableOpacity>
             </View>
         )
