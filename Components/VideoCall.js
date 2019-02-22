@@ -1,44 +1,45 @@
-import React, {Component} from 'react';
-import {View,Text,TouchableOpacity} from 'react-native';
+import React, { Component } from 'react';
+import { View, Text, TouchableOpacity } from 'react-native';
 import styles from '../Stylesheet/videocallStyles'
-import FontAwesome, {Icons} from 'react-native-fontawesome';
+import FontAwesome, { Icons } from 'react-native-fontawesome';
 
 
-export default class VideoCall extends Component{
+export default class VideoCall extends Component {
 
-    static navigationOptions = ({navigation}) => {
+    static navigationOptions = ({ navigation }) => {
         let props = navigation
-        return({
-            headerTitle : navigation.getParam('contactName'),
+        return ({
+            headerTitle: navigation.getParam('contactName'),
             headerTintColor: "#cc504e",
+            headerBackTitle: "Back",
             headerStyle: {
                 fontFamily: 'Roboto-Bold',
                 height: 60,
             },
         })
     }
-    handlePressCall = () =>{
-        let {navigation} = this.props;
+    handlePressCall = () => {
+        let { navigation } = this.props;
         this.props.navigation.navigate('ChatScreen')
     }
-    render(){
+    render() {
 
-        return(
+        return (
             <View>
                 <Text style={styles.textBox}>
                     Hey Dude, video call will release soon.....
                 </Text>
                 <View style={styles.callIcon}>
-                <TouchableOpacity onPress={this.handlePressCall}>
-                    <Text style={styles.phoneCallBox}>
-                    <FontAwesome>{Icons.phoneSquare}</FontAwesome>
-                    </Text>
-                </TouchableOpacity>
-                <TouchableOpacity>
-                    <Text style={styles.phoneCallBox}>
-                    <FontAwesome>{Icons.videoSlash}</FontAwesome>
-                    </Text>
-                </TouchableOpacity>
+                    <TouchableOpacity onPress={this.handlePressCall}>
+                        <Text style={styles.phoneCallBox}>
+                            <FontAwesome>{Icons.phoneSquare}</FontAwesome>
+                        </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity>
+                        <Text style={styles.phoneCallBox}>
+                            <FontAwesome>{Icons.videoSlash}</FontAwesome>
+                        </Text>
+                    </TouchableOpacity>
                 </View>
 
             </View>
