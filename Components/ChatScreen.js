@@ -4,7 +4,7 @@ import { SafeAreaView, Header, HeaderBackButton } from 'react-navigation';
 import styles from "../Stylesheet/styleSheet";
 import firebase from "../firebase/firebase";
 import Profile from "./Profile";
-import HomeScreen from "./HomeScreen";
+import VideoIconComponent from "./VideoIconComponent";
 
 
 export default class ChatScreen extends React.Component {
@@ -104,6 +104,7 @@ export default class ChatScreen extends React.Component {
     }
 
     static navigationOptions = ({ navigation }) => {
+        let props = navigation
         return (
             {
                 headerTitle: navigation.getParam("contactName"),
@@ -114,11 +115,10 @@ export default class ChatScreen extends React.Component {
                     backgroundColor: '#cc504e',
                     height: 60,
                 },
-                headerRight: (<Profile sender={navigation.getParam("info").receiver} />),
+                headerRight: ([<VideoIconComponent sender={navigation.getParam("info")} contactName={navigation.getParam("contactName")} navigation={props}/>,<Profile sender={navigation.getParam("info").receiver} />]),
                 headerLeft: (
                     <HeaderBackButton tintColor="white"
-                                      onPress={()=>{navigation.state.params.onGoBack();
-                    navigation.goBack();}}/>)
+                                      onPress={()=>{navigation.state.params.onGoBack();navigation.goBack();}}/>)
 
             }
         );
@@ -155,6 +155,8 @@ export default class ChatScreen extends React.Component {
         let messagetextstyle;
         let { navigation } = this.props;
         const info = navigation.getParam('info');
+        console.log("info renderitem")
+        console.log(info)
         let phoneNo = info.sender;
         if (item._id === 0) {
             messageboxstyle = styles.selfMessageContainer;
