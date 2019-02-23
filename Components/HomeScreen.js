@@ -113,8 +113,8 @@ export default class HomeScreen extends React.Component {
         this.getOrderedLocalContacts();
     }
 
-    getPairID(sender,receiver){
-        let key='';
+    getPairID(sender, receiver) {
+        let key = '';
         if (sender === receiver) {
             key = sender;
         } else if (sender > receiver) {
@@ -125,20 +125,20 @@ export default class HomeScreen extends React.Component {
         return key;
     }
 
-     async getLastActiveTime(sender, receiver) {
-         let  lastchatTime=0;
-         let key = this.getPairID(sender, receiver);
-         await  firebase.database().ref('conversations').once('value',async (snap) => {
-             if (snap.hasChild(key)) {
-                 let time = snap.child(key).val().lastActiveTime;
-                 if (time){
-                     lastchatTime=time;
-                     return time;
-                 }
-             }
-         });
-         return lastchatTime;
-     }
+    async getLastActiveTime(sender, receiver) {
+        let lastchatTime = 0;
+        let key = this.getPairID(sender, receiver);
+        await firebase.database().ref('conversations').once('value', async (snap) => {
+            if (snap.hasChild(key)) {
+                let time = snap.child(key).val().lastActiveTime;
+                if (time) {
+                    lastchatTime = time;
+                    return time;
+                }
+            }
+        });
+        return lastchatTime;
+    }
 
     async requestContactsPermission() {
         try {
@@ -150,15 +150,15 @@ export default class HomeScreen extends React.Component {
             return Platform.OS === "ios" ? true : false;
         }
     }
-    getOrderedLocalContacts(){
+    getOrderedLocalContacts() {
         let db = firebase.database();
         let localContacts = [];
-        let sender=this.props.navigation.getParam("sender");
+        let sender = this.props.navigation.getParam("sender");
         Contacts.getAll((err, contacts) => {
             if (err) throw err;
             else {
                 db.ref("registeredUsers").once('value', async (registeredUsers) => {
-                    const time= await this.getLastActiveTime(sender,sender);
+                    const time = await this.getLastActiveTime(sender, sender);
                     localContacts.push({
                         key: sender,
                         name: "You",
@@ -174,7 +174,7 @@ export default class HomeScreen extends React.Component {
                             number = trimmedNumber;
                             if (number) {
                                 if (number && registeredUsers.hasChild(number)) {
-                                    const time = await this.getLastActiveTime(sender,number);
+                                    const time = await this.getLastActiveTime(sender, number);
                                     localContacts.push({
                                         key: number,
                                         name: contacts[i].givenName,
@@ -185,7 +185,7 @@ export default class HomeScreen extends React.Component {
                             }
                         }
                     }
-                    localContacts.sort(function(contact1, contact2){return contact2.lastActiveTime - contact1.lastActiveTime});
+                    localContacts.sort(function (contact1, contact2) { return contact2.lastActiveTime - contact1.lastActiveTime });
                     this.setState({
                         contacts: [...this.state.contacts, ...localContacts]
                     })
@@ -211,7 +211,7 @@ export default class HomeScreen extends React.Component {
         }
         return (
             <TouchableOpacity onPress={() => {
-                this.props.navigation.navigate('ChatScreen', { info: info, contactName: contact.item.name ,  onGoBack: () => this.updateCurrentUser()});
+                this.props.navigation.navigate('ChatScreen', { info: info, contactName: contact.item.name, onGoBack: () => this.updateCurrentUser() });
                 this.setState({ currentUser: contact.item.name })
             }} style={styles.contactContainer}>
                 <Profile sender={contact.item.key} />
@@ -240,11 +240,11 @@ export default class HomeScreen extends React.Component {
         if (this.state.contacts.length === 0) {
             return (<View style={styles.loadingIcon}>
                 <ActivityIndicator size="large" color='#cc504e' />
-                    <View>
-                        <Text style={styles.loadingtextbox}>
-                            Loading Contacts...
+                <View>
+                    <Text style={styles.loadingtextbox}>
+                        Loading Contacts...
                         </Text>
-                    </View>
+                </View>
             </View>
             );
         } else if (this.state.contacts.length <= 0) {
