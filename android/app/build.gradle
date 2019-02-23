@@ -101,6 +101,11 @@ android {
     compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
 
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
     defaultConfig {
         applicationId "com.sollu"
         minSdkVersion rootProject.ext.minSdkVersion
@@ -150,6 +155,7 @@ dependencies {
     compile project(':react-native-gesture-handler')
     compile project(':react-native-contacts')
     compile project(':react-native-vector-icons')
+    compile project(':WebRTCModule')
     implementation project(':react-native-firebase')
     implementation "com.android.support:appcompat-v7:${rootProject.ext.supportLibVersion}"
     implementation "com.facebook.react:react-native:+"  // From node_modules
