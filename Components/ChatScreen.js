@@ -78,7 +78,9 @@ export default class ChatScreen extends React.Component {
         const info = this.props.navigation.getParam("info")
         this.getChat(info.sender, info.receiver);
     }
+
     static navigationOptions = ({ navigation }) => {
+        let props = navigation;
         return (
             {
                 headerTitle: navigation.getParam("contactName"),
@@ -89,7 +91,7 @@ export default class ChatScreen extends React.Component {
                     backgroundColor: '#cc504e',
                     height: 60,
                 },
-                headerRight: ([<VideoCall/>,<Profile sender={navigation.getParam("info").receiver}/>]
+                headerRight: ([<VideoCall navigation={props}/>,<Profile sender={navigation.getParam("info").receiver}/>]
                 ),
             }
         );
