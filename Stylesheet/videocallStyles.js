@@ -25,14 +25,25 @@ export default StyleSheet.create({
         marginBottom:100,
     },
     callIcon:{
-        marginTop:150,
-        padding:80,
-        margin:0,
         justifyContent:"space-between",
         flexDirection: "row",
     },
     phoneCallBox:{
         fontSize:40,
         color:'#cc504e',
-    }
+    },
+    text: {
+        textAlign: "center",
+    },
+    container: {
+        flex: 1,
+        backgroundColor: '#fff'
+    },
+    videoContainer: {
+        flex: 1,
+        alignSelf: 'stretch'
+    },
+    video1: {
+        flex: 1
+    },
 })
