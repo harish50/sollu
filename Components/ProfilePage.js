@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { Text, View, Image, TouchableOpacity, Platform,ActivityIndicator } from 'react-native';
+import { Text, View, Image, TouchableOpacity, Platform, ActivityIndicator } from 'react-native';
 import ImagePicker from "react-native-image-picker";
+import FastImage from 'react-native-fast-image'
 import firebase from "../firebase/firebase";
 import RNFetchBlob from 'react-native-fetch-blob';
 import { Picker } from 'react-native-picker-dropdown'
@@ -133,31 +134,31 @@ export default class ProfilePage extends Component {
     render() {
         console.log("image_uri")
         console.log(this.state.image_uri)
-            return (
-                <View style={styles.container}>
-                    <View>
-                        <View style={styles.imageContainer}>
-                            { (!this.state.isProfileSet ) ? <View style={styles.iconPlaceholder}>
-                                    <ActivityIndicator size="large" color='#cc504e' style={styles.loadingPosition}/>
-                                </View>:
-                                <TouchableOpacity onPress={this.pickImageHandler.bind(this)}>
-                                    <Image style={styles.iconPlaceholder} source={{uri: this.state.image_uri}}/>
-                                </TouchableOpacity>
-                            }
-                            </View>
-                        <View style={styles.dropdowncontainer}>
-                            <Picker
-                                selectedValue={this.state.gender}
-                                onValueChange={this.genderChange}
-                                style={styles.picker}
-                                textStyle={styles.pickerText}>
-                                <Picker.Item label="Select Gender" value="Select Gender"/>
-                                <Picker.Item label="Male" value="Male"/>
-                                <Picker.Item label="Female" value="Female"/>
-                            </Picker>
-                        </View>
+        return (
+            <View style={styles.container}>
+                <View>
+                    <View style={styles.imageContainer}>
+                        {(!this.state.isProfileSet) ? <View style={styles.iconPlaceholder}>
+                            <ActivityIndicator size="large" color='#cc504e' style={styles.loadingPosition} />
+                        </View> :
+                            <TouchableOpacity onPress={this.pickImageHandler.bind(this)}>
+                                <FastImage style={styles.iconPlaceholder} source={{ uri: this.state.image_uri }} />
+                            </TouchableOpacity>
+                        }
+                    </View>
+                    <View style={styles.dropdowncontainer}>
+                        <Picker
+                            selectedValue={this.state.gender}
+                            onValueChange={this.genderChange}
+                            style={styles.picker}
+                            textStyle={styles.pickerText}>
+                            <Picker.Item label="Select Gender" value="Select Gender" />
+                            <Picker.Item label="Male" value="Male" />
+                            <Picker.Item label="Female" value="Female" />
+                        </Picker>
                     </View>
                 </View>
-            );
+            </View>
+        );
     }
 }
