@@ -22,6 +22,8 @@ import com.oblador.vectoricons.VectorIconsPackage;
 
 import java.util.Arrays;
 import java.util.List;
+import com.oney.WebRTCModule.WebRTCModulePackage;  // <--- Add this line
+
 
 public class MainApplication extends Application implements ReactApplication {
 
@@ -46,7 +48,9 @@ public class MainApplication extends Application implements ReactApplication {
             new AppCenterReactNativePackage(MainApplication.this),
             new RNGestureHandlerPackage(),
               new VectorIconsPackage(),
-            new ReactNativeContacts()
+            new ReactNativeContacts(),
+              new WebRTCModulePackage()                  // <--- Add this line
+
       );
     }
 
