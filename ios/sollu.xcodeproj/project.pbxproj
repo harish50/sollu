@@ -5,6 +5,7 @@
 	};
 	objectVersion = 46;
 	objects = {
+
 /* Begin PBXBuildFile section */
 		00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302AC1ABCB8CE00DB3ED1 /* libRCTActionSheet.a */; };
 		00C302E71ABCBA2D00DB3ED1 /* libRCTGeolocation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302BA1ABCB90400DB3ED1 /* libRCTGeolocation.a */; };
@@ -29,6 +30,19 @@
 		1F29F7F32208A9D3007AE9A9 /* libRNImagePicker.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F29F7F22208A9A3007AE9A9 /* libRNImagePicker.a */; };
 		1F3271472211AD6E00831BEF /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1F3271192211AD6E00831BEF /* GoogleService-Info.plist */; };
 		1F357CE122205E8B00E182B5 /* libRNVectorIcons.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F357CDE22205E7200E182B5 /* libRNVectorIcons.a */; };
+		1F4C860E2224417F004E6A86 /* WebRTC.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1F4C860B222440F6004E6A86 /* WebRTC.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		1F4C8610222441B1004E6A86 /* libRCTWebRTC.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F4C860A222440E6004E6A86 /* libRCTWebRTC.a */; };
+		1F4C8611222441B5004E6A86 /* WebRTC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F4C860B222440F6004E6A86 /* WebRTC.framework */; };
+		1F4C8613222441C6004E6A86 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F4C8612222441C6004E6A86 /* AVFoundation.framework */; };
+		1F4C8615222441D3004E6A86 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F4C8614222441D3004E6A86 /* AudioToolbox.framework */; };
+		1F4C8617222441DC004E6A86 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F4C8616222441DC004E6A86 /* CoreGraphics.framework */; };
+		1F4C861A222441F3004E6A86 /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F4C8618222441F2004E6A86 /* CoreAudio.framework */; };
+		1F4C861B222441F3004E6A86 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F4C8619222441F3004E6A86 /* CoreVideo.framework */; };
+		1F4C861D2224422B004E6A86 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F4C861C2224422B004E6A86 /* libc++.tbd */; };
+		1F4C861F22244238004E6A86 /* libc.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F4C861E22244238004E6A86 /* libc.tbd */; };
+		1F4C862122244246004E6A86 /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F4C862022244246004E6A86 /* libsqlite3.tbd */; };
+		1F4C862322244254004E6A86 /* GLKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F4C862222244254004E6A86 /* GLKit.framework */; };
+		1F4C86252224425F004E6A86 /* VideoToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F4C86242224425F004E6A86 /* VideoToolbox.framework */; };
 		1F77809721FD795C004FB05A /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F77809621FD795C004FB05A /* StoreKit.framework */; };
 		1FDA2B3322072AB40032A8B9 /* libRNFetchBlob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1FDA2B3122072A940032A8B9 /* libRNFetchBlob.a */; };
 		2D02E4BC1E0B4A80006451C7 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
@@ -51,6 +65,7 @@
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
 		85F6736EC0F9EFBE2EFEB96C /* libPods-sollu-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5B440A043F91E040292C81D5 /* libPods-sollu-tvOSTests.a */; };
 		871745B0502C45F5A19B68D5 /* libAppCenterReactNativeCrashes.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 696EFA044ABF4384B66B99F5 /* libAppCenterReactNativeCrashes.a */; };
+		8CCB9C620A9644E0BFC72BF6 /* fa-solid-900.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4644361E057F411E9E79FB1D /* fa-solid-900.ttf */; };
 		9983F474339A417ABD80D3B8 /* Roboto-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F4E6C268E0D34993B1A1C2C7 /* Roboto-Regular.ttf */; };
 		ADBDB9381DFEBF1600ED6528 /* libRCTBlob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ADBDB9271DFEBF0700ED6528 /* libRCTBlob.a */; };
 		B19897A5397B4C85A44AC16A /* Roboto-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B8439D08013441A5A516007A /* Roboto-Medium.ttf */; };
@@ -59,7 +74,6 @@
 		C9566343E3FB4F2D8150C6DC /* Roboto-Thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9F43A89EED48436980C79778 /* Roboto-Thin.ttf */; };
 		EB1B2E411854D085E939B8C0 /* libPods-sollu.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DA8B4D5E86E07190B45D79C0 /* libPods-sollu.a */; };
 		F7F49E6F3512438BAB0FC540 /* libRNFirebase.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FBD618BE49714C918D73E231 /* libRNFirebase.a */; };
-		8CCB9C620A9644E0BFC72BF6 /* fa-solid-900.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4644361E057F411E9E79FB1D /* fa-solid-900.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -153,6 +167,13 @@
 			proxyType = 2;
 			remoteGlobalIDString = 134814201AA4EA6300B7C361;
 			remoteInfo = RNFirebase;
+		};
+		1F4C8609222440E6004E6A86 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1F4C8605222440E5004E6A86 /* RCTWebRTC.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 35A2221F1CB493700015FD5C;
+			remoteInfo = RCTWebRTC;
 		};
 		1FB212AA21FF327700DC46FA /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -408,6 +429,20 @@
 		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		1F4C860F2224417F004E6A86 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				1F4C860E2224417F004E6A86 /* WebRTC.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		008F07F21AC5B25A0029DE68 /* main.jsbundle */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = main.jsbundle; sourceTree = "<group>"; };
 		00C302A71ABCB8CE00DB3ED1 /* RCTActionSheet.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTActionSheet.xcodeproj; path = "../node_modules/react-native/Libraries/ActionSheetIOS/RCTActionSheet.xcodeproj"; sourceTree = "<group>"; };
@@ -435,6 +470,18 @@
 		1F29F7C22208A9A3007AE9A9 /* RNImagePicker.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNImagePicker.xcodeproj; path = "../node_modules/react-native-image-picker/ios/RNImagePicker.xcodeproj"; sourceTree = "<group>"; };
 		1F3271192211AD6E00831BEF /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "sollu/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		1F357CAB22205E7200E182B5 /* RNVectorIcons.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNVectorIcons.xcodeproj; path = "../node_modules/react-native-vector-icons/RNVectorIcons.xcodeproj"; sourceTree = "<group>"; };
+		1F4C8605222440E5004E6A86 /* RCTWebRTC.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTWebRTC.xcodeproj; path = "../node_modules/react-native-webrtc/ios/RCTWebRTC.xcodeproj"; sourceTree = "<group>"; };
+		1F4C860B222440F6004E6A86 /* WebRTC.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebRTC.framework; path = "../node_modules/react-native-webrtc/ios/WebRTC.framework"; sourceTree = "<group>"; };
+		1F4C8612222441C6004E6A86 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		1F4C8614222441D3004E6A86 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
+		1F4C8616222441DC004E6A86 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		1F4C8618222441F2004E6A86 /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = System/Library/Frameworks/CoreAudio.framework; sourceTree = SDKROOT; };
+		1F4C8619222441F3004E6A86 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
+		1F4C861C2224422B004E6A86 /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
+		1F4C861E22244238004E6A86 /* libc.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libc.tbd; path = usr/lib/libc.tbd; sourceTree = SDKROOT; };
+		1F4C862022244246004E6A86 /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
+		1F4C862222244254004E6A86 /* GLKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLKit.framework; path = System/Library/Frameworks/GLKit.framework; sourceTree = SDKROOT; };
+		1F4C86242224425F004E6A86 /* VideoToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VideoToolbox.framework; path = System/Library/Frameworks/VideoToolbox.framework; sourceTree = SDKROOT; };
 		1F5B90DD2206D26F009B1CA4 /* sollu.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = sollu.entitlements; path = sollu/sollu.entitlements; sourceTree = "<group>"; };
 		1F77809621FD795C004FB05A /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		1FDA2B0322072A930032A8B9 /* RNFetchBlob.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNFetchBlob.xcodeproj; path = "../node_modules/react-native-fetch-blob/ios/RNFetchBlob.xcodeproj"; sourceTree = "<group>"; };
@@ -445,6 +492,7 @@
 		386A48F3346E40EE8E069FC2 /* RCTContacts.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RCTContacts.xcodeproj; path = "../node_modules/react-native-contacts/ios/RCTContacts.xcodeproj"; sourceTree = "<group>"; };
 		3E4A794E1F6224117313FA6D /* Pods-sollu-tvOSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-sollu-tvOSTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-sollu-tvOSTests/Pods-sollu-tvOSTests.release.xcconfig"; sourceTree = "<group>"; };
 		3E635F538ED145EF8FDBCB17 /* AppCenterReactNativeAnalytics.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = AppCenterReactNativeAnalytics.xcodeproj; path = "../node_modules/appcenter-analytics/ios/AppCenterReactNativeAnalytics.xcodeproj"; sourceTree = "<group>"; };
+		4644361E057F411E9E79FB1D /* fa-solid-900.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "fa-solid-900.ttf"; path = "../assets/fonts/fa-solid-900.ttf"; sourceTree = "<group>"; };
 		4E866E29012344308518F567 /* libAppCenterReactNativeAnalytics.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libAppCenterReactNativeAnalytics.a; sourceTree = "<group>"; };
 		579F382BF86F4E2EB2660B11 /* AppCenter-Config.plist */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = text.plist.xml; name = "AppCenter-Config.plist"; path = "sollu/AppCenter-Config.plist"; sourceTree = "<group>"; };
 		57F41A122F9D3AFCD174928E /* Pods-solluTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-solluTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-solluTests/Pods-solluTests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -472,7 +520,6 @@
 		F5C9EAC52D9911A2819CA4B3 /* Pods-sollu.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-sollu.debug.xcconfig"; path = "Pods/Target Support Files/Pods-sollu/Pods-sollu.debug.xcconfig"; sourceTree = "<group>"; };
 		F6952B7B1DE44FF7938B6E9E /* libRNGestureHandler.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNGestureHandler.a; sourceTree = "<group>"; };
 		FBD618BE49714C918D73E231 /* libRNFirebase.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNFirebase.a; sourceTree = "<group>"; };
-		4644361E057F411E9E79FB1D /* fa-solid-900.ttf */ = {isa = PBXFileReference; name = "fa-solid-900.ttf"; path = "../assets/fonts/fa-solid-900.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -489,12 +536,24 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1F4C86252224425F004E6A86 /* VideoToolbox.framework in Frameworks */,
+				1F4C862322244254004E6A86 /* GLKit.framework in Frameworks */,
+				1F4C862122244246004E6A86 /* libsqlite3.tbd in Frameworks */,
+				1F4C861F22244238004E6A86 /* libc.tbd in Frameworks */,
+				1F4C861D2224422B004E6A86 /* libc++.tbd in Frameworks */,
+				1F4C861A222441F3004E6A86 /* CoreAudio.framework in Frameworks */,
+				1F4C861B222441F3004E6A86 /* CoreVideo.framework in Frameworks */,
+				1F4C8617222441DC004E6A86 /* CoreGraphics.framework in Frameworks */,
+				1F4C8615222441D3004E6A86 /* AudioToolbox.framework in Frameworks */,
+				1F4C8613222441C6004E6A86 /* AVFoundation.framework in Frameworks */,
+				1F4C8610222441B1004E6A86 /* libRCTWebRTC.a in Frameworks */,
 				1F04C05A2206E0C700302FF1 /* UserNotifications.framework in Frameworks */,
 				1F29F7F32208A9D3007AE9A9 /* libRNImagePicker.a in Frameworks */,
 				1FDA2B3322072AB40032A8B9 /* libRNFetchBlob.a in Frameworks */,
 				ADBDB9381DFEBF1600ED6528 /* libRCTBlob.a in Frameworks */,
 				11D1A2F320CAFA9E000508D9 /* libRCTAnimation.a in Frameworks */,
 				146834051AC3E58100842450 /* libReact.a in Frameworks */,
+				1F4C8611222441B5004E6A86 /* WebRTC.framework in Frameworks */,
 				1F357CE122205E8B00E182B5 /* libRNVectorIcons.a in Frameworks */,
 				00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */,
 				00C302E71ABCBA2D00DB3ED1 /* libRCTGeolocation.a in Frameworks */,
@@ -626,6 +685,7 @@
 		13B07FAE1A68108700A75B9A /* sollu */ = {
 			isa = PBXGroup;
 			children = (
+				1F4C860B222440F6004E6A86 /* WebRTC.framework */,
 				1F5B90DD2206D26F009B1CA4 /* sollu.entitlements */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
@@ -686,6 +746,14 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		1F4C8606222440E5004E6A86 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				1F4C860A222440E6004E6A86 /* libRCTWebRTC.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		1FB212A321FF327700DC46FA /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -736,6 +804,16 @@
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				1F4C86242224425F004E6A86 /* VideoToolbox.framework */,
+				1F4C862222244254004E6A86 /* GLKit.framework */,
+				1F4C862022244246004E6A86 /* libsqlite3.tbd */,
+				1F4C861E22244238004E6A86 /* libc.tbd */,
+				1F4C861C2224422B004E6A86 /* libc++.tbd */,
+				1F4C8618222441F2004E6A86 /* CoreAudio.framework */,
+				1F4C8619222441F3004E6A86 /* CoreVideo.framework */,
+				1F4C8616222441DC004E6A86 /* CoreGraphics.framework */,
+				1F4C8614222441D3004E6A86 /* AudioToolbox.framework */,
+				1F4C8612222441C6004E6A86 /* AVFoundation.framework */,
 				1F04C02E2206E0C700302FF1 /* UserNotifications.framework */,
 				1F77809621FD795C004FB05A /* StoreKit.framework */,
 				2D16E6891FA4F8E400B85C8A /* libReact.a */,
@@ -768,6 +846,7 @@
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				1F4C8605222440E5004E6A86 /* RCTWebRTC.xcodeproj */,
 				1F357CAB22205E7200E182B5 /* RNVectorIcons.xcodeproj */,
 				1F29F7C22208A9A3007AE9A9 /* RNImagePicker.xcodeproj */,
 				1FDA2B0322072A930032A8B9 /* RNFetchBlob.xcodeproj */,
@@ -914,6 +993,7 @@
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
+				1F4C860F2224417F004E6A86 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -1070,6 +1150,10 @@
 					ProjectRef = 00C302DF1ABCB9EE00DB3ED1 /* RCTVibration.xcodeproj */;
 				},
 				{
+					ProductGroup = 1F4C8606222440E5004E6A86 /* Products */;
+					ProjectRef = 1F4C8605222440E5004E6A86 /* RCTWebRTC.xcodeproj */;
+				},
+				{
 					ProductGroup = 139FDEE71B06529A00C62182 /* Products */;
 					ProjectRef = 139FDEE61B06529A00C62182 /* RCTWebSocket.xcodeproj */;
 				},
@@ -1191,6 +1275,13 @@
 			fileType = archive.ar;
 			path = libRNFirebase.a;
 			remoteRef = 1F3BE527220CAFA500FE2724 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		1F4C860A222440E6004E6A86 /* libRCTWebRTC.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRCTWebRTC.a;
+			remoteRef = 1F4C8609222440E6004E6A86 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		1FB212AB21FF327700DC46FA /* libAppCenterReactNative.a */ = {
@@ -1742,6 +1833,15 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = J88NXXD5P6;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"${PODS_ROOT}/AppCenter/AppCenter-SDK-Apple/iOS\"",
+					"\"${PODS_ROOT}/AppCenterReactNativeShared/AppCenterReactNativeShared\"",
+					"\"${PODS_ROOT}/FirebaseAnalytics/Frameworks\"",
+					"\"${PODS_ROOT}/FirebaseInstanceID/Frameworks\"",
+					"\"${PODS_ROOT}/GoogleAppMeasurement/Frameworks\"",
+					"$(SRCROOT)/../node_modules/react-native-webrtc/ios/**",
+				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-gesture-handler/ios/**",
@@ -1753,6 +1853,15 @@
 				);
 				INFOPLIST_FILE = sollu/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/FirebaseCore\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/FirebaseMessaging\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/GoogleUtilities\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/Protobuf\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/nanopb\"",
+					"$(SRCROOT)/../node_modules/react-native-webrtc/ios/**",
+				);
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -1776,6 +1885,15 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = J88NXXD5P6;
 				ENABLE_TESTABILITY = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"${PODS_ROOT}/AppCenter/AppCenter-SDK-Apple/iOS\"",
+					"\"${PODS_ROOT}/AppCenterReactNativeShared/AppCenterReactNativeShared\"",
+					"\"${PODS_ROOT}/FirebaseAnalytics/Frameworks\"",
+					"\"${PODS_ROOT}/FirebaseInstanceID/Frameworks\"",
+					"\"${PODS_ROOT}/GoogleAppMeasurement/Frameworks\"",
+					"$(SRCROOT)/../node_modules/react-native-webrtc/ios/**",
+				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-gesture-handler/ios/**",
@@ -1787,6 +1905,15 @@
 				);
 				INFOPLIST_FILE = sollu/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/FirebaseCore\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/FirebaseMessaging\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/GoogleUtilities\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/Protobuf\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/nanopb\"",
+					"$(SRCROOT)/../node_modules/react-native-webrtc/ios/**",
+				);
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = (
 					"$(inherited)",

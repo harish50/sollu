@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity, SafeAreaView } from 'react-native';
 import styles from '../Stylesheet/videocallStyles'
 import FontAwesome, { Icons } from 'react-native-fontawesome';
 
@@ -42,7 +42,7 @@ export default class VideoCall extends Component {
             let videoSourceId;
             for (let i = 0; i < sourceInfos.length; i++) {
                 const sourceInfo = sourceInfos[i];
-                if(sourceInfo.kind == "video" && sourceInfo.facing == (isFront ? "front" : "back")) {
+                if (sourceInfo.kind == "video" && sourceInfo.facing == (isFront ? "front" : "back")) {
                     videoSourceId = sourceInfo.id;
                 }
             }
@@ -56,7 +56,7 @@ export default class VideoCall extends Component {
                         minFrameRate: 30
                     },
                     facingMode: (isFront ? "user" : "environment"),
-                    optional: (videoSourceId ? [{sourceId: videoSourceId}] : [])
+                    optional: (videoSourceId ? [{ sourceId: videoSourceId }] : [])
                 }
             })
                 .then(stream => {
@@ -94,8 +94,8 @@ export default class VideoCall extends Component {
             console.warn(this.state.videoURL);
             return (
                 <View style={styles.container}>
-
-                        <RTCView streamURL={this.state.videoURL}  style={styles.video1}/>
+                    <RTCView streamURL={this.state.videoURL} style={styles.video1} />
+                    <SafeAreaView>
                         <View style={styles.callIcon}>
                             <TouchableOpacity onPress={this.handlePressCall}>
                                 <Text style={styles.phoneCallBox}>
@@ -108,6 +108,7 @@ export default class VideoCall extends Component {
                                 </Text>
                             </TouchableOpacity>
                         </View>
+                    </SafeAreaView>
                 </View>
             );
         }
