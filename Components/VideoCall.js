@@ -1,7 +1,7 @@
-import React, {Component} from "react";
-import {View, Text, TouchableOpacity} from "react-native";
+import React, { Component } from "react";
+import { View, Text, TouchableOpacity } from "react-native";
 import styles from "../Stylesheet/videocallStyles";
-import FontAwesome, {Icons} from "react-native-fontawesome";
+import FontAwesome, { Icons } from "react-native-fontawesome";
 
 import {
     RTCPeerConnection,
@@ -21,7 +21,7 @@ export default class VideoCall extends Component {
         isFront: true
     };
 
-    static navigationOptions = ({navigation}) => {
+    static navigationOptions = ({ navigation }) => {
         let props = navigation;
         return {
             headerTitle: navigation.getParam("contactName"),
@@ -48,10 +48,10 @@ export default class VideoCall extends Component {
 
     componentDidMount() {
         const configuration = {
-            iceServers: [{url: "stun:stun.l.google.com:19302"}]
+            iceServers: [{ url: "stun:stun.l.google.com:19302" }]
         };
         const pc = new RTCPeerConnection(configuration);
-        const {isFront} = this.state;
+        const { isFront } = this.state;
         mediaDevices.enumerateDevices().then(sourceInfos => {
             console.log(sourceInfos);
             let videoSourceId;
@@ -65,51 +65,46 @@ export default class VideoCall extends Component {
                 }
             }
 
-            mediaDevices
-                .getUserMedia({
-                    audio: true,
-                    video: {
-                        mandatory: {
-                            minWidth: 320, // Provide your own width, height and frame rate here
-                            minHeight: 240,
-                            minFrameRate: 30
-                        },
-                        facingMode: isFront ? "user" : "environment",
-                        optional: videoSourceId ? [{sourceId: videoSourceId}] : []
-                    }
-                })
-                .then(stream => {
-                    console.log("Streaming OK", stream);
-                    video.srcObject = stream;
-                    this.setState({
-                        SenderVideoURL: stream.toURL()
-                    });
-                    pc.addStream(stream);
-                    // Got stream!
-                })
-                .catch(error => {
-                    console.log("Oops, we getting error", error.message);
-                    throw error;
+            mediaDevices.getUserMedia({
+                audio: true,
+                video: {
+                    mandatory: {
+                        minWidth: 320, // Provide your own width, height and frame rate here
+                        minHeight: 240,
+                        minFrameRate: 30
+                    },
+                    facingMode: isFront ? "user" : "environment",
+                    optional: videoSourceId ? [{ sourceId: videoSourceId }] : []
+                }
+            }).then(stream => {
+                console.log("Streaming OK", stream);
+                this.setState({
+                    SenderVideoURL: stream.toURL()
                 });
+                pc.addStream(stream);
+                // Got stream!
+            }).catch(error => {
+                console.log("Oops, we getting error", error.message);
+                throw error;
+            });
         });
         //caller side
         let info = this.props.navigation.getParam("info");
         console.log(info);
-        pc.createOffer()
-            .then(sdp => pc.setLocalDescription(sdp))
         let VIDEO_CALL_REF = firebase.database().ref("videoCallInfo");
-        VIDEO_CALL_REF.child(info.sender).child('videoSDP').push(pc.localDescription),
-            VIDEO_CALL_REF.child(info.sender).set({isVideoSendCall: true}),
-            VIDEO_CALL_REF.child(info.receiver).set({isVideoReceiveCall: true}),
-            VIDEO_CALL_REF.child(info.receiver).set({caller: info.sender})
-        if (VIDEO_CALL_REF.hasChild(info.receiver)!=null) {
-            let remoteSDP = VIDEO_CALL_REF.child(info.receiver).child("videoSDP").once("once", (receiverVideoSDP) => receiverVideoSDP.val());
-            pc.setRemoteDescription(remoteSDP);
-        }
+        pc.createOffer().then((sdp) => {
+            pc.setLocalDescription(sdp).then(() => {
+                VIDEO_CALL_REF.child(info.sender).set({ videoSDP: pc.localDescription, isVideoSendCall: true });
+                VIDEO_CALL_REF.child(info.receiver).set({ caller: info.sender, isVideoReceiveCall: true });
+            })
+        });
+        VIDEO_CALL_REF.child(info.receiver).on('value', (snapshot) => {
+            console.log(snapshot.val());
+        });
     }
 
     handlePressCall = () => {
-        let {navigation} = this.props;
+        let { navigation } = this.props;
         this.props.navigation.navigate("ChatScreen");
     };
 
@@ -118,7 +113,7 @@ export default class VideoCall extends Component {
             console.warn(this.state.ReceiverVideoURL);
             return (
                 <View style={styles.container}>
-                    <RTCView streamURL={this.state.videoURL} style={styles.video1}/>
+                    <RTCView streamURL={this.state.videoURL} style={styles.video1} />
                     <View style={styles.callIcon}>
                         <TouchableOpacity onPress={this.handlePressCall}>
                             <Text style={styles.phoneCallBox}>
@@ -140,26 +135,5 @@ export default class VideoCall extends Component {
                 </View>
             );
         }
-
-        // return (
-        //     <View>
-        //         <Text style={styles.textBox}>
-        //             Hey Dude, video call will release soon.....
-        //         </Text>
-        //         <View style={styles.callIcon}>
-        //             <TouchableOpacity onPress={this.handlePressCall}>
-        //                 <Text style={styles.phoneCallBox}>
-        //                     <FontAwesome>{Icons.phoneSquare}</FontAwesome>
-        //                 </Text>
-        //             </TouchableOpacity>
-        //             <TouchableOpacity>
-        //                 <Text style={styles.phoneCallBox}>
-        //                     <FontAwesome>{Icons.videoSlash}</FontAwesome>
-        //                 </Text>
-        //             </TouchableOpacity>
-        //         </View>
-        //
-        //     </View>
-        // )
     }
 }

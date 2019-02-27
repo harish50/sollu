@@ -21,10 +21,10 @@ export default class ChatScreen extends React.Component {
         this.isColorDiffers = this.isColorDiffers.bind(this);
     }
 
-    getConvoPairID(){
-        let key='';
+    getConvoPairID() {
+        let key = '';
         let { navigation } = this.props;
-        let info=navigation.getParam('info');
+        let info = navigation.getParam('info');
         if (info.sender === info.receiver) {
             key = info.sender;
         }
@@ -36,9 +36,9 @@ export default class ChatScreen extends React.Component {
         }
         return key;
     }
-    setLastActiveTime(time){
-        let key=this.getConvoPairID();
-        firebase.database().ref('conversations').child(key).set({'lastActiveTime': time});
+    setLastActiveTime(time) {
+        let key = this.getConvoPairID();
+        firebase.database().ref('conversations').child(key).set({ 'lastActiveTime': time });
     }
     isColorDiffers() {
         let colorDifference = false;
@@ -96,8 +96,8 @@ export default class ChatScreen extends React.Component {
     componentDidMount() {
         this.isColorDiffers();
         const info = this.props.navigation.getParam("info")
-        firebase.database().ref('conversations').once('value',(conversations)=>{
-            if(!conversations.hasChild(this.getConvoPairID()))
+        firebase.database().ref('conversations').once('value', (conversations) => {
+            if (!conversations.hasChild(this.getConvoPairID()))
                 this.setLastActiveTime(0);
         });
         this.getChat(info.sender, info.receiver);
@@ -115,10 +115,10 @@ export default class ChatScreen extends React.Component {
                     backgroundColor: '#cc504e',
                     height: 60,
                 },
-                headerRight: ([<VideoIconComponent info={navigation.getParam("info")} contactName={navigation.getParam("contactName")} navigation={props}/>,<Profile sender={navigation.getParam("info").receiver} />]),
+                headerRight: ([<VideoIconComponent info={navigation.getParam("info")} contactName={navigation.getParam("contactName")} navigation={props} />, <Profile sender={navigation.getParam("info").receiver} />]),
                 headerLeft: (
                     <HeaderBackButton tintColor="white"
-                                      onPress={()=>{navigation.state.params.onGoBack();navigation.goBack();}}/>)
+                        onPress={() => { navigation.state.params.onGoBack(); navigation.goBack(); }} />)
 
             }
         );
@@ -155,8 +155,6 @@ export default class ChatScreen extends React.Component {
         let messagetextstyle;
         let { navigation } = this.props;
         const info = navigation.getParam('info');
-        console.log("info renderitem")
-        console.log(info)
         let phoneNo = info.sender;
         if (item._id === 0) {
             messageboxstyle = styles.selfMessageContainer;
@@ -190,7 +188,7 @@ export default class ChatScreen extends React.Component {
                             <Profile sender={phoneNo} />
                         </ImageBackground>
                     </View>
-                    <View  style={messagetextstyle}>
+                    <View style={messagetextstyle}>
                         <Text style={styles.messageStyle}>{item.text}</Text>
                         <Text style={styles.timeStyle}>{time}</Text>
                     </View>
@@ -201,7 +199,7 @@ export default class ChatScreen extends React.Component {
             return (
                 <View style={messageboxstyle}>
                     <Profile sender={phoneNo} />
-                    <View  style={messagetextstyle}>
+                    <View style={messagetextstyle}>
                         <Text style={styles.messageStyle}>{item.text}</Text>
                         <Text style={styles.timeStyle}>{time}</Text>
                     </View>
