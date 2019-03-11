@@ -248,6 +248,10 @@ export default class HomeScreen extends React.Component {
     listenForVideoCall() {
         let caller = null;
         let VIDEO_CALL_REF = firebase.database().ref("videoCallInfo");
+        const configuration = {
+            iceServers: [{ url: "stun:stun.l.google.com:19302" }]
+        };
+        let pc = new RTCPeerConnection(configuration);
         VIDEO_CALL_REF.child(this.props.navigation.getParam("sender")).on("value", (snapshot) => {
             let videoCallInfo = snapshot.val()
             if (caller !== null && videoCallInfo !== null && caller === videoCallInfo.caller) {
@@ -257,7 +261,6 @@ export default class HomeScreen extends React.Component {
                 caller = videoCallInfo !== null ? videoCallInfo.caller : null;
             }
             if (videoCallInfo !== null && videoCallInfo.isVideoReceiveCall === true) {
-                let pc = new RTCPeerConnection();
                 const { isFront } = this.state;
                 mediaDevices.getUserMedia({
                     audio: true,
@@ -277,10 +280,15 @@ export default class HomeScreen extends React.Component {
                     pc.setRemoteDescription(snapshot.val().videoSDP).then(() => {
                         pc.createAnswer().then((sdp) => {
                             pc.setLocalDescription(sdp).then(() => {
+                                console.log(pc.localDescription);
                                 VIDEO_CALL_REF.child(this.props.navigation.getParam("sender")).child('videoSDP').set(pc.localDescription);
                             });
                         });
                     });
+                    console.log(snapshot);
+                    // pc.onaddstream = (event => friendsVideo.srcObject = event.stream);
+                    //             pc.addIceCandidate(new RTCIceCandidate(snapshot.ICE));
+                    // pc.setRemoteDescription(new RTCSessionDescription(msg.sdp));
                 });
             }
         });

@@ -46,6 +46,18 @@ export default class VideoCall extends Component {
         return key;
     }
 
+    sendICE(senderNumber, ICE){
+        let VIDEO_CALL_REF = firebase.database().ref("videoCallInfo");
+        let info = this.props.navigation.getParam("info");
+        VIDEO_CALL_REF.child(info.sender).child(ICE);
+    }
+
+    setReceiverStream(stream){
+        this.setState({
+            RecieverVideoURL : stream
+        })
+    }
+
     componentDidMount() {
         const configuration = {
             iceServers: [{ url: "stun:stun.l.google.com:19302" }]
@@ -79,10 +91,10 @@ export default class VideoCall extends Component {
             }).then(stream => {
                 console.log("Streaming OK", stream);
                 this.setState({
-                    SenderVideoURL: stream.toURL()
+                    SenderVideo: stream
                 });
                 pc.addStream(stream);
-                // Got stream!
+                // Media stream added to PC
             }).catch(error => {
                 console.log("Oops, we getting error", error.message);
                 throw error;
@@ -91,6 +103,8 @@ export default class VideoCall extends Component {
         //caller side
         let info = this.props.navigation.getParam("info");
         console.log(info);
+        pc.onicecandidate = (event => event.candidate?this.sendICE(info.sender, JSON.stringify({'ice': event.candidate})):console.log("Sent All Ice") );
+        pc.onaddstream = (event => this.setReceiverStream(event.stream));
         let VIDEO_CALL_REF = firebase.database().ref("videoCallInfo");
         pc.createOffer().then((sdp) => {
             pc.setLocalDescription(sdp).then(() => {
@@ -98,6 +112,7 @@ export default class VideoCall extends Component {
                 VIDEO_CALL_REF.child(info.receiver).set({ caller: info.sender, isVideoReceiveCall: true });
             })
         });
+        pc.onaddstream = event =>
         VIDEO_CALL_REF.child(info.receiver).on('value', (snapshot) => {
             console.log(snapshot.val());
         });
