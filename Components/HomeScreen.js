@@ -1,29 +1,20 @@
 import React from "react";
 import {
-    View,
-    Text,
-    FlatList,
-    TouchableOpacity,
-    Platform,
-    PermissionsAndroid,
     ActivityIndicator,
-    StyleSheet,
-    AsyncStorage
+    AsyncStorage,
+    FlatList,
+    PermissionsAndroid,
+    Platform,
+    Text,
+    TouchableOpacity,
+    View
 } from "react-native";
 import styles from "../Stylesheet/styleSheet";
 import Contacts from "react-native-contacts";
 import firebase from "../firebase/firebase";
 import Profile from "./Profile";
 import Firebase from "react-native-firebase";
-import {
-    RTCPeerConnection,
-    RTCIceCandidate,
-    RTCSessionDescription,
-    RTCView,
-    MediaStream,
-    MediaStreamTrack,
-    mediaDevices
-} from "react-native-webrtc";
+import {mediaDevices, RTCPeerConnection} from "react-native-webrtc";
 
 export default class HomeScreen extends React.Component {
     state = {
@@ -126,8 +117,8 @@ export default class HomeScreen extends React.Component {
                 };
                 this.props.navigation.navigate(
                     "ChatScreen",
-                    { info: info, contactName: contactName },
-                    { onGoBack: () => this.updateCurrentUser() }
+                    {info: info, contactName: contactName},
+                    {onGoBack: () => this.updateCurrentUser()}
                 );
             }
         );
@@ -143,15 +134,15 @@ export default class HomeScreen extends React.Component {
             };
             this.props.navigation.navigate(
                 "ChatScreen",
-                { info: info, contactName: contactName },
-                { onGoBack: () => this.updateCurrentUser() }
+                {info: info, contactName: contactName},
+                {onGoBack: () => this.updateCurrentUser()}
             );
         }
     }
 
     updateCurrentUser() {
-        this.setState({ currentUser: "" });
-        this.setState({ contacts: [] });
+        this.setState({currentUser: ""});
+        this.setState({contacts: []});
         this.getOrderedLocalContacts();
     }
 
@@ -245,13 +236,30 @@ export default class HomeScreen extends React.Component {
         });
     }
 
+    sendICE(senderNumber, ICE) {
+        let VIDEO_CALL_REF = firebase.database().ref("videoCallInfo");
+        let info = this.props.navigation.getParam("info");
+        console.log("Checking ICE : ")
+        console.log(ICE)
+        VIDEO_CALL_REF.child(info.sender).set({ICE: ICE});
+    }
+
+
     listenForVideoCall() {
         let caller = null;
         let VIDEO_CALL_REF = firebase.database().ref("videoCallInfo");
-        const configuration = {
-            iceServers: [{ url: "stun:stun.l.google.com:19302" }]
+        // const configuration = {
+        //     iceServers: [{ url: "stun:stun.l.google.com:19302" }]
+        // };
+        var servers = {
+            'iceServers': [{'urls': 'stun:stun.services.mozilla.com'}, {'urls': 'stun:stun.l.google.com:19302'}, {
+                'urls': 'turn:numb.viagenie.ca',
+                'credential': 'webrtc',
+                'username': 'websitebeaver@mail.com'
+            }]
         };
-        let pc = new RTCPeerConnection(configuration);
+
+        let pc = new RTCPeerConnection(servers);
         VIDEO_CALL_REF.child(this.props.navigation.getParam("sender")).on("value", (snapshot) => {
             let videoCallInfo = snapshot.val()
             if (caller !== null && videoCallInfo !== null && caller === videoCallInfo.caller) {
@@ -261,7 +269,7 @@ export default class HomeScreen extends React.Component {
                 caller = videoCallInfo !== null ? videoCallInfo.caller : null;
             }
             if (videoCallInfo !== null && videoCallInfo.isVideoReceiveCall === true) {
-                const { isFront } = this.state;
+                const {isFront} = this.state;
                 mediaDevices.getUserMedia({
                     audio: true,
                     video: {
@@ -276,20 +284,39 @@ export default class HomeScreen extends React.Component {
                 }).then((stream) => {
                     pc.addStream(stream);
                 })
-                VIDEO_CALL_REF.child(videoCallInfo.caller).once('value', (snapshot) => {
-                    pc.setRemoteDescription(snapshot.val().videoSDP).then(() => {
-                        pc.createAnswer().then((sdp) => {
-                            pc.setLocalDescription(sdp).then(() => {
-                                console.log(pc.localDescription);
-                                VIDEO_CALL_REF.child(this.props.navigation.getParam("sender")).child('videoSDP').set(pc.localDescription);
+                VIDEO_CALL_REF.child(videoCallInfo.caller).child('videoSDP').once('value', (snapshot) => {
+                    console.log("Waiting for SDP")
+                    if (snapshot.val().videoSDP != null) {
+                        pc.setRemoteDescription(snapshot.val().videoSDP).then(() => {
+                            pc.createAnswer().then((sdp) => {
+                                pc.setLocalDescription(sdp).then(() => {
+                                    console.log(pc.localDescription);
+                                    VIDEO_CALL_REF.child(this.props.navigation.getParam("sender")).child('videoSDP').set({'localDesc': pc.localDescription});
+                                });
                             });
                         });
-                    });
-                    console.log(snapshot);
-                    // pc.onaddstream = (event => friendsVideo.srcObject = event.stream);
-                    //             pc.addIceCandidate(new RTCIceCandidate(snapshot.ICE));
-                    // pc.setRemoteDescription(new RTCSessionDescription(msg.sdp));
+                        console.log(snapshot);
+                        // pc.onaddstream = (event => friendsVideo.srcObject = event.stream);
+                        //             pc.addIceCandidate(new RTCIceCandidate(snapshot.ICE));
+                        // pc.setRemoteDescription(new RTCSessionDescription(msg.sdp));
+                    }
+
                 });
+
+                let info = this.props.navigation.getParam("info");
+                pc.onicecandidate = (event => {
+                        if (event.candidate != null) {
+                            console.log("Home Screen")
+                            console.log(JSON.stringify({'ice': event.candidate}))
+                            this.sendICE(info.sender, JSON.stringify({'ice': event.candidate}))
+                        }
+                        else {
+                            console.log("No ice found")
+                        }
+                    }
+                );
+                // VIDEO_CALL_REF.child(videoCallInfo.caller).once('value', (snapshot) => {
+                // });
             }
         });
     }
@@ -319,17 +346,17 @@ export default class HomeScreen extends React.Component {
                         contactName: contact.item.name,
                         onGoBack: () => this.updateCurrentUser()
                     });
-                    this.setState({ currentUser: contact.item.name });
+                    this.setState({currentUser: contact.item.name});
                 }}
                 style={styles.contactContainer}
             >
-                <Profile sender={contact.item.key} />
+                <Profile sender={contact.item.key}/>
                 <Text style={styles.item}> {contact.item.name} </Text>
             </TouchableOpacity>
         );
     }
 
-    static navigationOptions = ({ navigation }) => {
+    static navigationOptions = ({navigation}) => {
         let props = navigation;
         return {
             headerTitle: "Sollu",
@@ -341,7 +368,7 @@ export default class HomeScreen extends React.Component {
                 height: 60
             },
             headerRight: (
-                <Profile sender={props.getParam("sender")} navigation={props} />
+                <Profile sender={props.getParam("sender")} navigation={props}/>
             )
         };
     };
@@ -350,7 +377,7 @@ export default class HomeScreen extends React.Component {
         if (this.state.contacts.length === 0) {
             return (
                 <View style={styles.loadingIcon}>
-                    <ActivityIndicator size="large" color="#cc504e" />
+                    <ActivityIndicator size="large" color="#cc504e"/>
                     <View>
                         <Text style={styles.loadingtextbox}>Loading Contacts...</Text>
                     </View>
