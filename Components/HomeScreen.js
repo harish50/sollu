@@ -14,10 +14,8 @@ import Contacts from "react-native-contacts";
 import firebase from "../firebase/firebase";
 import Profile from "./Profile";
 import Firebase from "react-native-firebase";
-import {mediaDevices, RTCPeerConnection, RTCSessionDescription, RTCIceCandidate, RTCView} from "react-native-webrtc";
+import {mediaDevices, RTCPeerConnection} from "react-native-webrtc";
 
-let receiverIceList = [];
-let pc = null;
 export default class HomeScreen extends React.Component {
     state = {
         contacts: [],
@@ -240,16 +238,19 @@ export default class HomeScreen extends React.Component {
 
     sendICE(senderNumber, ICE) {
         let VIDEO_CALL_REF = firebase.database().ref("videoCallInfo");
-        let sender = this.props.navigation.getParam("sender")
-        console.log("sender:"+sender);
+        let info = this.props.navigation.getParam("info");
         console.log("Checking ICE : ")
         console.log(ICE)
-        VIDEO_CALL_REF.child(sender).child('ICE').set(ICE);
+        VIDEO_CALL_REF.child(info.sender).set({ICE: ICE});
     }
+
 
     listenForVideoCall() {
         let caller = null;
         let VIDEO_CALL_REF = firebase.database().ref("videoCallInfo");
+        // const configuration = {
+        //     iceServers: [{ url: "stun:stun.l.google.com:19302" }]
+        // };
         var servers = {
             'iceServers': [{'urls': 'stun:stun.services.mozilla.com'}, {'urls': 'stun:stun.l.google.com:19302'}, {
                 'urls': 'turn:numb.viagenie.ca',
@@ -258,7 +259,7 @@ export default class HomeScreen extends React.Component {
             }]
         };
 
-        pc = new RTCPeerConnection(servers);
+        let pc = new RTCPeerConnection(servers);
         VIDEO_CALL_REF.child(this.props.navigation.getParam("sender")).on("value", (snapshot) => {
             let videoCallInfo = snapshot.val()
             if (caller !== null && videoCallInfo !== null && caller === videoCallInfo.caller) {
@@ -269,78 +270,53 @@ export default class HomeScreen extends React.Component {
             }
             if (videoCallInfo !== null && videoCallInfo.isVideoReceiveCall === true) {
                 const {isFront} = this.state;
-                let sender = this.props.navigation.getParam("sender")
-                console.log("sender:"+sender);
-
-                pc.onicecandidate = (event => {
-                    console.log(event);
-                    console.log(event.candidate);
-                        if (event.candidate != null) {
-                            receiverIceList.push(event.candidate);
-                            console.log("inside onicecandidate");
-                            console.log(event.candidate)
-                            console.log(receiverIceList)
-                        }
-                        else {
-                            console.log("No ice found")
-                            let index = 0;
-                            for(let ice in receiverIceList){
-                                VIDEO_CALL_REF.child(this.props.navigation.getParam("sender")).child('ICE').push(receiverIceList[ice]);
-                                console.log("pushing to fb");
-                            }
-                        }
+                mediaDevices.getUserMedia({
+                    audio: true,
+                    video: {
+                        mandatory: {
+                            minWidth: 320, // Provide your own width, height and frame rate here
+                            minHeight: 240,
+                            minFrameRate: 30
+                        },
+                        facingMode: isFront ? "user" : "environment",
+                        // optional: videoSourceId ? [{ sourceId: videoSourceId }] : []
                     }
-                );
-
-                pc.onaddstream = (event => {
-                    console.log("event stream.......");
-                    console.log(event.stream);
-                });
-
-                VIDEO_CALL_REF.child(videoCallInfo.caller).on('child_added', (snapshot) => {
+                }).then((stream) => {
+                    pc.addStream(stream);
+                })
+                VIDEO_CALL_REF.child(videoCallInfo.caller).child('videoSDP').once('value', (snapshot) => {
                     console.log("Waiting for SDP")
-                    console.log(snapshot.val());
-                    if(snapshot.key==='videoSDP'){
-                        console.log("inside if");
-                        pc.setRemoteDescription(new RTCSessionDescription(snapshot.val())).then(()=>{mediaDevices.getUserMedia({
-                            audio: true,
-                            video: {
-                                mandatory: {
-                                    minWidth: 320, // Provide your own width, height and frame rate here
-                                    minHeight: 240,
-                                    minFrameRate: 30
-                                },
-                                facingMode: isFront ? "user" : "environment",
-                                // optional: videoSourceId ? [{ sourceId: videoSourceId }] : []
-                            }
-                        }).then((stream) => {
-                            pc.addStream(stream);
-                            console.log("stream added");
-                        });}).then(() => {
-                            console.log("in getting snapshot");
+                    if (snapshot.val().videoSDP != null) {
+                        pc.setRemoteDescription(snapshot.val().videoSDP).then(() => {
                             pc.createAnswer().then((sdp) => {
-                                console.log("in create answer");
-                                console.log(sdp);
                                 pc.setLocalDescription(sdp).then(() => {
-                                    console.log("localdescription");
                                     console.log(pc.localDescription);
-                                    VIDEO_CALL_REF.child(this.props.navigation.getParam("sender")).child('videoSDP').set(pc.localDescription);
+                                    VIDEO_CALL_REF.child(this.props.navigation.getParam("sender")).child('videoSDP').set({'localDesc': pc.localDescription});
                                 });
                             });
                         });
+                        console.log(snapshot);
+                        // pc.onaddstream = (event => friendsVideo.srcObject = event.stream);
+                        //             pc.addIceCandidate(new RTCIceCandidate(snapshot.ICE));
+                        // pc.setRemoteDescription(new RTCSessionDescription(msg.sdp));
                     }
-                    else if(snapshot.key==='ICE'){
-                        VIDEO_CALL_REF.child(videoCallInfo.caller).child("ICE").on('child_added', (snapshot) => {
-                            console.log("adding ice");
-                            console.log(pc.addIceCandidate(new RTCIceCandidate({
-                                sdpMLineIndex: snapshot.val().sdpMLineIndex,
-                                candidate: snapshot.val().candidate
-                            })));
-                            console.log(snapshot.val());
-                            console.log("ice candidate added");
-                        })
-                    }
+
                 });
+
+                let info = this.props.navigation.getParam("info");
+                pc.onicecandidate = (event => {
+                        if (event.candidate != null) {
+                            console.log("Home Screen")
+                            console.log(JSON.stringify({'ice': event.candidate}))
+                            this.sendICE(info.sender, JSON.stringify({'ice': event.candidate}))
+                        }
+                        else {
+                            console.log("No ice found")
+                        }
+                    }
+                );
+                // VIDEO_CALL_REF.child(videoCallInfo.caller).once('value', (snapshot) => {
+                // });
             }
         });
     }
