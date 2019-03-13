@@ -3,9 +3,11 @@ import {Text, TouchableOpacity, View} from "react-native";
 import styles from "../Stylesheet/videocallStyles";
 import FontAwesome, {Icons} from "react-native-fontawesome";
 
-import {mediaDevices, RTCPeerConnection, RTCSessionDescription, RTCView} from "react-native-webrtc";
+import {mediaDevices, RTCIceCandidate, RTCPeerConnection, RTCSessionDescription, RTCView} from "react-native-webrtc";
 import firebase from "../firebase/firebase";
 
+let senderIceList = [];
+let ReceiverIceList = [];
 export default class VideoCall extends Component {
     state = {
         SenderVideoURL: null,
@@ -39,9 +41,10 @@ export default class VideoCall extends Component {
     }
 
     sendICE(senderNumber, ICE) {
+        // console.log("SendICE method called : ")
         let VIDEO_CALL_REF = firebase.database().ref("videoCallInfo");
         let info = this.props.navigation.getParam("info");
-        VIDEO_CALL_REF.child(info.sender).child(ICE);
+        VIDEO_CALL_REF.child(info.sender).child('ICE').set(ICE);
     }
 
     setReceiverStream(stream) {
@@ -103,32 +106,80 @@ export default class VideoCall extends Component {
         //caller side
         let info = this.props.navigation.getParam("info");
         console.log(info);
-        pc.onicecandidate = (event => {
+        pc.onicecandidate = (async event => {
                 if (event.candidate != null) {
-                    console.log("Video screen");
-                    console.log(JSON.stringify({'ice': event.candidate}))
-                    this.sendICE(info.sender, JSON.stringify({'ice': event.candidate}))
+                    // console.log("pushing to list")
+                    // console.log(event.candidate)
+                    senderIceList.push(event.candidate);
+                    // this.sendICE(info.sender, event.candidate)
+                    // console.log(senderIceList);
                 }
                 else {
                     console.log("No ice found")
+                    console.log("Trying to set to FIREBASE")
+                    // console.log(senderIceList);
+                    let index = 0;
+                    for (let ice in senderIceList) {
+                        console.log("one of the ice");
+                        // console.log(index);
+                        // console.log(senderIceList[ice])
+                        VIDEO_CALL_REF.child(info.sender).child('ICE').push(senderIceList[ice]);
+                        index++;
+                    }
                 }
             }
         );
-        // pc.onaddstream = (event => this.setReceiverStream(event.stream));
+
+        pc.onaddstream = (event => {
+            console.log("Huhuuuu getting stream!!!!")
+            console.log(event.stream)
+            this.setState({
+                RecieverVideoURL: event.stream
+            })
+
+        });
+
+
         let VIDEO_CALL_REF = firebase.database().ref("videoCallInfo");
         pc.createOffer().then((sdp) => {
             pc.setLocalDescription(sdp).then(() => {
-                VIDEO_CALL_REF.child(info.sender).set({videoSDP: pc.localDescription, isVideoSendCall: true});
+                // console.log("Local desc ")
+                // console.log(pc.localDescription)
+                VIDEO_CALL_REF.child(info.sender).child('videoSDP').set(pc.localDescription);
                 VIDEO_CALL_REF.child(info.receiver).set({caller: info.sender, isVideoReceiveCall: true});
+
             })
         });
         // pc.onaddstream = event =>
-        VIDEO_CALL_REF.child(info.receiver).child('videoSDP').on('child_added', (snapshot) => {
-            console.log("Snapshot : ")
-            console.log(snapshot.val());
+        VIDEO_CALL_REF.child(info.receiver).on('child_added', (snapshot) => {
+            // console.log("Snapshot : ")
+            // console.log(snapshot);
+            // console.log("Snapshot key: ")
+            // console.log(snapshot.key);
 
-            if (snapshot != null && snapshot !== 'answer') {
-                pc.setRemoteDescription(new RTCSessionDescription(snapshot.val().sdp));
+            if (snapshot.key === 'videoSDP') {
+                console.log("Getting and setting SDP");
+                pc.setRemoteDescription(new RTCSessionDescription(snapshot.val()));
+            }
+            else if (snapshot.key === 'ICE' && snapshot !== undefined) {
+                // console.log("Getting and setting ICE");
+                VIDEO_CALL_REF.child(info.receiver).child('ICE').on('child_added', snapshot => {)
+
+                    pc.addIceCandidate(new RTCIceCandidate({
+                        sdpMLineIndex: snapshot.val().sdpMLineIndex,
+                        candidate: snapshot.val().candidate
+                    })).then(() => {
+                        console.log("set receiver ICE")
+                    }).catch(error => {
+                        console.log("Oops, we getting error", error.message);
+                        throw error;
+                    });
+                })
+                // console.log(JSON.parse(snapshot.val()).ice)
+                // console.log(new RTCIceCandidate(snapshot.val()));
+                //
+                console.log("Done setting ICE")
+
             }
         });
     }
@@ -139,11 +190,12 @@ export default class VideoCall extends Component {
     };
 
     render() {
-        if (this.state.SenderVideoURL) {
-            console.warn(this.state.SenderVideoURL);
+        if (this.state.RecieverVideoURL) {
+            // console.warn(this.state.SenderVideoURL);
+            console.log("In the render method")
             return (
                 <View style={styles.container}>
-                    <RTCView streamURL={this.state.SenderVideoURL} style={styles.video1}/>
+                    <RTCView streamURL={this.state.RecieverVideoURL.toURL()} style={styles.video1}/>
                     <View style={styles.callIcon}>
                         <TouchableOpacity onPress={this.handlePressCall}>
                             <Text style={styles.phoneCallBox}>
