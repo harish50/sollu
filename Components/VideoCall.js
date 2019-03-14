@@ -108,21 +108,16 @@ export default class VideoCall extends Component {
         console.log(info);
         pc.onicecandidate = (async event => {
                 if (event.candidate != null) {
-                    // console.log("pushing to list")
-                    // console.log(event.candidate)
+
                     senderIceList.push(event.candidate);
-                    // this.sendICE(info.sender, event.candidate)
-                    // console.log(senderIceList);
+
                 }
                 else {
                     console.log("No ice found")
                     console.log("Trying to set to FIREBASE")
-                    // console.log(senderIceList);
                     let index = 0;
                     for (let ice in senderIceList) {
                         console.log("one of the ice");
-                        // console.log(index);
-                        // console.log(senderIceList[ice])
                         VIDEO_CALL_REF.child(info.sender).child('ICE').push(senderIceList[ice]);
                         index++;
                     }
@@ -163,16 +158,16 @@ export default class VideoCall extends Component {
             }
             else if (snapshot.key === 'ICE' && snapshot !== undefined) {
                 // console.log("Getting and setting ICE");
-                VIDEO_CALL_REF.child(info.receiver).child('ICE').on('child_added', snapshot => {)
-
+                VIDEO_CALL_REF.child(info.receiver).child('ICE').on('child_added', snapshot => {
+                    console.log("Anjali added ICE child")
                     pc.addIceCandidate(new RTCIceCandidate({
                         sdpMLineIndex: snapshot.val().sdpMLineIndex,
                         candidate: snapshot.val().candidate
-                    })).then(() => {
-                        console.log("set receiver ICE")
-                    }).catch(error => {
-                        console.log("Oops, we getting error", error.message);
-                        throw error;
+                    })).then(_ => {
+                        console.log("Successfully added ICE")
+                        // Do stuff when the candidate is successfully passed to the ICE agent
+                    }).catch(e => {
+                        console.log("Error: Failure during addIceCandidate()");
                     });
                 })
                 // console.log(JSON.parse(snapshot.val()).ice)
