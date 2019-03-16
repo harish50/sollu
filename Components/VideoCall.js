@@ -7,12 +7,17 @@ import {mediaDevices, RTCIceCandidate, RTCPeerConnection, RTCSessionDescription,
 import firebase from "../firebase/firebase";
 
 let senderIceList = [];
-let ReceiverIceList = [];
+let receiverIceList = [];
+let pc = null;
+
+let VIDEO_CALL_REF = firebase.database().ref("videoCallInfo");
+let info = null;
 export default class VideoCall extends Component {
     state = {
         SenderVideoURL: null,
-        RecieverVideoURL: null,
-        isFront: true
+        ReceiverVideoURL: null,
+        isFront: true,
+        streamVideo: false
     };
 
     static navigationOptions = ({navigation}) => {
@@ -40,143 +45,151 @@ export default class VideoCall extends Component {
         return key;
     }
 
-    sendICE(senderNumber, ICE) {
-        // console.log("SendICE method called : ")
-        let VIDEO_CALL_REF = firebase.database().ref("videoCallInfo");
-        let info = this.props.navigation.getParam("info");
-        VIDEO_CALL_REF.child(info.sender).child('ICE').set(ICE);
-    }
-
-    setReceiverStream(stream) {
-        this.setState({
-            RecieverVideoURL: stream
-        })
-    }
-
     componentDidMount() {
-        // const configuration = {
-        //     iceServers: [{ url: "stun:stun.l.google.com:19302" }]
-        // };
-        var servers = {
+        info = this.props.navigation.getParam("info")
+        this.startVideoCall();
+    }
+    componentWillUnmount(){
+        senderIceList=[];
+    }
+
+    async startVideoCall() {
+        let servers = {
             'iceServers': [{'urls': 'stun:stun.services.mozilla.com'}, {'urls': 'stun:stun.l.google.com:19302'}, {
                 'urls': 'turn:numb.viagenie.ca',
                 'credential': 'webrtc',
                 'username': 'websitebeaver@mail.com'
             }]
         };
+        pc = new RTCPeerConnection(servers);
+        let flag="false";
+        flag = await this.getLocalStream();
+        console.log("flag");
+        console.log(flag)
+        if (flag==="true") {
+            console.log("Flag is true")
+            this.makeOffer();
+            console.log("Completed creating Offer");
+            this.collectAndSendICEs();
+            console.log("Back to method");
+            this.waitForAnswer();
 
-        const pc = new RTCPeerConnection(servers);
-        const {isFront} = this.state;
-        mediaDevices.enumerateDevices().then(sourceInfos => {
-            console.log(sourceInfos);
-            let videoSourceId;
-            for (let i = 0; i < sourceInfos.length; i++) {
-                const sourceInfo = sourceInfos[i];
-                if (
-                    sourceInfo.kind == "video" &&
-                    sourceInfo.facing == (isFront ? "front" : "back")
-                ) {
-                    videoSourceId = sourceInfo.id;
+            pc.onaddstream = ((event) => {
+                console.log("onaddstream");
+                console.log(event.stream);
+                this.setState({
+                    ReceiverVideoURL: event.stream
+                })
+            });
+        }
+    }
+
+    waitForAnswer() {
+        console.log("Entered in to waitForCall ")
+        VIDEO_CALL_REF.child(info.receiver).on('child_added', async (snap) => {
+            if (snap.key === 'videoSDP') {
+                console.log("Getting SDP");
+                pc.setRemoteDescription(new RTCSessionDescription(snap.val()));
+                console.log("Done setting SDP")
+            } else if (snap.key === 'ICE') {
+                receiverIceList = snap.val();
+                console.log("got receivers ICE list");
+                let flag =false;
+                console.log("flag before addRemoteICE:",flag);
+                flag = await this.addRemoteICE();
+                console.log("flag from addRemoteICE:",flag);
+                if(flag){
+                    console.log("addRemoteICE done");
+                    this.setState({
+                        streamVideo: true
+                    })
                 }
             }
-
-            mediaDevices.getUserMedia({
-                audio: true,
-                video: {
-                    mandatory: {
-                        minWidth: 320, // Provide your own width, height and frame rate here
-                        minHeight: 240,
-                        minFrameRate: 30
-                    },
-                    facingMode: isFront ? "user" : "environment",
-                    optional: videoSourceId ? [{sourceId: videoSourceId}] : []
-                }
-            }).then(stream => {
-                console.log("Streaming OK", stream);
-                this.setState({
-                    SenderVideo: stream
-                });
-                pc.addStream(stream);
-                // Media stream added to PC
-            }).catch(error => {
-                console.log("Oops, we getting error", error.message);
-                throw error;
-            });
         });
-        //caller side
-        let info = this.props.navigation.getParam("info");
-        console.log(info);
-        pc.onicecandidate = (async event => {
+    }
+
+    async addRemoteICE() {
+        let temp=-1;
+        let index =0;
+        for(;index<receiverIceList.length&&temp!==index;){
+            temp=index;
+            await pc.addIceCandidate(new RTCIceCandidate(receiverIceList[index])).then(
+                () => {
+                    console.log("add ice succeeded");
+                    index++;
+                },
+                error => {
+                    console.log("error");
+                    console.log(error);
+                }
+            )
+        }
+        if(index===receiverIceList.length){
+            console.log("out from addICE");
+            return true;
+        }
+    }
+
+    collectAndSendICEs() {
+        console.log("collect Ice here")
+         pc.onicecandidate = ( event => {
                 if (event.candidate != null) {
-
+                    console.log("Pushing ICE to list")
                     senderIceList.push(event.candidate);
-
                 }
                 else {
                     console.log("No ice found")
                     console.log("Trying to set to FIREBASE")
-                    let index = 0;
-                    for (let ice in senderIceList) {
-                        console.log("one of the ice");
-                        VIDEO_CALL_REF.child(info.sender).child('ICE').push(senderIceList[ice]);
-                        index++;
-                    }
+                    // let index = 0;
+                    // for (let ice in senderIceList) {
+                    //     console.log("one of the ice");
+                    //     VIDEO_CALL_REF.child(info.sender).child('ICE').push(senderIceList[ice]);
+                    //     index++;
+                    // }
+
+                    VIDEO_CALL_REF.child(info.sender).child('ICE').set(senderIceList);
+
+                    // VIDEO_CALL_REF.child(info.sender).child('ICE').push("completed");
                 }
             }
-        );
+        )
+        console.log("Completed collecting ICEs")
+    }
 
-        pc.onaddstream = (event => {
-            console.log("Huhuuuu getting stream!!!!")
-            console.log(event.stream)
-            this.setState({
-                RecieverVideoURL: event.stream
-            })
-
-        });
-
-
-        let VIDEO_CALL_REF = firebase.database().ref("videoCallInfo");
-        pc.createOffer().then((sdp) => {
+    makeOffer() {
+        console.log("Creating Offer")
+        pc.createOffer({
+            OfferToReceiveAudio: true,
+            OfferToReceiveVideo: true
+        }).then((sdp) => {
             pc.setLocalDescription(sdp).then(() => {
-                // console.log("Local desc ")
-                // console.log(pc.localDescription)
+                console.log("Local desc ")
+                console.log(pc.localDescription)
+                VIDEO_CALL_REF.child(info.receiver).set({caller: info.sender});
                 VIDEO_CALL_REF.child(info.sender).child('videoSDP').set(pc.localDescription);
-                VIDEO_CALL_REF.child(info.receiver).set({caller: info.sender, isVideoReceiveCall: true});
-
             })
         });
-        // pc.onaddstream = event =>
-        VIDEO_CALL_REF.child(info.receiver).on('child_added', (snapshot) => {
-            // console.log("Snapshot : ")
-            // console.log(snapshot);
-            // console.log("Snapshot key: ")
-            // console.log(snapshot.key);
+    }
 
-            if (snapshot.key === 'videoSDP') {
-                console.log("Getting and setting SDP");
-                pc.setRemoteDescription(new RTCSessionDescription(snapshot.val()));
+    async getLocalStream() {
+        console.log("Getting my media")
+        await mediaDevices.getUserMedia({
+            audio: true,
+            video: {
+                mandatory: {
+                    minWidth: 320, // Provide your own width, height and frame rate here
+                    minHeight: 240,
+                    minFrameRate: 30
+                },
+                facingMode: "user"
             }
-            else if (snapshot.key === 'ICE' && snapshot !== undefined) {
-                // console.log("Getting and setting ICE");
-                VIDEO_CALL_REF.child(info.receiver).child('ICE').on('child_added', snapshot => {
-                    console.log("Anjali added ICE child")
-                    pc.addIceCandidate(new RTCIceCandidate({
-                        sdpMLineIndex: snapshot.val().sdpMLineIndex,
-                        candidate: snapshot.val().candidate
-                    })).then(_ => {
-                        console.log("Successfully added ICE")
-                        // Do stuff when the candidate is successfully passed to the ICE agent
-                    }).catch(e => {
-                        console.log("Error: Failure during addIceCandidate()");
-                    });
-                })
-                // console.log(JSON.parse(snapshot.val()).ice)
-                // console.log(new RTCIceCandidate(snapshot.val()));
-                //
-                console.log("Done setting ICE")
-
-            }
-        });
+        }).then(async stream => {
+            console.log("Streaming OK", stream);
+            await pc.addStream(stream);
+            console.log("going out")
+        })
+        console.log("Gonna return true")
+        return "true";
     }
 
     handlePressCall = () => {
@@ -185,12 +198,12 @@ export default class VideoCall extends Component {
     };
 
     render() {
-        if (this.state.RecieverVideoURL) {
+        if (this.state.streamVideo && this.state.ReceiverVideoURL) {
             // console.warn(this.state.SenderVideoURL);
             console.log("In the render method")
             return (
                 <View style={styles.container}>
-                    <RTCView streamURL={this.state.RecieverVideoURL.toURL()} style={styles.video1}/>
+                    <RTCView streamURL={this.state.ReceiverVideoURL.toURL()} style={styles.video1}/>
                     <View style={styles.callIcon}>
                         <TouchableOpacity onPress={this.handlePressCall}>
                             <Text style={styles.phoneCallBox}>
