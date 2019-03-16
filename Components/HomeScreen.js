@@ -15,13 +15,19 @@ import firebase from "../firebase/firebase";
 import Profile from "./Profile";
 import Firebase from "react-native-firebase";
 import {mediaDevices, RTCPeerConnection, RTCSessionDescription, RTCIceCandidate, RTCView} from "react-native-webrtc";
+import FontAwesome,{Icons} from "react-native-fontawesome";
 
 let receiverIceList = [];
+let senderIceList=[];
+let caller = null;
 let pc = null;
+let sender = null;
+let VIDEO_CALL_REF = firebase.database().ref("videoCallInfo");
 export default class HomeScreen extends React.Component {
     state = {
         contacts: [],
-        currentUser: ""
+        currentUser: "",
+        remoteStream: ''
     };
 
     async checkPermission() {
@@ -41,11 +47,10 @@ export default class HomeScreen extends React.Component {
                 await AsyncStorage.setItem("fcmToken", fcmToken);
             }
         }
-        const user = this.props.navigation.getParam("sender");
         firebase
             .database()
             .ref("registeredUserProfileInfo")
-            .child(user)
+            .child(sender)
             .child("pushToken")
             .set(fcmToken);
     }
@@ -64,6 +69,7 @@ export default class HomeScreen extends React.Component {
     componentWillUnmount() {
         this.notificationListener();
         this.notificationOpenedListener();
+        VIDEO_CALL_REF.child(sender).child("flag").remove();
     }
 
     async createNotificationListeners() {
@@ -192,7 +198,6 @@ export default class HomeScreen extends React.Component {
     getOrderedLocalContacts() {
         let db = firebase.database();
         let localContacts = [];
-        let sender = this.props.navigation.getParam("sender");
         Contacts.getAll((err, contacts) => {
             if (err) throw err;
             else {
@@ -238,115 +243,139 @@ export default class HomeScreen extends React.Component {
         });
     }
 
-    sendICE(senderNumber, ICE) {
-        let VIDEO_CALL_REF = firebase.database().ref("videoCallInfo");
-        let sender = this.props.navigation.getParam("sender")
-        console.log("sender:"+sender);
-        console.log("Checking ICE : ")
-        console.log(ICE)
-        VIDEO_CALL_REF.child(sender).child('ICE').set(ICE);
-    }
+    // sendICE(senderNumber, ICE) {
+    //     let VIDEO_CALL_REF = firebase.database().ref("videoCallInfo");
+    //     console.log("sender:" + sender);
+    //     console.log("Checking ICE : ");
+    //     console.log(ICE);
+    //     VIDEO_CALL_REF.child(sender).child('ICE').set(ICE);
+    // }
+    //
 
-    listenForVideoCall() {
-        let caller = null;
-        let VIDEO_CALL_REF = firebase.database().ref("videoCallInfo");
-        var servers = {
+
+    getLocalStream(){
+        let servers = {
             'iceServers': [{'urls': 'stun:stun.services.mozilla.com'}, {'urls': 'stun:stun.l.google.com:19302'}, {
                 'urls': 'turn:numb.viagenie.ca',
                 'credential': 'webrtc',
                 'username': 'websitebeaver@mail.com'
             }]
         };
-
         pc = new RTCPeerConnection(servers);
-        VIDEO_CALL_REF.child(this.props.navigation.getParam("sender")).on("value", (snapshot) => {
-            let videoCallInfo = snapshot.val()
-            if (caller !== null && videoCallInfo !== null && caller === videoCallInfo.caller) {
-                return;
+        mediaDevices.getUserMedia({
+            audio: true,
+            video: {
+                mandatory: {
+                    minWidth: 320, // Provide your own width, height and frame rate here
+                    minHeight: 240,
+                    minFrameRate: 30
+                },
+                facingMode: "user"
             }
-            else {
-                caller = videoCallInfo !== null ? videoCallInfo.caller : null;
-            }
-            if (videoCallInfo !== null && videoCallInfo.isVideoReceiveCall === true) {
-                const {isFront} = this.state;
-                let sender = this.props.navigation.getParam("sender")
-                console.log("sender:"+sender);
+        }).then((stream) => {
+            pc.addStream(stream);
+            console.log("stream added");
+        })
+    }
 
-                pc.onicecandidate = (event => {
-                        console.log('Printing event');
-                        console.log(event.candidate);
-                        if (event.candidate != null) {
-                            receiverIceList.push(event.candidate);
-                            console.log("inside onicecandidate");
-                            // console.log(event.candidate)
-                            console.log(receiverIceList)
-                        }
-                        else {
-                            console.log("No ice found")
-                            let index = 0;
-                            for(let ice in receiverIceList){
-                                VIDEO_CALL_REF.child(this.props.navigation.getParam("sender")).child('ICE').push(receiverIceList[ice]);
-                                console.log("pushing to fb");
-                            }
-                        }
-                    }
-                );
+    async addRemoteICE() {
+        let temp=-1;
+        let index =0;
+        for(;index<senderIceList.length&&temp!==index;){
+            temp=index;
+            await pc.addIceCandidate(new RTCIceCandidate(senderIceList[index])).then(
+                () => {
+                    console.log("add ice succeeded");
+                    index++;
+                },
+                error => {
+                    console.log("error");
+                    console.log(error);
+                }
+            )
+        }
+        if(index===senderIceList.length){
+            console.log("out from addICE");
+            return true;
+        }
+    }
 
-                pc.onaddstream = (event => {
-                    console.log("event stream.......");
-                    console.log(event.stream);
-                });
-
-                VIDEO_CALL_REF.child(videoCallInfo.caller).on('child_added', (snapshot) => {
-                    console.log("Waiting for SDP")
-                    console.log(snapshot.val());
-                    if(snapshot.key==='videoSDP'){
-                        console.log("inside if");
-                        pc.setRemoteDescription(new RTCSessionDescription(snapshot.val())).then(()=>{
-                            console.log("Accesing my media")
-                            mediaDevices.getUserMedia({
-                            audio: true,
-                            video: {
-                                mandatory: {
-                                    minWidth: 320, // Provide your own width, height and frame rate here
-                                    minHeight: 240,
-                                    minFrameRate: 30
-                                },
-                                facingMode: isFront ? "user" : "environment",
-                                // optional: videoSourceId ? [{ sourceId: videoSourceId }] : []
-                            }
-                        }).then((stream) => {
-                            pc.addStream(stream);
-                            console.log("stream added");
-                        });}).then(() => {
-                            console.log("in getting snapshot");
-                            pc.createAnswer().then((sdp) => {
-                                console.log("in create answer");
-                                // console.log(sdp);
-                                pc.setLocalDescription(sdp).then(() => {
-                                    console.log("localdescription");
-                                    // console.log(pc.localDescription);
-                                    VIDEO_CALL_REF.child(this.props.navigation.getParam("sender")).child('videoSDP').set(pc.localDescription);
-                                });
-                            });
-                        });
-                    }
-                    else if(snapshot.key==='ICE'){
-                        VIDEO_CALL_REF.child(videoCallInfo.caller).child("ICE").on('child_added', (snapshot) => {
-                            console.log("adding ice");
-                            console.log(pc.addIceCandidate(new RTCIceCandidate({
-                                sdpMLineIndex: snapshot.val().sdpMLineIndex,
-                                candidate: snapshot.val().candidate
-                            })));
-                            // console.log(snapshot.val());
-                            console.log("ice candidate added");
-                        })
-                    }
-                });
-            }
+    answerTheCall() {
+        pc.createAnswer().then(async (sdp) => {
+            console.log("in create answer");
+            pc.setLocalDescription(sdp).then(() => {
+                console.log("localdescription");
+                VIDEO_CALL_REF.child(this.props.navigation.getParam("sender")).child('videoSDP').set(pc.localDescription);
+            })
         });
     }
 
+    listenOnCaller(){
+        VIDEO_CALL_REF.child(caller).on('child_added', async (callerSnap) => {
+            if(callerSnap.key==='videoSDP'){
+                console.log("videoSDP");
+                this.getLocalStream();
+                pc.setRemoteDescription(new RTCSessionDescription(callerSnap.val())).then(()=>{console.log("setremotedescription")},error=>{console.log(error)});
+            }
+            else if(callerSnap.key==='ICE'){
+                receiverIceList = callerSnap.val();
+                console.log("added into receiverIceList");
+                let flag;
+                flag = await this.addRemoteICE();
+                console.log("flag from addRemoteICE:",flag);
+                if(flag){
+                    console.log("inside flag to start answer");
+                    this.answerTheCall();
+                    this.collectAndSendICE();
+                    // pc.onaddstream=((event)=> {console.log("onaddstream"); console.log(event.stream)});
+                    // pc.onaddtrack=((event)=> {console.log("onaddstream"); console.log(event.stream)});
+                    let stream = pc.getRemoteStreams()[0];
+                    this.setState({
+                        remoteStream: stream
+                    });
+                    console.log(stream);
+                }
+            }
+        })
+    }
+
+    collectAndSendICE() {
+        console.log("in collectandsendICE");
+        pc.onicecandidate = (event => {
+                console.log('Printing event');
+                if (event.candidate != null) {
+                    receiverIceList.push(event.candidate);
+                    console.log("inside onicecandidate");
+                }
+                else {
+                    console.log("No ice found")
+                    VIDEO_CALL_REF.child(this.props.navigation.getParam("sender")).child('ICE').set(receiverIceList);
+                    console.log("pushing to fb");
+                }
+            }
+        );
+    }
+
+    listenForVideoCall() {
+        VIDEO_CALL_REF.child(sender).child("flag").set(true);
+            VIDEO_CALL_REF.child(sender).on("value", (snapshot) => {
+                let videoCallInfo = snapshot.val();
+                if (caller !== null && videoCallInfo !== null && caller === videoCallInfo.caller) {
+                    return;
+                }
+                else {
+                    caller = videoCallInfo !== null ? videoCallInfo.caller : null;
+                }
+                if(caller && videoCallInfo!=null){
+                    this.listenOnCaller();
+                }
+            });
+    }
+
+    componentWillMount(){
+        sender = this.props.navigation.getParam("sender")
+        console.log("in componentWillMount:"+sender);
+    }
     async componentDidMount() {
         const permission = await this.requestContactsPermission();
         if (!permission) {
@@ -356,7 +385,7 @@ export default class HomeScreen extends React.Component {
         this.getOrderedLocalContacts();
         this.checkPermission();
         this.createNotificationListeners();
-        this.listenForVideoCall();
+            this.listenForVideoCall();
     }
 
     renderName(contact) {
@@ -400,6 +429,26 @@ export default class HomeScreen extends React.Component {
     };
 
     render() {
+        if(this.state.remoteStream){
+            console.log("In the render method")
+            return (
+                <View style={styles.container}>
+                    <RTCView streamURL={this.state.remoteStream.toURL()} style={styles.video1}/>
+                    <View style={styles.callIcon}>
+                        <TouchableOpacity>
+                            <Text style={styles.phoneCallBox}>
+                                <FontAwesome>{Icons.phoneSquare}</FontAwesome>
+                            </Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity>
+                            <Text style={styles.phoneCallBox}>
+                                <FontAwesome>{Icons.videoSlash}</FontAwesome>
+                            </Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            );
+        }
         if (this.state.contacts.length === 0) {
             return (
                 <View style={styles.loadingIcon}>
