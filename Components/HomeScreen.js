@@ -110,7 +110,7 @@ export default class HomeScreen extends React.Component {
     updateCurrentUser() {
         this.setState({ currentUser: '' });
         this.setState({ contacts: [] });
-        this.getOrderedLocalContacts();
+        this.updateList();
     }
 
     getPairID(sender, receiver) {
@@ -150,7 +150,7 @@ export default class HomeScreen extends React.Component {
             return Platform.OS === "ios" ? true : false;
         }
     }
-    getOrderedLocalContacts() {
+    async getOrderedLocalContacts() {
         let db = firebase.database();
         let localContacts = [];
         let sender = this.props.navigation.getParam("sender");
@@ -186,20 +186,34 @@ export default class HomeScreen extends React.Component {
                         }
                     }
                     localContacts.sort(function (contact1, contact2) { return contact2.lastActiveTime - contact1.lastActiveTime });
+                    let listofContacts = [...this.state.contacts, ...localContacts]
                     this.setState({
-                        contacts: [...this.state.contacts, ...localContacts]
+                        contacts:listofContacts
                     })
+                    await AsyncStorage.setItem('listofContacts',JSON.stringify(listofContacts))
+                    this.updateList()
                 });
             }
         })
     }
+    async updateList(){
+        let response = await AsyncStorage.getItem('listofContacts');
+        let listofContacts = await JSON.parse(response)||[];
+        this.setState({
+            contacts:listofContacts
+        });
+        if(response === null){
+            this.getOrderedLocalContacts()
+        }
+    }
+
     async componentDidMount() {
         const permission = await this.requestContactsPermission();
         if (!permission) {
             alert(permission);
             return;
         }
-        this.getOrderedLocalContacts();
+        this.updateList();
         this.checkPermission();
         this.createNotificationListeners();
     }
