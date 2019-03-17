@@ -27,7 +27,8 @@ export default class HomeScreen extends React.Component {
     state = {
         contacts: [],
         currentUser: "",
-        remoteStream: ''
+        remoteStream: '',
+        streamVideo: false
     };
 
     async checkPermission() {
@@ -70,6 +71,8 @@ export default class HomeScreen extends React.Component {
         this.notificationListener();
         this.notificationOpenedListener();
         VIDEO_CALL_REF.child(sender).child("flag").remove();
+        senderIceList = [];
+        receiverIceList = [];
     }
 
     async createNotificationListeners() {
@@ -253,16 +256,8 @@ export default class HomeScreen extends React.Component {
     //
 
 
-    getLocalStream(){
-        let servers = {
-            'iceServers': [{'urls': 'stun:stun.services.mozilla.com'}, {'urls': 'stun:stun.l.google.com:19302'}, {
-                'urls': 'turn:numb.viagenie.ca',
-                'credential': 'webrtc',
-                'username': 'websitebeaver@mail.com'
-            }]
-        };
-        pc = new RTCPeerConnection(servers);
-        mediaDevices.getUserMedia({
+    async getLocalStream(){
+        await mediaDevices.getUserMedia({
             audio: true,
             video: {
                 mandatory: {
@@ -272,10 +267,12 @@ export default class HomeScreen extends React.Component {
                 },
                 facingMode: "user"
             }
-        }).then((stream) => {
-            pc.addStream(stream);
+        }).then(async (stream) => {
+            await pc.addStream(stream);
             console.log("stream added");
-        })
+        });
+        console.log("in getLocalStream return true");
+        return true;
     }
 
     async addRemoteICE() {
@@ -311,36 +308,39 @@ export default class HomeScreen extends React.Component {
     }
 
     listenOnCaller(){
+        let servers = {
+            'iceServers': [{'urls': 'stun:stun.services.mozilla.com'}, {'urls': 'stun:stun.l.google.com:19302'}, {
+                'urls': 'turn:numb.viagenie.ca',
+                'credential': 'webrtc',
+                'username': 'websitebeaver@mail.com'
+            }]
+        };
+        pc = new RTCPeerConnection(servers);
         VIDEO_CALL_REF.child(caller).on('child_added', async (callerSnap) => {
             if(callerSnap.key==='videoSDP'){
                 console.log("videoSDP");
-                this.getLocalStream();
-                pc.setRemoteDescription(new RTCSessionDescription(callerSnap.val())).then(()=>{console.log("setremotedescription")},error=>{console.log(error)});
+                let flag = false;
+                flag = await this.getLocalStream();
+                if(flag){
+                    pc.setRemoteDescription(new RTCSessionDescription(callerSnap.val())).then(()=>{console.log("setremotedescription")},error=>{console.log(error)});
+                }
             }
             else if(callerSnap.key==='ICE'){
-                receiverIceList = callerSnap.val();
-                console.log("added into receiverIceList");
+                if (senderIceList.length !== 0){
+                    senderIceList = [];
+                }
+                senderIceList = callerSnap.val();
+                console.log("added into senderIceList");
                 let flag;
                 flag = await this.addRemoteICE();
                 console.log("flag from addRemoteICE:",flag);
                 if(flag){
                     console.log("inside flag to start answer");
                     this.answerTheCall();
-                    this.collectAndSendICE();
-                    // pc.onaddstream=((event)=> {console.log("onaddstream"); console.log(event.stream)});
-                    // pc.onaddtrack=((event)=> {console.log("onaddstream"); console.log(event.stream)});
-                    let stream = pc.getRemoteStreams()[0];
-                    this.setState({
-                        remoteStream: stream
-                    });
-                    console.log(stream);
+
                 }
             }
-        })
-    }
-
-    collectAndSendICE() {
-        console.log("in collectandsendICE");
+        });
         pc.onicecandidate = (event => {
                 console.log('Printing event');
                 if (event.candidate != null) {
@@ -350,11 +350,27 @@ export default class HomeScreen extends React.Component {
                 else {
                     console.log("No ice found")
                     VIDEO_CALL_REF.child(this.props.navigation.getParam("sender")).child('ICE').set(receiverIceList);
+                    this.setState({
+                        streamVideo: true
+                    })
                     console.log("pushing to fb");
                 }
             }
         );
+        pc.onaddstream = ((event) => {
+            console.log("onaddstream");
+            console.log(event.stream);
+            this.setState({
+                remoteStream: event.stream
+            });
+        });
+        // pc.onaddtrack=((event)=> {console.log("onaddtrack"); console.log(event.stream)});
+        // let stream = pc.getRemoteStreams()[0];
+        //
+        // console.log("getRemoteSreams");
+        // console.log(stream);
     }
+
 
     listenForVideoCall() {
         VIDEO_CALL_REF.child(sender).child("flag").set(true);
@@ -429,7 +445,7 @@ export default class HomeScreen extends React.Component {
     };
 
     render() {
-        if(this.state.remoteStream){
+        if(this.state.remoteStream&&this.state.streamVideo){
             console.log("In the render method")
             return (
                 <View style={styles.container}>
