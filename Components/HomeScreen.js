@@ -107,10 +107,10 @@ export default class HomeScreen extends React.Component {
         }
 
     }
-    updateCurrentUser() {
+    async updateCurrentUser() {
         this.setState({ currentUser: '' });
-        this.setState({ contacts: [] });
-        this.getOrderedLocalContacts();
+        this.setState({ contacts: []});
+        this.updateList()
     }
 
     getPairID(sender, receiver) {
@@ -150,48 +150,64 @@ export default class HomeScreen extends React.Component {
             return Platform.OS === "ios" ? true : false;
         }
     }
-    getOrderedLocalContacts() {
-        let db = firebase.database();
-        let localContacts = [];
-        let sender = this.props.navigation.getParam("sender");
-        Contacts.getAll((err, contacts) => {
-            if (err) throw err;
-            else {
-                db.ref("registeredUsers").once('value', async (registeredUsers) => {
-                    const time = await this.getLastActiveTime(sender, sender);
-                    localContacts.push({
-                        key: sender,
-                        name: "You",
-                        lastActiveTime: time
-                    });
-                    for (let i = 0; i < contacts.length; i++) {
-                        if (contacts[i].phoneNumbers.length !== 0) {
-                            let number = contacts[i].phoneNumbers[0].number.replace(/\D/g, '');
-                            let trimmedNumber = number;
-                            if (number.length == 12) {
-                                trimmedNumber = number.substring(2);
-                            }
-                            number = trimmedNumber;
-                            if (number) {
-                                if (number && registeredUsers.hasChild(number)) {
-                                    const time = await this.getLastActiveTime(sender, number);
-                                    localContacts.push({
-                                        key: number,
-                                        name: contacts[i].givenName,
-                                        lastActiveTime: time
-                                    });
-                                    AsyncStorage.setItem(number, contacts[i].givenName);
+        async getOrderedLocalContacts(){
+            let db = firebase.database();
+            let localContacts = [];
+            let sender = this.props.navigation.getParam("sender");
+            Contacts.getAll((err, contacts) => {
+                if (err) throw err;
+                else {
+                    db.ref("registeredUsers").once('value', async (registeredUsers) => {
+                        const time = await this.getLastActiveTime(sender, sender);
+                        localContacts.push({
+                            key: sender,
+                            name: "You",
+                            lastActiveTime: time
+                        });
+                        for (let i = 0; i < contacts.length; i++) {
+                            if (contacts[i].phoneNumbers.length !== 0) {
+                                let number = contacts[i].phoneNumbers[0].number.replace(/\D/g, '');
+                                let trimmedNumber = number;
+                                if (number.length == 12) {
+                                    trimmedNumber = number.substring(2);
+                                }
+                                number = trimmedNumber;
+                                if (number) {
+                                    if (number && registeredUsers.hasChild(number)) {
+                                        const time = await this.getLastActiveTime(sender, number);
+                                        localContacts.push({
+                                            key: number,
+                                            name: contacts[i].givenName,
+                                            lastActiveTime: time
+                                        });
+                                        AsyncStorage.setItem(number, contacts[i].givenName);
+                                    }
                                 }
                             }
                         }
-                    }
-                    localContacts.sort(function (contact1, contact2) { return contact2.lastActiveTime - contact1.lastActiveTime });
-                    this.setState({
-                        contacts: [...this.state.contacts, ...localContacts]
-                    })
-                });
-            }
-        })
+                        localContacts.sort(function (contact1, contact2) {
+                            return contact2.lastActiveTime - contact1.lastActiveTime
+                        });
+                        this.setState({
+                            contacts: localContacts
+                        })
+                        await AsyncStorage.setItem('listofContacts', JSON.stringify(localContacts))
+                    });
+                }
+            })
+        }
+    async updateList(){
+        let response = await AsyncStorage.getItem('listofContacts');
+        if(response === null){
+            this.getOrderedLocalContacts()
+        }
+        else{
+            let listofContacts = await JSON.parse(response)||[];
+            this.setState({
+                contacts:listofContacts
+            });
+            this.getOrderedLocalContacts()
+        }
     }
     async componentDidMount() {
         const permission = await this.requestContactsPermission();
@@ -199,7 +215,7 @@ export default class HomeScreen extends React.Component {
             alert(permission);
             return;
         }
-        this.getOrderedLocalContacts();
+        this.updateList();
         this.checkPermission();
         this.createNotificationListeners();
     }

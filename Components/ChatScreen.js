@@ -165,8 +165,6 @@ export default class ChatScreen extends React.Component {
         let messagetextstyle;
         let { navigation } = this.props;
         const info = navigation.getParam('info');
-        console.log("info renderitem")
-        console.log(info)
         let phoneNo = info.sender;
         if (item._id === 0) {
             messageboxstyle = styles.selfMessageContainer;
