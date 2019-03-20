@@ -12,6 +12,8 @@ let pc = null;
 
 let VIDEO_CALL_REF = firebase.database().ref("videoCallInfo");
 let info = null;
+let callerVideoTrack = null;
+let callerVideoMuted = false;
 export default class VideoCall extends Component {
     state = {
         SenderVideoURL: null,
@@ -193,24 +195,43 @@ export default class VideoCall extends Component {
     }
 
     handlePressCall = () => {
-        let {navigation} = this.props;
-        this.props.navigation.navigate("ChatScreen");
+        //mute video of yours.
+        console.log("in mute video");
+        let localStream = pc.getLocalStreams()[0];
+        console.log(localStream);
+            localStream.getVideoTracks()[0].enabled = !(localStream.getVideoTracks()[0].enabled);
+            console.log("video track removed");
+    };
+
+    handleCallHangUp=()=>{
+        console.log(pc);
+        console.log("in callhangup");
+        console.log(pc.close());
+        console.log("after pc.close");
+        // pc=null;
+        VIDEO_CALL_REF.child(info.sender).remove();
+        VIDEO_CALL_REF.child(info.receiver).child('VideoCallEnd').set(true);
+        console.log(pc);
+        this.props.navigation.navigate("ChatScreen", {
+            info: info,
+            contactName: this.props.navigation.getParam("contactName")
+        });
     };
 
     render() {
         if (this.state.streamVideo && this.state.ReceiverVideoURL) {
             // console.warn(this.state.SenderVideoURL);
-            console.log("In the render method")
+            console.log("In the render method");
             return (
                 <View style={styles.container}>
                     <RTCView streamURL={this.state.ReceiverVideoURL.toURL()} style={styles.video1}/>
                     <View style={styles.callIcon}>
-                        <TouchableOpacity onPress={this.handlePressCall}>
+                        <TouchableOpacity onPress={this.handleCallHangUp}>
                             <Text style={styles.phoneCallBox}>
                                 <FontAwesome>{Icons.phoneSquare}</FontAwesome>
                             </Text>
                         </TouchableOpacity>
-                        <TouchableOpacity>
+                        <TouchableOpacity onPress={this.handlePressCall}>
                             <Text style={styles.phoneCallBox}>
                                 <FontAwesome>{Icons.videoSlash}</FontAwesome>
                             </Text>
