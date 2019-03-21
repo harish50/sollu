@@ -11,19 +11,13 @@ import {
     Linking
 } from "react-native";
 import styles from "../Stylesheet/styleSheet";
-import stylings from "../Stylesheet/videocallStyles";
 import Contacts from "react-native-contacts";
 import firebase from "../firebase/firebase";
 import Profile from "./Profile";
 import Firebase from "react-native-firebase";
-import {mediaDevices, RTCIceCandidate, RTCPeerConnection, RTCSessionDescription, RTCView} from "react-native-webrtc";
-import FontAwesome, {Icons} from "react-native-fontawesome";
 
-let receiverIceList = [];
-let senderIceList = [];
-let caller = null;
-let pc = null;
 let sender = null;
+let caller = null;
 let VIDEO_CALL_REF = firebase.database().ref("videoCallInfo");
 export default class HomeScreen extends React.Component {
     state = {
@@ -73,8 +67,6 @@ export default class HomeScreen extends React.Component {
         this.notificationListener();
         this.notificationOpenedListener();
         VIDEO_CALL_REF.child(sender).child("flag").remove();
-        senderIceList = [];
-        receiverIceList = [];
     }
 
     async createNotificationListeners() {
@@ -248,135 +240,6 @@ export default class HomeScreen extends React.Component {
         });
     }
 
-    async getLocalStream() {
-        await mediaDevices.getUserMedia({
-            audio: true,
-            video: {
-                mandatory: {
-                    minWidth: 320, // Provide your own width, height and frame rate here
-                    minHeight: 240,
-                    minFrameRate: 30
-                },
-                facingMode: "user"
-            }
-        }).then(async (stream) => {
-            await pc.addStream(stream);
-            console.log("stream added");
-        });
-        console.log("in getLocalStream return true");
-        return true;
-    }
-
-    async addRemoteICE() {
-        let temp = -1;
-        let index = 0;
-        for (; index < senderIceList.length && temp !== index;) {
-            temp = index;
-            await pc.addIceCandidate(new RTCIceCandidate(senderIceList[index])).then(
-                () => {
-                    console.log("add ice succeeded");
-                    index++;
-                },
-                error => {
-                    console.log("error");
-                    console.log(error);
-                }
-            )
-        }
-        if (index === senderIceList.length) {
-            console.log("out from addICE");
-            return true;
-        }
-    }
-
-    answerTheCall() {
-        pc.createAnswer().then(async (sdp) => {
-            console.log("in create answer");
-            pc.setLocalDescription(sdp).then(() => {
-                console.log("localdescription");
-                VIDEO_CALL_REF.child(this.props.navigation.getParam("sender")).child('videoSDP').set(pc.localDescription);
-            })
-        });
-    }
-
-    listenOnCaller() {
-        let servers = {
-            'iceServers': [{'urls': 'stun:stun.services.mozilla.com'}, {'urls': 'stun:stun.l.google.com:19302'}, {
-                'urls': 'turn:numb.viagenie.ca',
-                'credential': 'webrtc',
-                'username': 'websitebeaver@mail.com'
-            }]
-        };
-        pc = new RTCPeerConnection(servers);
-        VIDEO_CALL_REF.child(caller).on('child_added', async (callerSnap) => {
-            console.log("Let us know the key")
-            console.log(callerSnap.key)
-            if (callerSnap.key === 'VideoCallEnd') {
-                this.setState({
-                    remoteStream: '',
-                    streamVideo: false
-                });
-                VIDEO_CALL_REF.child(this.props.navigation.getParam("sender")).remove();
-
-                console.log("videocallEnd has child 1");
-                VIDEO_CALL_REF.child(caller).remove();
-                console.log("videocallEnd has child21");
-                pc.close();
-            }
-            if (callerSnap.key === 'videoSDP') {
-                console.log("videoSDP");
-                let flag = false;
-                flag = await this.getLocalStream();
-                if (flag) {
-                    pc.setRemoteDescription(new RTCSessionDescription(callerSnap.val())).then(() => {
-                        console.log("setremotedescription")
-                    }, error => {
-                        console.log(error)
-                    });
-                }
-            }
-            else if (callerSnap.key === 'ICE') {
-                if (senderIceList.length !== 0) {
-                    senderIceList = [];
-                }
-                senderIceList = callerSnap.val();
-                console.log("added into senderIceList");
-                let flag;
-                flag = await this.addRemoteICE();
-                console.log("flag from addRemoteICE:", flag);
-                if (flag) {
-                    console.log("inside flag to start answer");
-                    this.answerTheCall();
-
-                }
-            }
-        });
-        pc.onicecandidate = (event => {
-                console.log('Printing event');
-                if (event.candidate != null) {
-                    receiverIceList.push(event.candidate);
-                    console.log("inside onicecandidate");
-                }
-                else {
-                    console.log("No ice found")
-                    VIDEO_CALL_REF.child(this.props.navigation.getParam("sender")).child('ICE').set(receiverIceList);
-                    this.setState({
-                        streamVideo: true
-                    })
-                    console.log("pushing to fb");
-                }
-            }
-        );
-        pc.onaddstream = ((event) => {
-            console.log("onaddstream");
-            console.log(event.stream);
-            this.setState({
-                remoteStream: event.stream
-            });
-        });
-    }
-
-
     listenForVideoCall() {
         VIDEO_CALL_REF.child(sender).child("flag").set(true);
         VIDEO_CALL_REF.child(sender).on("value", (snapshot) => {
@@ -388,7 +251,12 @@ export default class HomeScreen extends React.Component {
                 caller = videoCallInfo !== null ? videoCallInfo.caller : null;
             }
             if (caller && videoCallInfo != null) {
-                this.listenOnCaller();
+                // this.listenOnCaller();
+                this.props.navigation.navigate("AnswerVideoCall", {
+                    callee: this.props.navigation.getParam("sender"),
+                    caller: caller
+                    // onGoBack: () => this.updateCurrentUser()
+                });
             }
         });
     }
@@ -451,48 +319,7 @@ export default class HomeScreen extends React.Component {
         };
     };
 
-    handlePressCall = () => {
-        //mute video of yours.
-        console.log("in mute video");
-        let localStream = pc.getLocalStreams()[0];
-        console.log(localStream);
-        localStream.getVideoTracks()[0].enabled = !(localStream.getVideoTracks()[0].enabled);
-        console.log("video track removed");
-    };
-
-    handleCallHangUp = () => {
-        console.log("in callhangup");
-        console.log(pc.close());
-        console.log("after pc.close");
-        // pc=null;
-        VIDEO_CALL_REF.child(this.props.navigation.getParam("sender")).child('VideoCallEnd').set(true);
-        this.setState({
-            remoteStream: '',
-            streamVideo: false
-        });
-    };
-
     render() {
-        if (this.state.remoteStream && this.state.streamVideo) {
-            console.log("In the render method")
-            return (
-                <View style={stylings.container}>
-                    <RTCView streamURL={this.state.remoteStream.toURL()} style={stylings.video1}/>
-                    <View style={stylings.callIcon}>
-                        <TouchableOpacity onPress={this.handleCallHangUp}>
-                            <Text style={stylings.phoneCallBox}>
-                                <FontAwesome>{Icons.phoneSquare}</FontAwesome>
-                            </Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={this.handlePressCall}>
-                            <Text style={stylings.phoneCallBox}>
-                                <FontAwesome>{Icons.videoSlash}</FontAwesome>
-                            </Text>
-                        </TouchableOpacity>
-                    </View>
-                </View>
-            );
-        }
         if (this.state.contacts.length === 0) {
             return (
                 <View style={styles.loadingIcon}>
