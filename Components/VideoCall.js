@@ -87,8 +87,21 @@ export default class VideoCall extends Component {
     }
 
     waitForAnswer() {
-        console.log("Entered in to waitForCall ")
+        console.log("Entered in to waitForCall ");
         VIDEO_CALL_REF.child(info.receiver).on('child_added', async (snap) => {
+            if (snap.key==='VideoCallEnd') {
+                this.setState({
+                    remoteStream: '',
+                    streamVideo: false
+                });
+                pc.close();
+                VIDEO_CALL_REF.child(info.sender).remove();
+                VIDEO_CALL_REF.child(info.receiver).remove();
+                this.props.navigation.navigate("ChatScreen", {
+                    info: info,
+                    contactName: this.props.navigation.getParam("contactName")
+                });
+            }
             if (snap.key === 'videoSDP') {
                 console.log("Getting SDP");
                 pc.setRemoteDescription(new RTCSessionDescription(snap.val()));
@@ -210,7 +223,7 @@ export default class VideoCall extends Component {
         console.log("after pc.close");
         // pc=null;
         VIDEO_CALL_REF.child(info.sender).remove();
-        VIDEO_CALL_REF.child(info.receiver).child('VideoCallEnd').set(true);
+        VIDEO_CALL_REF.child(info.sender).child('VideoCallEnd').set(true);
         console.log(pc);
         this.props.navigation.navigate("ChatScreen", {
             info: info,
