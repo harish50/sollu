@@ -55,4 +55,31 @@ export default StyleSheet.create({
     video1: {
         flex: 1,
     },
+    callIcon2:{
+        color: '#11cc8a',
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: 50,
+        height: 50,
+        borderRadius: 25,
+        marginTop: 100,
+        backgroundColor: '#11cc8a'
+    },
+    callIcon1:{
+        color: '#e20e30',
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: 50,
+        height: 50,
+        borderRadius: 25,
+        marginTop: 100,
+        backgroundColor: '#e20e30'
+    },
+    bottomBar2:{
+        justifyContent: "space-around",
+        flexDirection: "row",
+        paddingLeft: 10,
+        paddingTop: 20,
+        marginTop:300,
+    }
 })

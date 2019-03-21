@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {TouchableOpacity,Text} from 'react-native';
+import {TouchableOpacity,Text, } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import styles from '../Stylesheet/videocallStyles'
 
@@ -9,7 +9,8 @@ export default class VideoIconComponent extends Component{
     handlePress = () =>{
         let { navigation } = this.props;
         const name = navigation.getParam('contactName')
-        this.props.navigation.navigate('VideoCall',{contactName:name})
+        // this.props.navigation.navigate('VideoCall',{contactName:name})
+        this.props.navigation.navigate('VideoCallRinging')
     }
     render(){
         let { navigation } = this.props;

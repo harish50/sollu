@@ -87,7 +87,7 @@ export default class VideoCall extends Component {
                         <RTCView streamURL={this.state.videoURL} style={styles.video1}></RTCView>
                         <View style={styles.bottomBar}>
                             <TouchableOpacity onPress={this.handlePressCall}>
-                                <View style={styles.callIcon}>
+                                <View style={styles.callIcon2}>
                                     <Icon name="call-end" color="#fff" size={30}/>
                                 </View>
                             </TouchableOpacity>
