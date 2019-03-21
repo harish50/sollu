@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import { View, Text, TouchableOpacity, SafeAreaView } from 'react-native';
 import styles from '../Stylesheet/videocallStyles'
-import FontAwesome, { Icons } from 'react-native-fontawesome';
-
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 import {
     RTCPeerConnection,
@@ -24,11 +23,12 @@ export default class VideoCall extends Component {
         let props = navigation
         return ({
             headerTitle: navigation.getParam('contactName'),
-            headerTintColor: "#cc504e",
+            headerTintColor: "#fff",
             headerBackTitle: "Back",
             headerStyle: {
                 fontFamily: 'Roboto-Bold',
                 height: 60,
+                backgroundColor: '#cc504e',
             },
         })
     }
@@ -72,16 +72,6 @@ export default class VideoCall extends Component {
                     throw error;
                 });
         });
-        // pc.createOffer((desc) => {
-        //     pc.setLocalDescription(desc, () => {
-        //         console.log('pc.setLocalDescription');
-        //     }, (e) => { throw e; });
-        // }, (e) => { throw e; });
-        //
-        // pc.onicecandidate = (event) => {
-        //     console.log('onicecandidate', event);
-        // };
-
     }
 
     handlePressCall = () => {
@@ -93,23 +83,21 @@ export default class VideoCall extends Component {
         if (this.state.videoURL) {
             console.warn(this.state.videoURL);
             return (
-                <View style={styles.container}>
-                    <RTCView streamURL={this.state.videoURL} style={styles.video1} />
-                    <SafeAreaView>
-                        <View style={styles.callIcon}>
+                <View style={styles.container1}>
+                        <RTCView streamURL={this.state.videoURL} style={styles.video1}></RTCView>
+                        <View style={styles.bottomBar}>
                             <TouchableOpacity onPress={this.handlePressCall}>
-                                <Text style={styles.phoneCallBox}>
-                                    <FontAwesome>{Icons.phoneSquare}</FontAwesome>
-                                </Text>
+                                <View style={styles.callIcon}>
+                                    <Icon name="call-end" color="#fff" size={30}/>
+                                </View>
                             </TouchableOpacity>
-                            <TouchableOpacity>
-                                <Text style={styles.phoneCallBox}>
-                                    <FontAwesome>{Icons.videoSlash}</FontAwesome>
-                                </Text>
+                            <TouchableOpacity onPress={this.handlemutecall}>
+                                <View style={styles.callIcon}>
+                                    <Icon name="videocam" color="#fff" size={30}/>
+                                </View>
                             </TouchableOpacity>
                         </View>
-                    </SafeAreaView>
-                </View>
+                 </View>
             );
         }
         else {
@@ -120,26 +108,5 @@ export default class VideoCall extends Component {
 
             );
         }
-
-        // return (
-        //     <View>
-        //         <Text style={styles.textBox}>
-        //             Hey Dude, video call will release soon.....
-        //         </Text>
-        //         <View style={styles.callIcon}>
-        //             <TouchableOpacity onPress={this.handlePressCall}>
-        //                 <Text style={styles.phoneCallBox}>
-        //                     <FontAwesome>{Icons.phoneSquare}</FontAwesome>
-        //                 </Text>
-        //             </TouchableOpacity>
-        //             <TouchableOpacity>
-        //                 <Text style={styles.phoneCallBox}>
-        //                     <FontAwesome>{Icons.videoSlash}</FontAwesome>
-        //                 </Text>
-        //             </TouchableOpacity>
-        //         </View>
-        //
-        //     </View>
-        // )
     }
 }

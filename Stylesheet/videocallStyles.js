@@ -24,22 +24,27 @@ export default StyleSheet.create({
         marginLeft: 200,
         marginBottom: 100,
     },
-    callIcon: {
-        justifyContent: "space-between",
+    bottomBar: {
+        justifyContent: "space-around",
         flexDirection: "row",
         paddingLeft: 10,
         paddingTop: 4,
+        marginBottom:30
     },
-    phoneCallBox: {
-        fontSize: 40,
-        paddingTop: 4,
-        paddingRight: 10,
+    callIcon: {
         color: '#cc504e',
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: 50,
+        height: 50,
+        borderRadius: 25,
+        marginTop: 50,
+        backgroundColor: '#e20e30'
     },
     text: {
         textAlign: "center",
     },
-    container: {
+    container1: {
         flex: 1,
         backgroundColor: '#fff'
     },
@@ -48,6 +53,6 @@ export default StyleSheet.create({
         alignSelf: 'stretch'
     },
     video1: {
-        flex: 1
+        flex: 1,
     },
 })
