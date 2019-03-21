@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {TouchableOpacity,Text} from 'react-native';
-import FontAwesome, {Icons} from 'react-native-fontawesome';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 import styles from '../Stylesheet/videocallStyles'
 
 
@@ -18,7 +18,7 @@ export default class VideoIconComponent extends Component{
             <TouchableOpacity onPress={this.handlePress}>
                 <Text style={styles.videoIcon}>
                     {  (info.sender !== info.receiver) &&
-                    <FontAwesome>{Icons.video}</FontAwesome>
+                    <Icon name="videocam" color="#fff" size={40}/>
                     }
                 </Text>
             </TouchableOpacity>
