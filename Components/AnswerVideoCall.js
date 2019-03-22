@@ -207,18 +207,18 @@ export default class AnswerVideoCall extends React.Component{
         if (this.state.remoteStream && this.state.streamVideo) {
             console.log("In the render method");
             return (
-                <View style={stylings.container}>
+                <View style={stylings.container1}>
                     <RTCView streamURL={this.state.remoteStream.toURL()} style={stylings.video1}/>
-                    <View style={stylings.callIcon}>
+                    <View style={stylings.bottomBar}>
                         <TouchableOpacity onPress={this.handleCallHangUp}>
-                            <Text style={stylings.phoneCallBox}>
-                                <FontAwesome>{Icons.phoneSquare}</FontAwesome>
-                            </Text>
+                            <View style={stylings.callIcon}>
+                                <Icon name="call-end" color="#fff" size={30}/>
+                            </View>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={this.handlePressCall}>
-                            <Text style={stylings.phoneCallBox}>
-                                <FontAwesome>{Icons.videoSlash}</FontAwesome>
-                            </Text>
+                        <TouchableOpacity onPress={this.muteVideo}>
+                            <View style={stylings.callIcon}>
+                                <Icon name="videocam" color="#fff" size={30}/>
+                            </View>
                         </TouchableOpacity>
                     </View>
                 </View>
