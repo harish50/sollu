@@ -97,4 +97,15 @@ export default StyleSheet.create({
     video1: {
         flex: 1
     },
+    callIcon3:{
+        color: '#cc504e',
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: 50,
+        height: 50,
+        borderRadius: 25,
+        marginTop: 70,
+        marginLeft:150,
+        backgroundColor: '#e20e30'
+    }
 })

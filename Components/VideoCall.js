@@ -266,7 +266,7 @@ export default class VideoCall extends Component {
                     <ActivityIndicator size="large" color="#cc504e"/>
                     <Text style={styles.loadingtextbox1}>{this.state.callStatus}</Text>
                     <TouchableOpacity onPress={this.handleCallHangUp}>
-                        <View style={styles.callIcon}>
+                        <View style={styles.callIcon3}>
                             <Icon name="call-end" color="#fff" size={30}/>
                         </View>
                     </TouchableOpacity>
