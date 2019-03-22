@@ -24,18 +24,69 @@ export default StyleSheet.create({
         marginLeft:200,
         marginBottom:100,
     },
-    callIcon:{
-        justifyContent:"space-between",
-        flexDirection: "row",
-    },
-    phoneCallBox:{
-        fontSize:40,
+    loadingtextbox1:{
+        textAlign:'center',
+        fontSize:22,
+        fontFamily:'Roboto-regular',
         color:'#cc504e',
+        marginTop:10,
+    },
+    loadbox:{
+        flex: 1,
+        justifyContent: 'center'
+    },
+    bottomBar: {
+        justifyContent: "space-around",
+        flexDirection: "row",
+        paddingLeft: 10,
+        paddingTop: 4,
+        marginBottom:30
+    },
+    callIcon2:{
+        color: '#11cc8a',
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: 50,
+        height: 50,
+        borderRadius: 25,
+        marginTop: 100,
+        backgroundColor: '#11cc8a'
+    },
+    callIcon1:{
+        color: '#e20e30',
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: 50,
+        height: 50,
+        borderRadius: 25,
+        marginTop: 100,
+        backgroundColor: '#e20e30'
+    },
+    bottomBar2:{
+        justifyContent: "space-around",
+        flexDirection: "row",
+        paddingLeft: 10,
+        paddingTop: 20,
+        marginTop:300,
+    },
+    callIcon: {
+        color: '#cc504e',
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: 50,
+        height: 50,
+        borderRadius: 25,
+        marginTop: 50,
+        backgroundColor: '#e20e30'
     },
     text: {
         textAlign: "center",
     },
     container: {
+        flex: 1,
+        backgroundColor: '#fff'
+    },
+    container1: {
         flex: 1,
         backgroundColor: '#fff'
     },

@@ -1,7 +1,7 @@
 import React, {Component} from "react";
 import {Text, TouchableOpacity, View} from "react-native";
 import styles from "../Stylesheet/videocallStyles";
-import FontAwesome, {Icons} from "react-native-fontawesome";
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 import {mediaDevices, RTCIceCandidate, RTCPeerConnection, RTCSessionDescription, RTCView} from "react-native-webrtc";
 import firebase from "../firebase/firebase";
@@ -26,11 +26,12 @@ export default class VideoCall extends Component {
         let props = navigation;
         return {
             headerTitle: navigation.getParam("contactName"),
-            headerTintColor: "#cc504e",
+            headerTintColor: "#fff",
             headerBackTitle: "Back",
             headerStyle: {
                 fontFamily: "Roboto-Bold",
-                height: 60
+                height: 60,
+                backgroundColor: '#cc504e',
             }
         };
     };
@@ -207,7 +208,7 @@ export default class VideoCall extends Component {
         return "true";
     }
 
-    handlePressCall = () => {
+    muteVideo = () => {
         //mute video of yours.
         console.log("in mute video");
         let localStream = pc.getLocalStreams()[0];
@@ -236,18 +237,18 @@ export default class VideoCall extends Component {
             // console.warn(this.state.SenderVideoURL);
             console.log("In the render method");
             return (
-                <View style={styles.container}>
+                <View style={styles.container1}>
                     <RTCView streamURL={this.state.ReceiverVideoURL.toURL()} style={styles.video1}/>
-                    <View style={styles.callIcon}>
+                    <View style={styles.bottomBar}>
                         <TouchableOpacity onPress={this.handleCallHangUp}>
-                            <Text style={styles.phoneCallBox}>
-                                <FontAwesome>{Icons.phoneSquare}</FontAwesome>
-                            </Text>
+                            <View style={styles.callIcon}>
+                                <Icon name="call-end" color="#fff" size={30}/>
+                            </View>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={this.handlePressCall}>
-                            <Text style={styles.phoneCallBox}>
-                                <FontAwesome>{Icons.videoSlash}</FontAwesome>
-                            </Text>
+                        <TouchableOpacity onPress={this.muteVideo}>
+                            <View style={styles.callIcon}>
+                                <Icon name="videocam" color="#fff" size={30}/>
+                            </View>
                         </TouchableOpacity>
                     </View>
                 </View>
