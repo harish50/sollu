@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import {Text, TouchableOpacity, View} from "react-native";
+import {Text, TouchableOpacity, View,ActivityIndicator} from "react-native";
 import styles from "../Stylesheet/videocallStyles";
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
@@ -19,7 +19,8 @@ export default class VideoCall extends Component {
         SenderVideoURL: null,
         ReceiverVideoURL: null,
         isFront: true,
-        streamVideo: false
+        streamVideo: false,
+        callStatus: "Starting sollu video call"
     };
 
     static navigationOptions = ({navigation}) => {
@@ -27,7 +28,6 @@ export default class VideoCall extends Component {
         return {
             headerTitle: navigation.getParam("contactName"),
             headerTintColor: "#fff",
-            headerBackTitle: "Back",
             headerStyle: {
                 fontFamily: "Roboto-Bold",
                 height: 60,
@@ -106,6 +106,9 @@ export default class VideoCall extends Component {
             if (snap.key === 'videoSDP') {
                 console.log("Getting SDP");
                 pc.setRemoteDescription(new RTCSessionDescription(snap.val()));
+                this.setState({
+                    callStatus: "Connecting to video call"
+                })
                 console.log("Done setting SDP")
             } else if (snap.key === 'ICE') {
                 receiverIceList = snap.val();
@@ -182,6 +185,9 @@ export default class VideoCall extends Component {
                 console.log("Local desc ")
                 console.log(pc.localDescription)
                 VIDEO_CALL_REF.child(info.receiver).set({caller: info.sender});
+                this.setState({
+                    callStatus: "Calling..."
+                })
                 VIDEO_CALL_REF.child(info.sender).child('videoSDP').set(pc.localDescription);
             })
         });
@@ -218,9 +224,11 @@ export default class VideoCall extends Component {
     };
 
     handleCallHangUp=()=>{
-        console.log(pc);
         console.log("in callhangup");
-        console.log(pc.close());
+        console.log(pc);
+        if(pc!==null){
+            console.log(pc.close());
+        }
         console.log("after pc.close");
         // pc=null;
         VIDEO_CALL_REF.child(info.sender).remove();
@@ -234,7 +242,6 @@ export default class VideoCall extends Component {
 
     render() {
         if (this.state.streamVideo && this.state.ReceiverVideoURL) {
-            // console.warn(this.state.SenderVideoURL);
             console.log("In the render method");
             return (
                 <View style={styles.container1}>
@@ -255,8 +262,14 @@ export default class VideoCall extends Component {
             );
         } else {
             return (
-                <View>
-                    <Text style={styles.text}>Not Working On Web RTC</Text>
+                <View style={styles.loadbox}>
+                    <ActivityIndicator size="large" color="#cc504e"/>
+                    <Text style={styles.loadingtextbox1}>{this.state.callStatus}</Text>
+                    <TouchableOpacity onPress={this.handleCallHangUp}>
+                        <View style={styles.callIcon}>
+                            <Icon name="call-end" color="#fff" size={30}/>
+                        </View>
+                    </TouchableOpacity>
                 </View>
             );
         }
