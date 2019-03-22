@@ -118,13 +118,10 @@ export default class ChatScreen extends React.Component {
                     backgroundColor: '#cc504e',
                     height: 60,
                 },
-                headerRight: ([<VideoIconComponent sender={navigation.getParam("info")} contactName={navigation.getParam("contactName")} navigation={props}/>,<Profile sender={navigation.getParam("info").receiver} />]),
+                headerRight: ([<VideoIconComponent info={navigation.getParam("info")} contactName={navigation.getParam("contactName")} navigation={props} />, <Profile sender={navigation.getParam("info").receiver} />]),
                 headerLeft: (
                     <HeaderBackButton tintColor="white"
-                        onPress={() => {
-                            navigation.state.params.onGoBack();
-                            navigation.goBack();
-                        }} />),
+                     onPress={() => { navigation.state.params.onGoBack(); navigation.goBack(); }} />)
             }
         );
     };

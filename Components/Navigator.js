@@ -4,6 +4,7 @@ import ChatScreen from "./ChatScreen";
 import LoginScreen from './LoginScreen';
 import ProfilePage from './ProfilePage';
 import VideoCall from './VideoCall'
+import AnswerVideoCall from "./AnswerVideoCall";
 
 const isRegistered = false;
 const initialScreen = isRegistered ? "HomeScreen" : "LoginScreen";
@@ -13,7 +14,8 @@ const Navigator = createStackNavigator(
         HomeScreen: HomeScreen,
         ChatScreen: ChatScreen,
         ProfilePage: ProfilePage,
-        VideoCall:VideoCall
+        VideoCall:VideoCall,
+        AnswerVideoCall: AnswerVideoCall
     },
     {
         initialRouteName: initialScreen,

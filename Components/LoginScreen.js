@@ -54,7 +54,7 @@ class LoginScreen extends Component {
                 })
             )
         );
-    }
+    };
     static navigationOptions = ({ navigation }) => {
         return (
             {
@@ -71,7 +71,7 @@ class LoginScreen extends Component {
                 }
             }
         );
-    }
+    };
     render() {
         if (!this.state.is_fetching_done) {
             return (
