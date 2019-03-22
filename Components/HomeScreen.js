@@ -145,15 +145,14 @@ export default class HomeScreen extends React.Component {
             );
         }
     }
-
-    updateCurrentUser() {
-        this.setState({currentUser: ""});
-        this.setState({contacts: []});
-        this.updateList();
+    async updateCurrentUser() {
+        this.setState({ currentUser: '' });
+        this.setState({ contacts: []});
+        this.updateList()
     }
 
     getPairID(sender, receiver) {
-        let key = "";
+        let key = '';
         if (sender === receiver) {
             key = sender;
         } else if (sender > receiver) {
@@ -167,18 +166,15 @@ export default class HomeScreen extends React.Component {
     async getLastActiveTime(sender, receiver) {
         let lastchatTime = 0;
         let key = this.getPairID(sender, receiver);
-        await firebase
-            .database()
-            .ref("conversations")
-            .once("value", async snap => {
-                if (snap.hasChild(key)) {
-                    let time = snap.child(key).val().lastActiveTime;
-                    if (time) {
-                        lastchatTime = time;
-                        return time;
-                    }
+        await firebase.database().ref('conversations').once('value', async (snap) => {
+            if (snap.hasChild(key)) {
+                let time = snap.child(key).val().lastActiveTime;
+                if (time) {
+                    lastchatTime = time;
+                    return time;
                 }
-            });
+            }
+        });
         return lastchatTime;
     }
 
@@ -288,7 +284,6 @@ export default class HomeScreen extends React.Component {
             alert(permission);
             return;
         }
-
         this.updateList();
         this.checkPermission();
         this.createNotificationListeners();
@@ -301,18 +296,11 @@ export default class HomeScreen extends React.Component {
             receiver: contact.item.key
         };
         return (
-            <TouchableOpacity
-                onPress={() => {
-                    this.props.navigation.navigate("ChatScreen", {
-                        info: info,
-                        contactName: contact.item.name,
-                        onGoBack: () => this.updateCurrentUser()
-                    });
-                    this.setState({currentUser: contact.item.name});
-                }}
-                style={styles.contactContainer}
-            >
-                <Profile sender={contact.item.key}/>
+            <TouchableOpacity onPress={() => {
+                this.props.navigation.navigate('ChatScreen', { info: info, contactName: contact.item.name, onGoBack: () => this.updateCurrentUser() });
+                this.setState({ currentUser: contact.item.name })
+            }} style={styles.contactContainer}>
+                <Profile sender={contact.item.key} />
                 <Text style={styles.item}> {contact.item.name} </Text>
             </TouchableOpacity>
         );

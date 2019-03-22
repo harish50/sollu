@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { View, TouchableOpacity, Image, StyleSheet,ActivityIndicator } from 'react-native';
+import { View, TouchableOpacity, Image, StyleSheet, ActivityIndicator } from 'react-native';
 import firebase from '../firebase/firebase';
-
+import FastImage from 'react-native-fast-image';
 
 export default class Profile extends Component {
     state = {
@@ -46,18 +46,18 @@ export default class Profile extends Component {
     render() {
         if (!this.state.isProfilePicSet) {
             return (<View style={styles.loadingIcon}>
-                    <ActivityIndicator size="large" color='#cc504e'/>
-                </View>
-            );
-        } else{
-            return(
-            <View>
-                <TouchableOpacity onPress={this.handleProfilePress}>
-                    <Image style={styles.profileIcon} source={{uri: this.state.profilePic}}/>
-                </TouchableOpacity>
+                <ActivityIndicator size="large" color='#cc504e' />
             </View>
-          )
-       }
+            );
+        } else {
+            return (
+                <View>
+                    <TouchableOpacity onPress={this.handleProfilePress}>
+                        <FastImage style={styles.profileIcon} source={{ uri: this.state.profilePic }} />
+                    </TouchableOpacity>
+                </View>
+            )
+        }
     }
 }
 

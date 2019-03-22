@@ -1,7 +1,18 @@
+
 import React, {Component} from "react";
 import {Text, TouchableOpacity, View,ActivityIndicator} from "react-native";
 import styles from "../Stylesheet/videocallStyles";
 import Icon from 'react-native-vector-icons/MaterialIcons';
+
+import {
+    RTCPeerConnection,
+    RTCIceCandidate,
+    RTCSessionDescription,
+    RTCView,
+    MediaStream,
+    MediaStreamTrack,
+    mediaDevices
+} from 'react-native-webrtc'
 
 import {mediaDevices, RTCIceCandidate, RTCPeerConnection, RTCSessionDescription, RTCView} from "react-native-webrtc";
 import firebase from "../firebase/firebase";
@@ -122,11 +133,11 @@ export default class VideoCall extends Component {
                     this.setState({
                         streamVideo: true
                     })
+
                 }
             }
         });
     }
-
     async addRemoteICE() {
         let temp=-1;
         let index =0;
@@ -138,11 +149,8 @@ export default class VideoCall extends Component {
                     index++;
                 },
                 error => {
-                    console.log("error");
                     console.log(error);
-                }
-            )
-        }
+     }
         if(index===receiverIceList.length){
             console.log("out from addICE");
             return true;
@@ -258,7 +266,6 @@ export default class VideoCall extends Component {
                             </View>
                         </TouchableOpacity>
                     </View>
-                </View>
             );
         } else {
             return (

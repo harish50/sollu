@@ -122,7 +122,6 @@ export default class ChatScreen extends React.Component {
                 headerLeft: (
                     <HeaderBackButton tintColor="white"
                                       onPress={() => { navigation.state.params.onGoBack(); navigation.goBack(); }} />)
-
             }
         );
     };
@@ -241,9 +240,8 @@ export default class ChatScreen extends React.Component {
         };
         return daywiseMessages;
     }
-
     render() {
-        const keyboardVerticalOffset = Platform.OS === 'ios' ? Header.HEIGHT + 20 : 0;
+        const keyboardVerticalOffset = Platform.OS === 'ios' ? Header.HEIGHT + 35 : 0;
         const padding = Platform.OS === 'ios' ? "padding" : '';
         return (
             <SafeAreaView style={styles.safeAreaView}>
