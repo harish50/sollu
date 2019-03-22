@@ -4,6 +4,7 @@ import { SafeAreaView, Header, HeaderBackButton } from 'react-navigation';
 import styles from "../Stylesheet/styleSheet";
 import firebase from "../firebase/firebase";
 import Profile from "./Profile";
+import DateComponent from './DateComponent';
 import VideoIconComponent from "./VideoIconComponent";
 
 
@@ -13,6 +14,7 @@ export default class ChatScreen extends React.Component {
         this.state = {
             typing: "",
             messages: [],
+            dayMessages: [],
             colourDifference: false,
             chatRef: null,
         };
@@ -81,8 +83,9 @@ export default class ChatScreen extends React.Component {
                 };
                 Chat.push(message);
             }
+            let messages = this.separateMessages(Chat);
             this.setState({
-                messages: Chat,
+                messages: messages,
                 chatRef: chatRef,
             });
         });
@@ -118,7 +121,7 @@ export default class ChatScreen extends React.Component {
                 headerRight: ([<VideoIconComponent info={navigation.getParam("info")} contactName={navigation.getParam("contactName")} navigation={props} />, <Profile sender={navigation.getParam("info").receiver} />]),
                 headerLeft: (
                     <HeaderBackButton tintColor="white"
-                        onPress={() => { navigation.state.params.onGoBack(); navigation.goBack(); }} />)
+                                      onPress={() => { navigation.state.params.onGoBack(); navigation.goBack(); }} />)
 
             }
         );
@@ -151,6 +154,11 @@ export default class ChatScreen extends React.Component {
     }
 
     renderItem({ item }) {
+        if (item.header) {
+            return (
+                <DateComponent item={item} />
+            );
+        }
         let messageboxstyle;
         let messagetextstyle;
         let { navigation } = this.props;
@@ -208,60 +216,30 @@ export default class ChatScreen extends React.Component {
         }
     };
 
-    renderDayMessages = (dayMessages, day) => {
-        let date = new Date();
+    separateMessages = (messages) => {
+        if (messages.length === 0) {
+            return [];
+        }
+        let messagesLength = messages.length;
+        let daywiseMessages = [];
         const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sep", "Oct", "Nov", "Dec"];
-        let today = monthNames[date.getMonth()] + " " + date.getDate() + " " + date.getFullYear();
-        let YesterdayDate = date.getDate() - 1;
-        let yesterday = monthNames[date.getMonth()] + " " + YesterdayDate + " " + date.getFullYear()
-        if (day === today) {
-            day = 'Today'
-        }
-        if (day === yesterday) {
-            day = 'Yesterday'
-        }
-        return (
-            <View>
-                <View style={styles.dayAlignment}>
-                    <Text style={styles.DayTextStyle}>{day}</Text>
-                </View>
-                <FlatList
-                    data={dayMessages}
-                    renderItem={(item) => this.renderItem(item)}
-                    keyExtractor={(item, index) => index.toString()}
-                    scrollEnabled={false}
-                />
-            </View>
-        )
-    }
-
-    renderMessages = (messages) => {
-        let preMsgDate;
-        const messageLen = messages.length;
-        const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sep", "Oct", "Nov", "Dec"];
-        if (messages[0]) {
-            preMsgDate = monthNames[messages[0].createdAt.getMonth()] + " " + messages[0].createdAt.getDate() + " " + messages[0].createdAt.getFullYear();
-        }
-        let dayMessages = [];
-        return messages.map((message, i) => {
-            let fullDate = monthNames[message.createdAt.getMonth()] + " " + message.createdAt.getDate() + " " + message.createdAt.getFullYear();
-            if (fullDate === preMsgDate) {
-                dayMessages.push(message);
-                if (messageLen == (i + 1)) {
-                    return this.renderDayMessages(dayMessages, preMsgDate);
-                }
-            }
-            else {
-                let result = this.renderDayMessages(dayMessages, preMsgDate);
-                dayMessages = [];
-                preMsgDate = fullDate;
-                dayMessages.push(message);
-                if (messageLen == (i + 1)) {
-                    return this.renderDayMessages(dayMessages, preMsgDate);
-                }
-                return result;
-            }
+        let lastDate = monthNames[messages[0].createdAt.getMonth()] + " " + messages[0].createdAt.getDate() + " " + messages[0].createdAt.getFullYear();
+        daywiseMessages.push({
+            text: lastDate,
+            header: true
         });
+        for (let counter = 0; counter < messagesLength; counter++) {
+            day = monthNames[messages[counter].createdAt.getMonth()] + " " + messages[counter].createdAt.getDate() + " " + messages[counter].createdAt.getFullYear();
+            if (day !== lastDate) {
+                daywiseMessages.push({
+                    text: day,
+                    header: true
+                });
+                lastDate = day;
+            }
+            daywiseMessages.push(messages[counter]);
+        };
+        return daywiseMessages;
     }
 
     render() {
@@ -271,14 +249,14 @@ export default class ChatScreen extends React.Component {
             <SafeAreaView style={styles.safeAreaView}>
                 <View style={styles.container}>
                     <View style={styles.container}>
-                        <ScrollView
-                            ref={ref => this.scrollView = ref}
-                            onContentSizeChange={(contentWidth, contentHeight) => {
-                                this.scrollView.scrollToEnd({ animated: false });
-                            }}>
-                            {this.renderMessages(this.state.messages)}
-                        </ScrollView>
-
+                        <FlatList
+                            data={this.state.messages}
+                            extraData={this.state.messages}
+                            renderItem={(item) => this.renderItem(item)}
+                            keyExtractor={(item, index) => index.toString()}
+                            ref={ref => this.flatList = ref}
+                            onContentSizeChange={() => { this.flatList.scrollToEnd({ animated: false }) }}
+                        />
                     </View>
 
                     <KeyboardAvoidingView

@@ -8,7 +8,8 @@ import {
     Text,
     TouchableOpacity,
     View,
-    Linking
+    Linking,
+    StyleSheet
 } from "react-native";
 import styles from "../Stylesheet/styleSheet";
 import Contacts from "react-native-contacts";
@@ -148,7 +149,7 @@ export default class HomeScreen extends React.Component {
     updateCurrentUser() {
         this.setState({currentUser: ""});
         this.setState({contacts: []});
-        this.getOrderedLocalContacts();
+        this.updateList();
     }
 
     getPairID(sender, receiver) {
@@ -192,7 +193,7 @@ export default class HomeScreen extends React.Component {
         }
     }
 
-    getOrderedLocalContacts() {
+    async getOrderedLocalContacts() {
         let db = firebase.database();
         let localContacts = [];
         Contacts.getAll((err, contacts) => {
@@ -233,11 +234,26 @@ export default class HomeScreen extends React.Component {
                         return contact2.lastActiveTime - contact1.lastActiveTime;
                     });
                     this.setState({
-                        contacts: [...this.state.contacts, ...localContacts]
-                    });
+                        contacts: localContacts
+                    })
+                    await AsyncStorage.setItem('listofContacts', JSON.stringify(localContacts))
                 });
             }
         });
+    }
+
+    async updateList(){
+        let response = await AsyncStorage.getItem('listofContacts');
+        if(response === null){
+            this.getOrderedLocalContacts()
+        }
+        else{
+            let listofContacts = await JSON.parse(response)||[];
+            this.setState({
+                contacts:listofContacts
+            });
+            this.getOrderedLocalContacts()
+        }
     }
 
     listenForVideoCall() {
@@ -273,7 +289,7 @@ export default class HomeScreen extends React.Component {
             return;
         }
 
-        this.getOrderedLocalContacts();
+        this.updateList();
         this.checkPermission();
         this.createNotificationListeners();
         this.listenForVideoCall();
