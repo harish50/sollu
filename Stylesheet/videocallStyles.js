@@ -107,5 +107,10 @@ export default StyleSheet.create({
         marginTop: 70,
         marginLeft:150,
         backgroundColor: '#e20e30'
+    },
+    callerName:{
+        color: '#cc504e',
+        alignItems: 'center',
+        justifyContent: 'center'
     }
 })

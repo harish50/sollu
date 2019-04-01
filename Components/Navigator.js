@@ -21,4 +21,5 @@ const Navigator = createStackNavigator(
         initialRouteName: initialScreen,
     }
 );
+var AppContainer;
 export default AppContainer = createAppContainer(Navigator);

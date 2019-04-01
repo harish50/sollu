@@ -80,6 +80,7 @@ export default class HomeScreen extends React.Component {
 
         this.notificationListener = Firebase.notifications().onNotification(
             async notification => {
+                console.log("onNotofication")
                 const contactName = await AsyncStorage.getItem(
                     notification.data.sender
                 );
@@ -106,31 +107,57 @@ export default class HomeScreen extends React.Component {
                 } else if (Platform.OS === "ios") {
                     localNotification.ios.setBadge(notification.ios.badge);
                 }
+                //
+                // const action1 = new Firebase.notifications.Android.Action('okay', 'ic_launcher', 'Answer');
+                // const action2 = new Firebase.notifications.Android.Action('deny', 'ic_launcher', 'Decline');
+                // // Add the action to the notification
+                // localNotification.android.addAction(action1);
+                // localNotification.android.addAction(action2);
+
                 Firebase.notifications()
                     .displayNotification(localNotification)
                     .catch(err => console.error("cant send"));
             }
+
         );
 
         this.notificationOpenedListener = Firebase.notifications().onNotificationOpened(
             async notificationOpen => {
-                const notification = notificationOpen.notification;
-                const data = notification.data;
-                const contactName = await AsyncStorage.getItem(data.receiver);
-                let info = {
-                    receiver: data.receiver,
-                    sender: data.sender
-                };
-                this.props.navigation.navigate(
-                    "ChatScreen",
-                    {info: info, contactName: contactName},
-                    {onGoBack: () => this.updateCurrentUser()}
-                );
+                console.log("onNotificationOpened")
+                if(notificationOpen.action==="okay")
+                {
+                    console.log("answered our call");
+                    this.props.navigation.navigate("AnswerVideoCall", {
+                        callee: this.props.navigation.getParam("sender"),
+                        caller: caller
+                        // onGoBack: () => this.updateCurrentUser()
+                    });
+                }
+                else if(notificationOpen.action === "deny"){
+                    console.log("oops denined call");
+                    const notification = notificationOpen.notification;
+                    console.log(notificationOpen)
+                    console.log("-------------------------------------------")
+                    console.log(notification)
+                    const data = notification.data;
+                    const contactName = await AsyncStorage.getItem(data.receiver);
+                    let info = {
+                        receiver: data.receiver,
+                        sender: data.sender
+                    };
+                    this.props.navigation.navigate(
+                        "ChatScreen",
+                        {info: info, contactName: contactName},
+                        {onGoBack: () => this.updateCurrentUser()}
+                    );
+                }
+
             }
         );
 
-        const notificationOpen = await Firebase.notifications().getInitialNotification();
+        const notificationOpen = await Firebase.notifications().getInitialNotification()
         if (notificationOpen) {
+
             const notification = notificationOpen.notification;
             const data = notification.data;
             const contactName = await AsyncStorage.getItem(data.sender);
@@ -144,6 +171,8 @@ export default class HomeScreen extends React.Component {
                 {onGoBack: () => this.updateCurrentUser()}
             );
         }
+
+
     }
     async updateCurrentUser() {
         this.setState({ currentUser: '' });
