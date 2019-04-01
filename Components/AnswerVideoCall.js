@@ -20,7 +20,8 @@ export default class AnswerVideoCall extends React.Component{
         this.state = {
             remoteStream: '',
             streamVideo: false,
-            onClickAnswerCall : false
+            onClickAnswerCall : false,
+            callerName : ''
         };
         this.listenOnCaller= this.listenOnCaller.bind(this);
     }
@@ -89,9 +90,13 @@ export default class AnswerVideoCall extends React.Component{
         });
     }
 
-    componentDidMount(){
+    async componentDidMount() {
         console.log("Entered into AnswerVideoCall.js");
         caller = this.props.navigation.getParam("caller");
+        let name = await AsyncStorage.getItem(caller)
+        this.setState({
+            callerName :name
+        })
     }
 
     muteVideo = () => {
@@ -203,9 +208,7 @@ export default class AnswerVideoCall extends React.Component{
     }
 
 
-    async render() {
-        let caller = navigation.getParam("caller");
-        let callerName = await AsyncStorage.getItem(caller)
+    render() {
         if (this.state.remoteStream && this.state.streamVideo) {
             console.log("In the render method");
             return (
@@ -238,7 +241,7 @@ export default class AnswerVideoCall extends React.Component{
             return (
                 <View style={stylings.container1}>
                     <View>
-                        <Text style={stylings.callerName}>{callerName}</Text>
+                        <Text style={stylings.callerName}>{this.state.callerName}</Text>
                     </View>
                     <View style={stylings.bottomBar2}>
                         <TouchableOpacity onPress={this.handleCallHangUp}>

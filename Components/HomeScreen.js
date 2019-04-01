@@ -107,13 +107,6 @@ export default class HomeScreen extends React.Component {
                 } else if (Platform.OS === "ios") {
                     localNotification.ios.setBadge(notification.ios.badge);
                 }
-                //
-                // const action1 = new Firebase.notifications.Android.Action('okay', 'ic_launcher', 'Answer');
-                // const action2 = new Firebase.notifications.Android.Action('deny', 'ic_launcher', 'Decline');
-                // // Add the action to the notification
-                // localNotification.android.addAction(action1);
-                // localNotification.android.addAction(action2);
-
                 Firebase.notifications()
                     .displayNotification(localNotification)
                     .catch(err => console.error("cant send"));
@@ -123,22 +116,7 @@ export default class HomeScreen extends React.Component {
 
         this.notificationOpenedListener = Firebase.notifications().onNotificationOpened(
             async notificationOpen => {
-                console.log("onNotificationOpened")
-                if(notificationOpen.action==="okay")
-                {
-                    console.log("answered our call");
-                    this.props.navigation.navigate("AnswerVideoCall", {
-                        callee: this.props.navigation.getParam("sender"),
-                        caller: caller
-                        // onGoBack: () => this.updateCurrentUser()
-                    });
-                }
-                else if(notificationOpen.action === "deny"){
-                    console.log("oops denined call");
-                    const notification = notificationOpen.notification;
-                    console.log(notificationOpen)
-                    console.log("-------------------------------------------")
-                    console.log(notification)
+                    const notification = notificationOpen.notification
                     const data = notification.data;
                     const contactName = await AsyncStorage.getItem(data.receiver);
                     let info = {
@@ -150,8 +128,6 @@ export default class HomeScreen extends React.Component {
                         {info: info, contactName: contactName},
                         {onGoBack: () => this.updateCurrentUser()}
                     );
-                }
-
             }
         );
 
