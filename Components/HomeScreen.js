@@ -81,6 +81,10 @@ export default class HomeScreen extends React.Component {
         this.notificationListener = Firebase.notifications().onNotification(
             async notification => {
                 console.log("onNotofication")
+                if(notification.body === "Incoming video call. Tap to open")
+                {
+                    return;
+                }
                 const contactName = await AsyncStorage.getItem(
                     notification.data.sender
                 );
@@ -133,19 +137,25 @@ export default class HomeScreen extends React.Component {
 
         const notificationOpen = await Firebase.notifications().getInitialNotification()
         if (notificationOpen) {
-
-            const notification = notificationOpen.notification;
-            const data = notification.data;
-            const contactName = await AsyncStorage.getItem(data.sender);
-            let info = {
-                receiver: data.sender,
-                sender: data.receiver
-            };
-            this.props.navigation.navigate(
-                "ChatScreen",
-                {info: info, contactName: contactName},
-                {onGoBack: () => this.updateCurrentUser()}
-            );
+            console.log("getInitialNotification");
+            if(notificationOpen.notification.data.receiver === undefined){
+                console.log("if passed")
+                this.listenForVideoCall();
+            }
+            else{
+                const notification = notificationOpen.notification;
+                const data = notification.data;
+                const contactName = await AsyncStorage.getItem(data.sender);
+                let info = {
+                    receiver: data.sender,
+                    sender: data.receiver
+                };
+                this.props.navigation.navigate(
+                    "ChatScreen",
+                    {info: info, contactName: contactName},
+                    {onGoBack: () => this.updateCurrentUser()}
+                );
+            }
         }
 
 
@@ -262,13 +272,15 @@ export default class HomeScreen extends React.Component {
         VIDEO_CALL_REF.child(sender).on("value", (snapshot) => {
             let videoCallInfo = snapshot.val();
             if (caller !== null && videoCallInfo !== null && caller === videoCallInfo.caller) {
-                return;
+                console.log("one");
             }
             else {
                 caller = videoCallInfo !== null ? videoCallInfo.caller : null;
+                console.log("two")
             }
             if (caller && videoCallInfo != null) {
                 // this.listenOnCaller();
+                console.log("three")
                 this.props.navigation.navigate("AnswerVideoCall", {
                     callee: this.props.navigation.getParam("sender"),
                     caller: caller

@@ -85,7 +85,7 @@ export default class AnswerVideoCall extends React.Component{
             console.log("in create answer");
             pc.setLocalDescription(sdp).then(() => {
                 console.log("localdescription");
-                VIDEO_CALL_REF.child(this.props.navigation.getParam("callee")).child('videoSDP').set(pc.localDescription);
+                VIDEO_CALL_REF.child(callee).child('videoSDP').set(pc.localDescription);
             })
         });
     }
@@ -93,10 +93,23 @@ export default class AnswerVideoCall extends React.Component{
     async componentDidMount() {
         console.log("Entered into AnswerVideoCall.js");
         caller = this.props.navigation.getParam("caller");
+        callee = this.props.navigation.getParam("callee");
         let name = await AsyncStorage.getItem(caller)
         this.setState({
-            callerName :name
+            callerName: name
         })
+
+        VIDEO_CALL_REF.child(caller).on('child_added', async (callerSnap) => {
+            console.log("Let us know the key");
+            console.log(callerSnap.key);
+            if (callerSnap.key === 'VideoCallEnd') {
+                VIDEO_CALL_REF.child(callee).remove();
+                console.log("videocallEnd has child 1");
+                VIDEO_CALL_REF.child(caller).remove();
+                console.log("videocallEnd has child21");
+                this.props.navigation.navigate("HomeScreen", {sender: callee});
+            }
+        });
     }
 
     muteVideo = () => {
@@ -116,7 +129,7 @@ export default class AnswerVideoCall extends React.Component{
         }
         console.log("after pc.close");
         // pc=null;
-        VIDEO_CALL_REF.child(this.props.navigation.getParam("callee")).child('VideoCallEnd').set(true);
+        VIDEO_CALL_REF.child(callee).child('VideoCallEnd').set(true);
         this.props.navigation.navigate("HomeScreen", {sender: callee});
     };
 
@@ -134,12 +147,12 @@ export default class AnswerVideoCall extends React.Component{
             console.log("Let us know the key");
             console.log(callerSnap.key);
             if (callerSnap.key === 'VideoCallEnd') {
-                this.props.navigation.navigate("HomeScreen", {sender: callee});
-                VIDEO_CALL_REF.child(this.props.navigation.getParam("callee")).remove();
+                VIDEO_CALL_REF.child(callee).remove();
                 console.log("videocallEnd has child 1");
                 VIDEO_CALL_REF.child(caller).remove();
                 console.log("videocallEnd has child21");
                 pc.close();
+                this.props.navigation.navigate("HomeScreen", {sender: callee});
             }
             if (callerSnap.key === 'videoSDP') {
                 console.log("videoSDP");
@@ -177,7 +190,7 @@ export default class AnswerVideoCall extends React.Component{
                 }
                 else {
                     console.log("No ice found");
-                    VIDEO_CALL_REF.child(this.props.navigation.getParam("callee")).child('ICE').set(receiverIceList);
+                    VIDEO_CALL_REF.child(callee).child('ICE').set(receiverIceList);
                     this.setState({
                         streamVideo: true
                     });
