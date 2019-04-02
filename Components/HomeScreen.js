@@ -80,6 +80,7 @@ export default class HomeScreen extends React.Component {
 
         this.notificationListener = Firebase.notifications().onNotification(
             async notification => {
+                console.log("onNotofication")
                 const contactName = await AsyncStorage.getItem(
                     notification.data.sender
                 );
@@ -110,27 +111,29 @@ export default class HomeScreen extends React.Component {
                     .displayNotification(localNotification)
                     .catch(err => console.error("cant send"));
             }
+
         );
 
         this.notificationOpenedListener = Firebase.notifications().onNotificationOpened(
             async notificationOpen => {
-                const notification = notificationOpen.notification;
-                const data = notification.data;
-                const contactName = await AsyncStorage.getItem(data.receiver);
-                let info = {
-                    receiver: data.receiver,
-                    sender: data.sender
-                };
-                this.props.navigation.navigate(
-                    "ChatScreen",
-                    {info: info, contactName: contactName},
-                    {onGoBack: () => this.updateCurrentUser()}
-                );
+                    const notification = notificationOpen.notification
+                    const data = notification.data;
+                    const contactName = await AsyncStorage.getItem(data.receiver);
+                    let info = {
+                        receiver: data.receiver,
+                        sender: data.sender
+                    };
+                    this.props.navigation.navigate(
+                        "ChatScreen",
+                        {info: info, contactName: contactName},
+                        {onGoBack: () => this.updateCurrentUser()}
+                    );
             }
         );
 
-        const notificationOpen = await Firebase.notifications().getInitialNotification();
+        const notificationOpen = await Firebase.notifications().getInitialNotification()
         if (notificationOpen) {
+
             const notification = notificationOpen.notification;
             const data = notification.data;
             const contactName = await AsyncStorage.getItem(data.sender);
@@ -144,6 +147,8 @@ export default class HomeScreen extends React.Component {
                 {onGoBack: () => this.updateCurrentUser()}
             );
         }
+
+
     }
     async updateCurrentUser() {
         this.setState({ currentUser: '' });

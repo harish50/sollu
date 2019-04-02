@@ -1,6 +1,6 @@
 import React from "react";
 import firebase from "../firebase/firebase";
-import {Text, TouchableOpacity, View,ActivityIndicator} from "react-native";
+import {Text, TouchableOpacity, View,ActivityIndicator, AsyncStorage} from "react-native";
 
 import {mediaDevices, RTCIceCandidate, RTCPeerConnection, RTCSessionDescription, RTCView} from "react-native-webrtc";
 import stylings from "../Stylesheet/videocallStyles";
@@ -20,7 +20,8 @@ export default class AnswerVideoCall extends React.Component{
         this.state = {
             remoteStream: '',
             streamVideo: false,
-            onClickAnswerCall : false
+            onClickAnswerCall : false,
+            callerName : ''
         };
         this.listenOnCaller= this.listenOnCaller.bind(this);
     }
@@ -28,7 +29,7 @@ export default class AnswerVideoCall extends React.Component{
     static navigationOptions = ({navigation}) => {
         let props = navigation;
         return {
-            headerTitle: navigation.getParam("caller"),
+            headerTitle: "Sollu",
             headerTintColor: "#cc504e",
             headerBackTitle: "Back",
             headerStyle: {
@@ -89,9 +90,13 @@ export default class AnswerVideoCall extends React.Component{
         });
     }
 
-    componentDidMount(){
+    async componentDidMount() {
         console.log("Entered into AnswerVideoCall.js");
         caller = this.props.navigation.getParam("caller");
+        let name = await AsyncStorage.getItem(caller)
+        this.setState({
+            callerName :name
+        })
     }
 
     muteVideo = () => {
@@ -203,7 +208,7 @@ export default class AnswerVideoCall extends React.Component{
     }
 
 
-    render(){
+    render() {
         if (this.state.remoteStream && this.state.streamVideo) {
             console.log("In the render method");
             return (
@@ -224,17 +229,26 @@ export default class AnswerVideoCall extends React.Component{
                 </View>
             );
         }
-        else if(this.state.onClickAnswerCall){
+        else if (this.state.onClickAnswerCall) {
             return (
                 <View style={stylings.loadbox}>
                     <ActivityIndicator size="large" color="#cc504e"/>
                     <Text style={stylings.loadingtextbox1}>Connecting...</Text>
+                    <TouchableOpacity onPress={this.handleCallHangUp}>
+                        <View style={styles.callIcon3}>
+                            <Icon name="call-end" color="#fff" size={30}/>
+                        </View>
+                    </TouchableOpacity>
                 </View>
             );
         }
         else {
-            return(
+            return (
                 <View style={stylings.container1}>
+                    <View>
+                        <Text style={stylings.callerName}>{this.state.callerName}</Text>
+                        <Text style={stylings.callerStatus}>Calling....</Text>
+                    </View>
                     <View style={stylings.bottomBar2}>
                         <TouchableOpacity onPress={this.handleCallHangUp}>
                             <View style={stylings.callIcon1}>
