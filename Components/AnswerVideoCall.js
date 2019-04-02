@@ -234,6 +234,11 @@ export default class AnswerVideoCall extends React.Component{
                 <View style={stylings.loadbox}>
                     <ActivityIndicator size="large" color="#cc504e"/>
                     <Text style={stylings.loadingtextbox1}>Connecting...</Text>
+                    <TouchableOpacity onPress={this.handleCallHangUp}>
+                        <View style={styles.callIcon3}>
+                            <Icon name="call-end" color="#fff" size={30}/>
+                        </View>
+                    </TouchableOpacity>
                 </View>
             );
         }
@@ -242,6 +247,7 @@ export default class AnswerVideoCall extends React.Component{
                 <View style={stylings.container1}>
                     <View>
                         <Text style={stylings.callerName}>{this.state.callerName}</Text>
+                        <Text style={stylings.callerStatus}>Calling....</Text>
                     </View>
                     <View style={stylings.bottomBar2}>
                         <TouchableOpacity onPress={this.handleCallHangUp}>

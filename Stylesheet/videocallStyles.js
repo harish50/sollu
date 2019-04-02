@@ -109,8 +109,18 @@ export default StyleSheet.create({
         backgroundColor: '#e20e30'
     },
     callerName:{
+        textAlign:'center',
+        fontSize:22,
+        fontFamily:'Roboto-regular',
+        color:'#cc504e',
+        marginTop:10,
+    },
+    callerStatus :{
         color: '#cc504e',
-        alignItems: 'center',
-        justifyContent: 'center'
+        textAlign:'center',
+        justifyContent: 'space-around',
+        fontFamily: 'Roboto-Regular',
+        fontSize: 16,
+        marginTop: 13
     }
 })
