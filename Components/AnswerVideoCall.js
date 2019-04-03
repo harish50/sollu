@@ -1,6 +1,7 @@
 import React from "react";
 import firebase from "../firebase/firebase";
 import {Text, TouchableOpacity, View,ActivityIndicator, AsyncStorage} from "react-native";
+import InCallManager from 'react-native-incall-manager';
 
 import {mediaDevices, RTCIceCandidate, RTCPeerConnection, RTCSessionDescription, RTCView} from "react-native-webrtc";
 import stylings from "../Stylesheet/videocallStyles";
@@ -91,6 +92,7 @@ export default class AnswerVideoCall extends React.Component{
     }
 
     async componentDidMount() {
+        InCallManager.startRingtone('_DEFAULT_');
         console.log("Entered into AnswerVideoCall.js");
         caller = this.props.navigation.getParam("caller");
         callee = this.props.navigation.getParam("callee");
@@ -127,6 +129,11 @@ export default class AnswerVideoCall extends React.Component{
         if(pc!==null){
             console.log(pc.close());
         }
+        if(this.state.onClickAnswerCall){
+            InCallManager.stopRingtone();
+        }
+        InCallManager.stop();
+
         console.log("after pc.close");
         // pc=null;
         VIDEO_CALL_REF.child(callee).child('VideoCallEnd').set(true);
@@ -213,6 +220,10 @@ export default class AnswerVideoCall extends React.Component{
 
     callAnswer(){
         console.log("in callAnswering");
+        // when user pickup
+        InCallManager.stopRingtone();
+        InCallManager.start();
+
         this.setState({
             onClickAnswerCall : true
         });

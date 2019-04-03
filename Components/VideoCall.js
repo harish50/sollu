@@ -1,6 +1,7 @@
 import React, {Component} from "react";
 import {Text, TouchableOpacity, View,ActivityIndicator} from "react-native";
 import styles from "../Stylesheet/videocallStyles";
+import InCallManager from 'react-native-incall-manager';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { mediaDevices, RTCIceCandidate, RTCPeerConnection, RTCSessionDescription, RTCView } from "react-native-webrtc";
 import firebase from "../firebase/firebase";
@@ -104,6 +105,9 @@ export default class VideoCall extends Component {
             }
             if (snap.key === 'videoSDP') {
                 console.log("Getting SDP");
+                InCallManager.stopRingback();
+                console.log("incallmanager stopringback");
+
                 pc.setRemoteDescription(new RTCSessionDescription(snap.val()));
                 this.setState({
                     callStatus: "Connecting to video call"
@@ -186,6 +190,9 @@ export default class VideoCall extends Component {
                 this.setState({
                     callStatus: "Calling..."
                 })
+                InCallManager.start({media: 'audio', ringback:'_DEFAULT_'});
+                console.log("incallmanager started ringback");
+
                 VIDEO_CALL_REF.child(info.sender).child('videoSDP').set(pc.localDescription);
             })
         });
@@ -229,6 +236,9 @@ export default class VideoCall extends Component {
         }
         console.log("after pc.close");
         // pc=null;
+        console.log("incallmanager stop");
+        InCallManager.stop();
+
         VIDEO_CALL_REF.child(info.sender).remove();
         VIDEO_CALL_REF.child(info.sender).child('VideoCallEnd').set(true);
         console.log(pc);
