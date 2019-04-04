@@ -36,7 +36,8 @@ export default StyleSheet.create({
         justifyContent: 'center'
     },
     loadbox1:{
-        justifyContent: 'center',
+        flex:1,
+        justifyContent: "space-around",
         marginBottom:20
     },
     bottomBar: {

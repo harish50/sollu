@@ -112,9 +112,16 @@ export default class AnswerVideoCall extends React.Component{
         this.setState({
             videoEnable : true
         })
-        // console.log("videoenable")
-        // console.log(this.state.videoEnable)
     };
+
+    enableVideo = () =>{
+        console.log("enable video");
+        this.setState({
+            videoEnable : false
+        })
+        console.log("state enable")
+        console.log(this.state.videoEnable);
+    }
 
     handleCallHangUp = () => {
         console.log("in callhangup");
@@ -232,9 +239,9 @@ export default class AnswerVideoCall extends React.Component{
                                 <View style={stylings.callIcon}>
                                     <Icon name="videocam" color="#fff" size={30}/>
                                 </View>
-                            </TouchableOpacity> : <TouchableOpacity >
+                            </TouchableOpacity> : <TouchableOpacity onPress={this.enableVideo}>
                                 <View style={stylings.callIcon}>
-                                    <Icon name="call-end" color="#fff" size={30}/>
+                                    <Icon name="videocam-off" color="#fff" size={30}/>
                                 </View>
                             </TouchableOpacity>
                         }
@@ -244,8 +251,8 @@ export default class AnswerVideoCall extends React.Component{
         }
         else if (this.state.onClickAnswerCall) {
             return (
-                <View style={stylings.container1}>
-                    <View style={styles.loadbox1}>
+                <View style={[styles.container1,styles.loadbox1]}>
+                    <View>
                         <ActivityIndicator size="large" color="#cc504e"/>
                         <Text style={stylings.loadingtextbox1}>Connecting...</Text>
                     </View>
