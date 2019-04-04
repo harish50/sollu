@@ -51,6 +51,16 @@ export default class VideoCall extends Component {
     componentDidMount() {
         info = this.props.navigation.getParam("info")
         this.startVideoCall();
+
+        VIDEO_CALL_REF.child(caller).on('child_added', async (callerSnap) => {
+            console.log("Let us know the key");
+            console.log(callerSnap.key);
+            if (callerSnap.key === 'VideoCallReceived') {
+                InCallManager.stopRingback();
+                InCallManager.start();
+                console.log("videocallreceived");
+            }
+        });
     }
     componentWillUnmount(){
         senderIceList=[];
@@ -96,6 +106,7 @@ export default class VideoCall extends Component {
                     streamVideo: false
                 });
                 InCallManager.stopRingback();
+                InCallManager.stop();
                 console.log("incallmanager stopringback call declined");
                 pc.close();
                 VIDEO_CALL_REF.child(info.sender).remove();

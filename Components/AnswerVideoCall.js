@@ -105,6 +105,8 @@ export default class AnswerVideoCall extends React.Component{
             console.log("Let us know the key");
             console.log(callerSnap.key);
             if (callerSnap.key === 'VideoCallEnd') {
+                InCallManager.stopRingtone();
+                InCallManager.stop()
                 VIDEO_CALL_REF.child(callee).remove();
                 console.log("videocallEnd has child 1");
                 VIDEO_CALL_REF.child(caller).remove();
@@ -129,9 +131,7 @@ export default class AnswerVideoCall extends React.Component{
         if(pc!==null){
             console.log(pc.close());
         }
-        if(this.state.onClickAnswerCall){
-            InCallManager.stopRingtone();
-        }
+        InCallManager.stopRingtone();
         InCallManager.stop();
 
         console.log("after pc.close");
@@ -154,6 +154,8 @@ export default class AnswerVideoCall extends React.Component{
             console.log("Let us know the key");
             console.log(callerSnap.key);
             if (callerSnap.key === 'VideoCallEnd') {
+                InCallManager.stopRingtone();
+                InCallManager.stop();
                 VIDEO_CALL_REF.child(callee).remove();
                 console.log("videocallEnd has child 1");
                 VIDEO_CALL_REF.child(caller).remove();
@@ -214,20 +216,15 @@ export default class AnswerVideoCall extends React.Component{
         });
     }
 
-    listen=()=>{
-    console.log("gjh")
-}
-
     callAnswer(){
         console.log("in callAnswering");
         // when user pickup
         InCallManager.stopRingtone();
         InCallManager.start();
-
+        VIDEO_CALL_REF.child(callee).child('VideoCallReceived').set(true);
         this.setState({
             onClickAnswerCall : true
         });
-        this.listen();
         this.listenOnCaller();
     }
 
