@@ -95,6 +95,8 @@ export default class VideoCall extends Component {
                     remoteStream: '',
                     streamVideo: false
                 });
+                InCallManager.stopRingback();
+                console.log("incallmanager stopringback call declined");
                 pc.close();
                 VIDEO_CALL_REF.child(info.sender).remove();
                 VIDEO_CALL_REF.child(info.receiver).remove();
