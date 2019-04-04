@@ -110,7 +110,7 @@ export default class AnswerVideoCall extends React.Component{
         localStream.getVideoTracks()[0].enabled = !(localStream.getVideoTracks()[0].enabled);
         console.log("video track removed");
         this.setState({
-            videoEnable : true
+            videoEnable :this.state.videoEnable
         })
     };
 
@@ -239,7 +239,7 @@ export default class AnswerVideoCall extends React.Component{
                                 <View style={stylings.callIcon}>
                                     <Icon name="videocam" color="#fff" size={30}/>
                                 </View>
-                            </TouchableOpacity> : <TouchableOpacity onPress={this.enableVideo}>
+                            </TouchableOpacity> : <TouchableOpacity onPress={this.muteVideo}>
                                 <View style={stylings.callIcon}>
                                     <Icon name="videocam-off" color="#fff" size={30}/>
                                 </View>
