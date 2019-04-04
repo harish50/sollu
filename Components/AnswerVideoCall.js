@@ -21,7 +21,8 @@ export default class AnswerVideoCall extends React.Component{
             remoteStream: '',
             streamVideo: false,
             onClickAnswerCall : false,
-            callerName : ''
+            callerName : '',
+            videoEnable : true
         };
         this.listenOnCaller= this.listenOnCaller.bind(this);
     }
@@ -95,8 +96,10 @@ export default class AnswerVideoCall extends React.Component{
         caller = this.props.navigation.getParam("caller");
         let name = await AsyncStorage.getItem(caller)
         this.setState({
-            callerName :name
+            callerName :name,
+            videoEnable : false
         })
+        console.log(this.state.videoEnable)
     }
 
     muteVideo = () => {
@@ -106,6 +109,11 @@ export default class AnswerVideoCall extends React.Component{
         console.log(localStream);
         localStream.getVideoTracks()[0].enabled = !(localStream.getVideoTracks()[0].enabled);
         console.log("video track removed");
+        this.setState({
+            videoEnable : true
+        })
+        // console.log("videoenable")
+        // console.log(this.state.videoEnable)
     };
 
     handleCallHangUp = () => {
@@ -206,11 +214,10 @@ export default class AnswerVideoCall extends React.Component{
         this.listen();
         this.listenOnCaller();
     }
-
-
     render() {
         if (this.state.remoteStream && this.state.streamVideo) {
             console.log("In the render method");
+            console.log(this.state.videoEnable)
             return (
                 <View style={stylings.container1}>
                     <RTCView streamURL={this.state.remoteStream.toURL()} style={stylings.video1}/>
@@ -220,25 +227,35 @@ export default class AnswerVideoCall extends React.Component{
                                 <Icon name="call-end" color="#fff" size={30}/>
                             </View>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={this.muteVideo}>
-                            <View style={stylings.callIcon}>
-                                <Icon name="videocam" color="#fff" size={30}/>
-                            </View>
-                        </TouchableOpacity>
+                        {(!this.state.videoEnable) ?
+                            <TouchableOpacity onPress={this.muteVideo}>
+                                <View style={stylings.callIcon}>
+                                    <Icon name="videocam" color="#fff" size={30}/>
+                                </View>
+                            </TouchableOpacity> : <TouchableOpacity >
+                                <View style={stylings.callIcon}>
+                                    <Icon name="call-end" color="#fff" size={30}/>
+                                </View>
+                            </TouchableOpacity>
+                        }
                     </View>
                 </View>
             );
         }
         else if (this.state.onClickAnswerCall) {
             return (
-                <View style={stylings.loadbox}>
-                    <ActivityIndicator size="large" color="#cc504e"/>
-                    <Text style={stylings.loadingtextbox1}>Connecting...</Text>
-                    <TouchableOpacity onPress={this.handleCallHangUp}>
-                        <View style={styles.callIcon3}>
-                            <Icon name="call-end" color="#fff" size={30}/>
-                        </View>
-                    </TouchableOpacity>
+                <View style={stylings.container1}>
+                    <View style={styles.loadbox1}>
+                        <ActivityIndicator size="large" color="#cc504e"/>
+                        <Text style={stylings.loadingtextbox1}>Connecting...</Text>
+                    </View>
+                    <View style={stylings.bottomBar2}>
+                        <TouchableOpacity onPress={this.handleCallHangUp}>
+                            <View style={stylings.callIcon1}>
+                                <Icon name="call-end" color="#fff" size={30}/>
+                            </View>
+                        </TouchableOpacity>
+                    </View>
                 </View>
             );
         }
