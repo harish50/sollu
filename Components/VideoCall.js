@@ -52,7 +52,7 @@ export default class VideoCall extends Component {
         info = this.props.navigation.getParam("info")
         this.startVideoCall();
 
-        VIDEO_CALL_REF.child(caller).on('child_added', async (callerSnap) => {
+        VIDEO_CALL_REF.child(info.receiver).on('child_added', async (callerSnap) => {
             console.log("Let us know the key");
             console.log(callerSnap.key);
             if (callerSnap.key === 'VideoCallReceived') {
@@ -203,7 +203,8 @@ export default class VideoCall extends Component {
                 this.setState({
                     callStatus: "Calling..."
                 })
-                InCallManager.start({media: 'audio', ringback:'_DEFAULT_'});
+                InCallManager.start({media: 'audio', ringback:'../android/app/src/main/res/incallmanager_ringback.mp3'});
+                // InCallManager.start({media:'audio'});
                 console.log("incallmanager started ringback");
 
                 VIDEO_CALL_REF.child(info.sender).child('videoSDP').set(pc.localDescription);
@@ -250,6 +251,7 @@ export default class VideoCall extends Component {
         console.log("after pc.close");
         // pc=null;
         console.log("incallmanager stop");
+        InCallManager.stopRingback();
         InCallManager.stop();
 
         VIDEO_CALL_REF.child(info.sender).remove();
