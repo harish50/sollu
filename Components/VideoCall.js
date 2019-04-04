@@ -203,7 +203,7 @@ export default class VideoCall extends Component {
                 this.setState({
                     callStatus: "Calling..."
                 })
-                InCallManager.start({media: 'audio', ringback:'../android/app/src/main/res/incallmanager_ringback.mp3'});
+                InCallManager.start({media: 'audio', ringback:'_BUNDLE_'});
                 // InCallManager.start({media:'audio'});
                 console.log("incallmanager started ringback");
 
