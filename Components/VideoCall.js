@@ -271,9 +271,9 @@ export default class VideoCall extends Component {
         if (this.state.streamVideo && this.state.ReceiverVideoURL) {
             console.log("In the render method");
             return (
-                <View style={styles.container2}>
+                <View style={styles.container1}>
                     <RTCView streamURL={this.state.ReceiverVideoURL.toURL()} style={styles.video1}/>
-                    <View style={styles.bottomBar3}>
+                    <View style={styles.bottomBar2}>
                         <TouchableOpacity onPress={this.handleCallHangUp}>
                             <View style={styles.callIcon}>
                                 <Icon name="call-end" color="#fff" size={30}/>
