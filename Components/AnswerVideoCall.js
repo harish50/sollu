@@ -126,17 +126,10 @@ export default class AnswerVideoCall extends React.Component{
         localStream.getVideoTracks()[0].enabled = !(localStream.getVideoTracks()[0].enabled);
         console.log("video track removed");
         this.setState({
-            videoEnable : true
+            videoEnable : !this.state.videoEnable
         })
+        // console.log(this.state.videoEnable);
     };
-    enableVideo = () =>{
-        console.log("enable video");
-        this.setState({
-            videoEnable : false
-        })
-        console.log("state enable")
-        console.log(this.state.videoEnable);
-    }
 
     handleCallHangUp = () => {
         console.log("in callhangup");
@@ -254,12 +247,12 @@ export default class AnswerVideoCall extends React.Component{
                                 <Icon name="call-end" color="#fff" size={30}/>
                             </View>
                         </TouchableOpacity>
-                        {(!this.state.videoEnable) ?
+                        {(this.state.videoEnable) ?
                             <TouchableOpacity onPress={this.muteVideo}>
                                 <View style={stylings.callIcon}>
                                     <Icon name="videocam" color="#fff" size={30}/>
                                 </View>
-                            </TouchableOpacity> : <TouchableOpacity onPress={this.enableVideo}>
+                            </TouchableOpacity> : <TouchableOpacity onPress={this.muteVideo}>
                                 <View style={stylings.callIcon}>
                                     <Icon name="videocam-off" color="#fff" size={30}/>
                                 </View>
