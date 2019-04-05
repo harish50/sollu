@@ -247,7 +247,7 @@ export default class AnswerVideoCall extends React.Component{
                                 <Icon name="call-end" color="#fff" size={30}/>
                             </View>
                         </TouchableOpacity>
-                        {(this.state.videoEnable) ?
+                        {(!this.state.videoEnable) ?
                             <TouchableOpacity onPress={this.muteVideo}>
                                 <View style={stylings.callIcon}>
                                     <Icon name="videocam" color="#fff" size={30}/>

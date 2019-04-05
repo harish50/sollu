@@ -279,7 +279,7 @@ export default class VideoCall extends Component {
                                 <Icon name="call-end" color="#fff" size={30}/>
                             </View>
                         </TouchableOpacity>
-                        {(this.state.videoEnable) ?
+                        {(!this.state.videoEnable) ?
                             <TouchableOpacity onPress={this.muteVideo}>
                                 <View style={styles.callIcon}>
                                     <Icon name="videocam" color="#fff" size={30}/>
