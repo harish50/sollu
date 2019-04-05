@@ -285,11 +285,11 @@ export default class VideoCall extends Component {
                         </TouchableOpacity>
                         {(!this.state.videoEnable) ?
                             <TouchableOpacity onPress={this.muteVideo}>
-                                <View style={stylings.callIcon}>
+                                <View style={styles.callIcon}>
                                     <Icon name="videocam" color="#fff" size={30}/>
                                 </View>
                             </TouchableOpacity> : <TouchableOpacity onPress={this.enableVideo}>
-                                <View style={stylings.callIcon}>
+                                <View style={styles.callIcon}>
                                     <Icon name="videocam-off" color="#fff" size={30}/>
                                 </View>
                             </TouchableOpacity>
