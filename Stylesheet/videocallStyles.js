@@ -36,7 +36,7 @@ export default StyleSheet.create({
         justifyContent: 'center'
     },
     loadbox1:{
-        justifyContent: 'center',
+        justifyContent: 'space-around',
         marginBottom:20
     },
     bottomBar: {
@@ -73,6 +73,11 @@ export default StyleSheet.create({
         paddingTop: 20,
         marginTop:300,
     },
+    bottomBar3:{
+        justifyContent: "space-around",
+        flexDirection: "row",
+        paddingLeft: 10,
+    },
     callIcon: {
         color: '#cc504e',
         alignItems: 'center',
@@ -91,8 +96,11 @@ export default StyleSheet.create({
         backgroundColor: '#fff'
     },
     container1: {
-        flex: 1,
         backgroundColor: '#fff'
+    },
+    container2: {
+        backgroundColor: '#fff',
+        marginTop:250,
     },
     videoContainer: {
         flex: 1,

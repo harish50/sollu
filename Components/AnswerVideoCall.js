@@ -271,12 +271,12 @@ export default class AnswerVideoCall extends React.Component{
         }
         else if (this.state.onClickAnswerCall) {
             return (
-                <View style={stylings.container1}>
+                <View style={stylings.container2}>
                     <View style={styles.loadbox1}>
                         <ActivityIndicator size="large" color="#cc504e"/>
                         <Text style={stylings.loadingtextbox1}>Connecting...</Text>
                     </View>
-                    <View style={stylings.bottomBar2}>
+                    <View style={stylings.bottomBar3}>
                         <TouchableOpacity onPress={this.handleCallHangUp}>
                             <View style={stylings.callIcon1}>
                                 <Icon name="call-end" color="#fff" size={30}/>
