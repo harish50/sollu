@@ -249,6 +249,18 @@ export default class HomeScreen extends React.Component {
                     })
                     await AsyncStorage.setItem('listofContacts', JSON.stringify(localContacts))
                 });
+                let dbUserProfileRef = db.ref("registeredUserProfileInfo").child(sender);
+                let dbLocalContRef = dbUserProfileRef.child("LocalContacts");
+                dbLocalContRef.once("value", (contactsFromDb) =>{
+                    let localContactsFromDb = contactsFromDb.val();
+                    let myLocalContacts = this.state.contacts;
+                    for(let index = 0; index<this.state.contacts.length; index++){
+                        if(!contactsFromDb.hasChild(myLocalContacts[index].key)){
+                            console.log("It has the child")
+                            dbLocalContRef.child(myLocalContacts[index].key).set(myLocalContacts[index].name);
+                        }
+                    }
+                })
             }
         });
     }
@@ -293,6 +305,8 @@ export default class HomeScreen extends React.Component {
     componentWillMount() {
         sender = this.props.navigation.getParam("sender")
         console.log("in componentWillMount:" + sender);
+        let dbLocalContRef = firebase.database().ref("registeredUserProfileInfo");
+        dbLocalContRef.child(sender).child("LocalContacts").child(sender).set("You");
     }
 
     async componentDidMount() {
