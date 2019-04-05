@@ -241,6 +241,14 @@ export default class VideoCall extends Component {
             localStream.getVideoTracks()[0].enabled = !(localStream.getVideoTracks()[0].enabled);
             console.log("video track removed");
     };
+    enableVideo = () =>{
+        console.log("enable video");
+        this.setState({
+            videoEnable : false
+        })
+        console.log("state enable")
+        console.log(this.state.videoEnable);
+    }
 
     handleCallHangUp=()=>{
         console.log("in callhangup");
@@ -275,11 +283,17 @@ export default class VideoCall extends Component {
                                 <Icon name="call-end" color="#fff" size={30}/>
                             </View>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={this.muteVideo}>
-                            <View style={styles.callIcon}>
-                                <Icon name="videocam" color="#fff" size={30}/>
-                            </View>
-                        </TouchableOpacity>
+                        {(!this.state.videoEnable) ?
+                            <TouchableOpacity onPress={this.muteVideo}>
+                                <View style={stylings.callIcon}>
+                                    <Icon name="videocam" color="#fff" size={30}/>
+                                </View>
+                            </TouchableOpacity> : <TouchableOpacity onPress={this.enableVideo}>
+                                <View style={stylings.callIcon}>
+                                    <Icon name="videocam-off" color="#fff" size={30}/>
+                                </View>
+                            </TouchableOpacity>
+                        }
                     </View>
                 </View>
             );
