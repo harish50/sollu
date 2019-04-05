@@ -22,7 +22,8 @@ export default class AnswerVideoCall extends React.Component{
             remoteStream: '',
             streamVideo: false,
             onClickAnswerCall : false,
-            callerName : ''
+            callerName : '',
+            videoEnable : true
         };
         this.listenOnCaller= this.listenOnCaller.bind(this);
     }
@@ -98,7 +99,8 @@ export default class AnswerVideoCall extends React.Component{
         callee = this.props.navigation.getParam("callee");
         let name = await AsyncStorage.getItem(caller)
         this.setState({
-            callerName: name
+            callerName: name,
+            videoEnable : false
         })
 
         VIDEO_CALL_REF.child(caller).on('child_added', async (callerSnap) => {
@@ -123,7 +125,18 @@ export default class AnswerVideoCall extends React.Component{
         console.log(localStream);
         localStream.getVideoTracks()[0].enabled = !(localStream.getVideoTracks()[0].enabled);
         console.log("video track removed");
+        this.setState({
+            videoEnable : true
+        })
     };
+    enableVideo = () =>{
+        console.log("enable video");
+        this.setState({
+            videoEnable : false
+        })
+        console.log("state enable")
+        console.log(this.state.videoEnable);
+    }
 
     handleCallHangUp = () => {
         console.log("in callhangup");
@@ -241,25 +254,35 @@ export default class AnswerVideoCall extends React.Component{
                                 <Icon name="call-end" color="#fff" size={30}/>
                             </View>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={this.muteVideo}>
-                            <View style={stylings.callIcon}>
-                                <Icon name="videocam" color="#fff" size={30}/>
-                            </View>
-                        </TouchableOpacity>
+                        {(!this.state.videoEnable) ?
+                            <TouchableOpacity onPress={this.muteVideo}>
+                                <View style={stylings.callIcon}>
+                                    <Icon name="videocam" color="#fff" size={30}/>
+                                </View>
+                            </TouchableOpacity> : <TouchableOpacity onPress={this.enableVideo}>
+                                <View style={stylings.callIcon}>
+                                    <Icon name="videocam-off" color="#fff" size={30}/>
+                                </View>
+                            </TouchableOpacity>
+                        }
                     </View>
                 </View>
             );
         }
         else if (this.state.onClickAnswerCall) {
             return (
-                <View style={stylings.loadbox}>
-                    <ActivityIndicator size="large" color="#cc504e"/>
-                    <Text style={stylings.loadingtextbox1}>Connecting...</Text>
-                    <TouchableOpacity onPress={this.handleCallHangUp}>
-                        <View style={styles.callIcon3}>
-                            <Icon name="call-end" color="#fff" size={30}/>
-                        </View>
-                    </TouchableOpacity>
+                <View style={stylings.container1}>
+                    <View style={styles.loadbox1}>
+                        <ActivityIndicator size="large" color="#cc504e"/>
+                        <Text style={stylings.loadingtextbox1}>Connecting...</Text>
+                    </View>
+                    <View style={stylings.bottomBar2}>
+                        <TouchableOpacity onPress={this.handleCallHangUp}>
+                            <View style={stylings.callIcon1}>
+                                <Icon name="call-end" color="#fff" size={30}/>
+                            </View>
+                        </TouchableOpacity>
+                    </View>
                 </View>
             );
         }

@@ -35,6 +35,10 @@ export default StyleSheet.create({
         flex: 1,
         justifyContent: 'center'
     },
+    loadbox1:{
+        justifyContent: 'center',
+        marginBottom:20
+    },
     bottomBar: {
         justifyContent: "space-around",
         flexDirection: "row",
