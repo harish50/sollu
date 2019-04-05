@@ -20,7 +20,8 @@ export default class VideoCall extends Component {
         ReceiverVideoURL: null,
         isFront: true,
         streamVideo: false,
-        callStatus: "Starting sollu video call"
+        callStatus: "Starting sollu video call",
+        videoEnable : true
     };
 
     static navigationOptions = ({navigation}) => {
@@ -238,18 +239,13 @@ export default class VideoCall extends Component {
         console.log("in mute video");
         let localStream = pc.getLocalStreams()[0];
         console.log(localStream);
-            localStream.getVideoTracks()[0].enabled = !(localStream.getVideoTracks()[0].enabled);
-            console.log("video track removed");
-    };
-    enableVideo = () =>{
-        console.log("enable video");
+        localStream.getVideoTracks()[0].enabled = !(localStream.getVideoTracks()[0].enabled);
+        console.log("video track removed");
         this.setState({
-            videoEnable : false
+            videoEnable : !this.state.videoEnable
         })
-        console.log("state enable")
-        console.log(this.state.videoEnable);
-    }
-
+        // console.log(this.state.videoEnable);
+    };
     handleCallHangUp=()=>{
         console.log("in callhangup");
         console.log(pc);
@@ -283,12 +279,12 @@ export default class VideoCall extends Component {
                                 <Icon name="call-end" color="#fff" size={30}/>
                             </View>
                         </TouchableOpacity>
-                        {(!this.state.videoEnable) ?
+                        {(this.state.videoEnable) ?
                             <TouchableOpacity onPress={this.muteVideo}>
                                 <View style={styles.callIcon}>
                                     <Icon name="videocam" color="#fff" size={30}/>
                                 </View>
-                            </TouchableOpacity> : <TouchableOpacity onPress={this.enableVideo}>
+                            </TouchableOpacity> : <TouchableOpacity onPress={this.muteVideo}>
                                 <View style={styles.callIcon}>
                                     <Icon name="videocam-off" color="#fff" size={30}/>
                                 </View>
