@@ -1,7 +1,7 @@
 import React from "react";
-import { Platform, View, Text, TextInput, KeyboardAvoidingView, FlatList, TouchableOpacity, Image, ImageBackground, ScrollView } from 'react-native';
+import { Platform, View, Text, TextInput, KeyboardAvoidingView, FlatList, TouchableOpacity, ImageBackground,} from 'react-native';
 import { SafeAreaView, Header, HeaderBackButton } from 'react-navigation';
-import styles from "../Stylesheet/styleSheet";
+import styles from "../Stylesheet/ChatScreen";
 import firebase from "../firebase/firebase";
 import Profile from "./Profile";
 import DateComponent from './DateComponent';
@@ -169,10 +169,10 @@ export default class ChatScreen extends React.Component {
         }
         else if (item._id === 2) {
             messageboxstyle = [styles.senderMessageContainer, styles.chatBox];
-            messagetextstyle = styles.senderMessage;
+            messagetextstyle = styles.senderMessageContent;
         } else {
             messageboxstyle = [styles.receiverMessageContainer, styles.chatBox];
-            messagetextstyle = styles.receiverMessage;
+            messagetextstyle = styles.receiverMessageContent;
             phoneNo = info.receiver;
         }
         let minutes = '' + item.createdAt.getMinutes();
@@ -196,8 +196,8 @@ export default class ChatScreen extends React.Component {
                         </ImageBackground>
                     </View>
                     <View style={messagetextstyle}>
-                        <Text style={styles.messageStyle}>{item.text}</Text>
-                        <Text style={styles.timeStyle}>{time}</Text>
+                        <Text style={styles.messageTextContainer}>{item.text}</Text>
+                        <Text style={styles.timeContainer}>{time}</Text>
                     </View>
                 </View>
             );
@@ -207,8 +207,8 @@ export default class ChatScreen extends React.Component {
                 <View style={messageboxstyle}>
                     <Profile sender={phoneNo} />
                     <View style={messagetextstyle}>
-                        <Text style={styles.messageStyle}>{item.text}</Text>
-                        <Text style={styles.timeStyle}>{time}</Text>
+                        <Text style={styles.messageTextContainer}>{item.text}</Text>
+                        <Text style={styles.timeContainer}>{time}</Text>
                     </View>
                 </View>
             );
@@ -265,12 +265,12 @@ export default class ChatScreen extends React.Component {
                             <TextInput
                                 value={this.state.typing}
                                 onChangeText={text => this.setState({ typing: text })}
-                                style={styles.input}
+                                style={styles.textInputContainer}
                                 underlineColorAndroid="transparent"
                                 placeholder="Type something nice"
                             />
                             <TouchableOpacity onPress={this.sendMessage}>
-                                <Text style={styles.send}>Send</Text>
+                                <Text style={styles.sendButton}>Send</Text>
                             </TouchableOpacity>
                         </View>
                     </KeyboardAvoidingView>
