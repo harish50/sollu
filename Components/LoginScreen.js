@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { View, TextInput, TouchableOpacity, Text, Image, AsyncStorage, StatusBar } from 'react-native';
-import styles from "../Stylesheet/styleSheet";
+import styles from "../Stylesheet/LoginScreen";
 import firebase from '../firebase/firebase';
 import { NavigationActions, StackActions } from 'react-navigation';
 
@@ -82,12 +82,12 @@ class LoginScreen extends Component {
             );
         }
         return (
-            <View style={styles.mainBox}>
-                <View style={styles.SectionStyle}>
+            <View style={styles.Container}>
+                <View style={styles.contentContainer}>
                     <Image source={require('../Icon/callerIcon3.png')}
-                        style={[styles.imageStyle]} />
+                        style={styles.phoneIconContainer} />
                     <TextInput
-                        style={styles.TextContainer}
+                        style={styles.phoneNumberContainer}
                         placeholder="Enter phone number"
                         maxLength={10}
                         keyboardType='numeric'
@@ -96,11 +96,11 @@ class LoginScreen extends Component {
                     />
                 </View>
                 <View>
-                    <TouchableOpacity style={[styles.button, { backgroundColor: this.state.phoneNumber ? '#cc504e' : '#f49f8e' }]}
+                    <TouchableOpacity style={[styles.loginButton, { backgroundColor: this.state.phoneNumber ? '#cc504e' : '#f49f8e' }]}
                         activeOpacity={.5}
                         disabled={!this.state.phoneNumber}
                         onPress={this.handlePress}>
-                        <Text style={styles.text}>Login</Text>
+                        <Text style={styles.loginText}>Login</Text>
                     </TouchableOpacity>
                 </View>
             </View>
