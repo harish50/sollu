@@ -1,11 +1,6 @@
 import { StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
-    mainContainer: {
-        flex: 1,
-        backgroundColor: '#F5FCFF',
-        height: 24,
-    },
     mainContainer1: {
         flex: 1,
         backgroundColor: '#cc504e',
@@ -71,7 +66,11 @@ export default StyleSheet.create({
         flex: 1,
         alignItems: "flex-end",
     },
-
+    mainContainer: {
+        flex: 1,
+        backgroundColor: '#F5FCFF',
+        height: 24,
+    },
     item: {
         fontSize: 18,
         fontFamily: 'Roboto-medium'
@@ -130,6 +129,36 @@ export default StyleSheet.create({
         fontFamily: 'Roboto-Regular',
         flexDirection: 'row'
     },
+
+    mainBox: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    SectionStyle: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#fff',
+        borderWidth: 0.5,
+        borderColor: '#000',
+        height: 50,
+        width: 300,
+        borderRadius: 5,
+        margin: 10,
+    },
+    imageStyle: {
+        padding: 1,
+        margin: 5,
+        height: 35,
+        width: 35,
+        resizeMode: 'stretch',
+        alignItems: 'center',
+    },
+    TextContainer: {
+        flex: 1,
+        fontSize: 20,
+    },
     safeAreaView: {
         flex: 1,
         backgroundColor: '#f1f1f1',
@@ -157,6 +186,14 @@ export default StyleSheet.create({
         fontFamily: 'Roboto-Regular',
         marginLeft:10,
         flexDirection: 'row'
+    },
+    button: {
+        paddingTop: 10,
+        paddingBottom: 10,
+        borderRadius: 5,
+        marginBottom: 20,
+        width: 125,
+        height: 45
     },
     chatIcon: {
         width: 55,
