@@ -1,6 +1,7 @@
 import React from "react";
 import firebase from "../firebase/firebase";
 import {Text, TouchableOpacity, View,ActivityIndicator, AsyncStorage} from "react-native";
+import InCallManager from 'react-native-incall-manager';
 
 import {mediaDevices, RTCIceCandidate, RTCPeerConnection, RTCSessionDescription, RTCView} from "react-native-webrtc";
 import stylings from "../Stylesheet/videocallStyles";
@@ -21,7 +22,8 @@ export default class AnswerVideoCall extends React.Component{
             remoteStream: '',
             streamVideo: false,
             onClickAnswerCall : false,
-            callerName : ''
+            callerName : '',
+            videoEnable : true
         };
         this.listenOnCaller= this.listenOnCaller.bind(this);
     }
@@ -85,18 +87,35 @@ export default class AnswerVideoCall extends React.Component{
             console.log("in create answer");
             pc.setLocalDescription(sdp).then(() => {
                 console.log("localdescription");
-                VIDEO_CALL_REF.child(this.props.navigation.getParam("callee")).child('videoSDP').set(pc.localDescription);
+                VIDEO_CALL_REF.child(callee).child('videoSDP').set(pc.localDescription);
             })
         });
     }
 
     async componentDidMount() {
+        InCallManager.startRingtone('_DEFAULT_');
         console.log("Entered into AnswerVideoCall.js");
         caller = this.props.navigation.getParam("caller");
+        callee = this.props.navigation.getParam("callee");
         let name = await AsyncStorage.getItem(caller)
         this.setState({
-            callerName :name
+            callerName: name,
+            videoEnable : false
         })
+
+        VIDEO_CALL_REF.child(caller).on('child_added', async (callerSnap) => {
+            console.log("Let us know the key");
+            console.log(callerSnap.key);
+            if (callerSnap.key === 'VideoCallEnd') {
+                InCallManager.stopRingtone();
+                InCallManager.stop()
+                VIDEO_CALL_REF.child(callee).remove();
+                console.log("videocallEnd has child 1");
+                VIDEO_CALL_REF.child(caller).remove();
+                console.log("videocallEnd has child21");
+                this.props.navigation.navigate("HomeScreen", {sender: callee});
+            }
+        });
     }
 
     muteVideo = () => {
@@ -106,6 +125,10 @@ export default class AnswerVideoCall extends React.Component{
         console.log(localStream);
         localStream.getVideoTracks()[0].enabled = !(localStream.getVideoTracks()[0].enabled);
         console.log("video track removed");
+        this.setState({
+            videoEnable : !this.state.videoEnable
+        })
+        // console.log(this.state.videoEnable);
     };
 
     handleCallHangUp = () => {
@@ -114,9 +137,12 @@ export default class AnswerVideoCall extends React.Component{
         if(pc!==null){
             console.log(pc.close());
         }
+        InCallManager.stopRingtone();
+        InCallManager.stop();
+
         console.log("after pc.close");
         // pc=null;
-        VIDEO_CALL_REF.child(this.props.navigation.getParam("callee")).child('VideoCallEnd').set(true);
+        VIDEO_CALL_REF.child(callee).child('VideoCallEnd').set(true);
         this.props.navigation.navigate("HomeScreen", {sender: callee});
     };
 
@@ -134,12 +160,14 @@ export default class AnswerVideoCall extends React.Component{
             console.log("Let us know the key");
             console.log(callerSnap.key);
             if (callerSnap.key === 'VideoCallEnd') {
-                this.props.navigation.navigate("HomeScreen", {sender: callee});
-                VIDEO_CALL_REF.child(this.props.navigation.getParam("callee")).remove();
+                InCallManager.stopRingtone();
+                InCallManager.stop();
+                VIDEO_CALL_REF.child(callee).remove();
                 console.log("videocallEnd has child 1");
                 VIDEO_CALL_REF.child(caller).remove();
                 console.log("videocallEnd has child21");
                 pc.close();
+                this.props.navigation.navigate("HomeScreen", {sender: callee});
             }
             if (callerSnap.key === 'videoSDP') {
                 console.log("videoSDP");
@@ -177,7 +205,7 @@ export default class AnswerVideoCall extends React.Component{
                 }
                 else {
                     console.log("No ice found");
-                    VIDEO_CALL_REF.child(this.props.navigation.getParam("callee")).child('ICE').set(receiverIceList);
+                    VIDEO_CALL_REF.child(callee).child('ICE').set(receiverIceList);
                     this.setState({
                         streamVideo: true
                     });
@@ -194,16 +222,15 @@ export default class AnswerVideoCall extends React.Component{
         });
     }
 
-    listen=()=>{
-    console.log("gjh")
-}
-
     callAnswer(){
         console.log("in callAnswering");
+        // when user pickup
+        InCallManager.stopRingtone();
+        InCallManager.start();
+        VIDEO_CALL_REF.child(callee).child('VideoCallReceived').set(true);
         this.setState({
             onClickAnswerCall : true
         });
-        this.listen();
         this.listenOnCaller();
     }
 
@@ -220,25 +247,35 @@ export default class AnswerVideoCall extends React.Component{
                                 <Icon name="call-end" color="#fff" size={30}/>
                             </View>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={this.muteVideo}>
-                            <View style={stylings.callIcon}>
-                                <Icon name="videocam" color="#fff" size={30}/>
-                            </View>
-                        </TouchableOpacity>
+                        {(!this.state.videoEnable) ?
+                            <TouchableOpacity onPress={this.muteVideo}>
+                                <View style={stylings.callIcon}>
+                                    <Icon name="videocam" color="#fff" size={30}/>
+                                </View>
+                            </TouchableOpacity> : <TouchableOpacity onPress={this.muteVideo}>
+                                <View style={stylings.callIcon}>
+                                    <Icon name="videocam-off" color="#fff" size={30}/>
+                                </View>
+                            </TouchableOpacity>
+                        }
                     </View>
                 </View>
             );
         }
         else if (this.state.onClickAnswerCall) {
             return (
-                <View style={stylings.loadbox}>
-                    <ActivityIndicator size="large" color="#cc504e"/>
-                    <Text style={stylings.loadingtextbox1}>Connecting...</Text>
-                    <TouchableOpacity onPress={this.handleCallHangUp}>
-                        <View style={styles.callIcon3}>
-                            <Icon name="call-end" color="#fff" size={30}/>
-                        </View>
-                    </TouchableOpacity>
+                <View style={stylings.container2}>
+                    <View style={styles.loadbox1}>
+                        <ActivityIndicator size="large" color="#cc504e"/>
+                        <Text style={stylings.loadingtextbox1}>Connecting...</Text>
+                    </View>
+                    <View style={stylings.bottomBar3}>
+                        <TouchableOpacity onPress={this.handleCallHangUp}>
+                            <View style={stylings.callIcon1}>
+                                <Icon name="call-end" color="#fff" size={30}/>
+                            </View>
+                        </TouchableOpacity>
+                    </View>
                 </View>
             );
         }

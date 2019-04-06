@@ -1,6 +1,7 @@
 import React, {Component} from "react";
 import {Text, TouchableOpacity, View,ActivityIndicator} from "react-native";
 import styles from "../Stylesheet/videocallStyles";
+import InCallManager from 'react-native-incall-manager';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { mediaDevices, RTCIceCandidate, RTCPeerConnection, RTCSessionDescription, RTCView } from "react-native-webrtc";
 import firebase from "../firebase/firebase";
@@ -19,7 +20,8 @@ export default class VideoCall extends Component {
         ReceiverVideoURL: null,
         isFront: true,
         streamVideo: false,
-        callStatus: "Starting sollu video call"
+        callStatus: "Starting sollu video call",
+        videoEnable : true
     };
 
     static navigationOptions = ({navigation}) => {
@@ -50,6 +52,19 @@ export default class VideoCall extends Component {
     componentDidMount() {
         info = this.props.navigation.getParam("info")
         this.startVideoCall();
+
+        VIDEO_CALL_REF.child(info.receiver).on('child_added', async (callerSnap) => {
+            console.log("Let us know the key");
+            console.log(callerSnap.key);
+            if (callerSnap.key === 'VideoCallReceived') {
+                this.setState({
+                    callStatus: this.props.navigation.getParam("contactName")+" Answered the Call"
+                });
+                InCallManager.stopRingback();
+                InCallManager.start();
+                console.log("videocallreceived");
+            }
+        });
     }
     componentWillUnmount(){
         senderIceList=[];
@@ -94,6 +109,9 @@ export default class VideoCall extends Component {
                     remoteStream: '',
                     streamVideo: false
                 });
+                InCallManager.stopRingback();
+                InCallManager.stop();
+                console.log("incallmanager stopringback call declined");
                 pc.close();
                 VIDEO_CALL_REF.child(info.sender).remove();
                 VIDEO_CALL_REF.child(info.receiver).remove();
@@ -104,6 +122,12 @@ export default class VideoCall extends Component {
             }
             if (snap.key === 'videoSDP') {
                 console.log("Getting SDP");
+                this.setState({
+                    callStatus: this.props.navigation.getParam("contactName")+" Answered the Call"
+                })
+                InCallManager.stopRingback();
+                console.log("incallmanager stopringback");
+
                 pc.setRemoteDescription(new RTCSessionDescription(snap.val()));
                 this.setState({
                     callStatus: "Connecting to video call"
@@ -186,6 +210,10 @@ export default class VideoCall extends Component {
                 this.setState({
                     callStatus: "Calling..."
                 })
+                InCallManager.start({media: 'audio', ringback:'_BUNDLE_'});
+                // InCallManager.start({media:'audio'});
+                console.log("incallmanager started ringback");
+
                 VIDEO_CALL_REF.child(info.sender).child('videoSDP').set(pc.localDescription);
             })
         });
@@ -217,10 +245,13 @@ export default class VideoCall extends Component {
         console.log("in mute video");
         let localStream = pc.getLocalStreams()[0];
         console.log(localStream);
-            localStream.getVideoTracks()[0].enabled = !(localStream.getVideoTracks()[0].enabled);
-            console.log("video track removed");
+        localStream.getVideoTracks()[0].enabled = !(localStream.getVideoTracks()[0].enabled);
+        console.log("video track removed");
+        this.setState({
+            videoEnable : !this.state.videoEnable
+        })
+        // console.log(this.state.videoEnable);
     };
-
     handleCallHangUp=()=>{
         console.log("in callhangup");
         console.log(pc);
@@ -229,6 +260,10 @@ export default class VideoCall extends Component {
         }
         console.log("after pc.close");
         // pc=null;
+        console.log("incallmanager stop");
+        InCallManager.stopRingback();
+        InCallManager.stop();
+
         VIDEO_CALL_REF.child(info.sender).remove();
         VIDEO_CALL_REF.child(info.sender).child('VideoCallEnd').set(true);
         console.log(pc);
@@ -250,11 +285,17 @@ export default class VideoCall extends Component {
                                 <Icon name="call-end" color="#fff" size={30}/>
                             </View>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={this.muteVideo}>
-                            <View style={styles.callIcon}>
-                                <Icon name="videocam" color="#fff" size={30}/>
-                            </View>
-                        </TouchableOpacity>
+                        {(!this.state.videoEnable) ?
+                            <TouchableOpacity onPress={this.muteVideo}>
+                                <View style={styles.callIcon}>
+                                    <Icon name="videocam" color="#fff" size={30}/>
+                                </View>
+                            </TouchableOpacity> : <TouchableOpacity onPress={this.muteVideo}>
+                                <View style={styles.callIcon}>
+                                    <Icon name="videocam-off" color="#fff" size={30}/>
+                                </View>
+                            </TouchableOpacity>
+                        }
                     </View>
                 </View>
             );

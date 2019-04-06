@@ -35,6 +35,10 @@ export default StyleSheet.create({
         flex: 1,
         justifyContent: 'center'
     },
+    loadbox1:{
+        justifyContent: 'space-around',
+        marginBottom:20
+    },
     bottomBar: {
         justifyContent: "space-around",
         flexDirection: "row",
@@ -66,8 +70,13 @@ export default StyleSheet.create({
         justifyContent: "space-around",
         flexDirection: "row",
         paddingLeft: 10,
-        paddingTop: 20,
-        marginTop:300,
+        paddingTop: 10,
+        marginTop:250,
+    },
+    bottomBar3:{
+        justifyContent: "space-around",
+        flexDirection: "row",
+        paddingLeft: 10,
     },
     callIcon: {
         color: '#cc504e',
@@ -87,8 +96,12 @@ export default StyleSheet.create({
         backgroundColor: '#fff'
     },
     container1: {
-        flex: 1,
+        flex:1,
         backgroundColor: '#fff'
+    },
+    container2: {
+        backgroundColor: '#fff',
+        marginTop:250,
     },
     videoContainer: {
         flex: 1,
