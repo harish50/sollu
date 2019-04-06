@@ -57,6 +57,9 @@ export default class VideoCall extends Component {
             console.log("Let us know the key");
             console.log(callerSnap.key);
             if (callerSnap.key === 'VideoCallReceived') {
+                this.setState({
+                    callStatus: this.props.navigation.getParam("contactName")+" Answered the Call"
+                });
                 InCallManager.stopRingback();
                 InCallManager.start();
                 console.log("videocallreceived");
@@ -119,6 +122,9 @@ export default class VideoCall extends Component {
             }
             if (snap.key === 'videoSDP') {
                 console.log("Getting SDP");
+                this.setState({
+                    callStatus: this.props.navigation.getParam("contactName")+" Answered the Call"
+                })
                 InCallManager.stopRingback();
                 console.log("incallmanager stopringback");
 
