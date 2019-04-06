@@ -2,8 +2,6 @@ import React, { Component } from 'react';
 import { View, AsyncStorage } from 'react-native';
 import styles from "../Stylesheet/styleSheet";
 import AppContainer from "./Navigator";
-import firebase from 'react-native-firebase';
-
 
 export default class App extends Component {
 
