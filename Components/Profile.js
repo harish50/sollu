@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, TouchableOpacity, Image, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, TouchableOpacity,StyleSheet, ActivityIndicator } from 'react-native';
 import firebase from '../firebase/firebase';
 import FastImage from 'react-native-fast-image';
 

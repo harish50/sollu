@@ -138,12 +138,12 @@ export default class ProfilePage extends Component {
                             </TouchableOpacity>
                         }
                     </View>
-                    <View style={styles.dropdowncontainer}>
+                    <View style={styles.dropdownContainer}>
                         <Picker
                             selectedValue={this.state.gender}
                             onValueChange={this.genderChange}
-                            style={styles.picker}
-                            textStyle={styles.pickerText}>
+                            style={styles.pickerContainer}
+                            textStyle={styles.pickerContainerText}>
                             <Picker.Item label="Select Gender" value="Select Gender" />
                             <Picker.Item label="Male" value="Male" />
                             <Picker.Item label="Female" value="Female" />
