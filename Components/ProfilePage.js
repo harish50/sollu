@@ -5,7 +5,7 @@ import FastImage from 'react-native-fast-image'
 import firebase from "../firebase/firebase";
 import RNFetchBlob from 'react-native-fetch-blob';
 import { Picker } from 'react-native-picker-dropdown'
-import styles from "../Stylesheet/profilePageStyle";
+import styles from "../Stylesheet/ProfileScreen";
 
 const Blob = RNFetchBlob.polyfill.Blob;
 const fs = RNFetchBlob.fs;
@@ -48,7 +48,7 @@ export default class ProfilePage extends Component {
     };
 
     componentWillMount() {
-        phoneNum = this.props.navigation.getParam("phoneNo");
+        phoneNum = this.props.navigation.getParam("phoneNum");
         REGISTERED_USER_PROFILE_INFO.child(phoneNum).on('value', (snapshot) => {
             let user = snapshot.val();
             let gender = user !== null ? user.Gender : "Select Gender";

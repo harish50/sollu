@@ -1,24 +1,27 @@
 import React, { Component } from 'react';
-import { View, TouchableOpacity,StyleSheet, ActivityIndicator } from 'react-native';
+import { View, TouchableOpacity,ActivityIndicator } from 'react-native';
 import firebase from '../firebase/firebase';
 import FastImage from 'react-native-fast-image';
+import styles from "../Stylesheet/ProfileScreen";
 
+
+let REGISTERED_USER_PROFILE_INFO = firebase.database().ref("registeredUserProfileInfo");
 export default class Profile extends Component {
+
     state = {
         isProfilePicSet: false,
         profilePic: "https://firebasestorage.googleapis.com/v0/b/chatbox-992a8.appspot.com/o/images%2FgeneralUserIcon.png?alt=media&token=5aca0ddf-29f1-48f8-aa7d-78996b5a81a3",
     }
-    handleProfilePress = () => {
+    onClickProfilePic = () => {
         if (typeof this.props.navigation !== 'undefined') {
-            this.props.navigation.navigate('ProfilePage', { phoneNo: this.props.sender });
+            this.props.navigation.navigate('ProfilePage', { phoneNum: this.props.sender });
         }
     }
     async componentDidMount() {
-        let imageRef = firebase.database().ref('registeredUserProfileInfo');
-        let phoneNo = this.props.sender;
+        let phoneNum = this.props.sender;
         let user;
         let user_pic = "https://firebasestorage.googleapis.com/v0/b/chatbox-992a8.appspot.com/o/images%2FgeneralUserIcon.png?alt=media&token=5aca0ddf-29f1-48f8-aa7d-78996b5a81a3";
-        imageRef.child(phoneNo).on('value', (registeredUserProfileInfo) => {
+        REGISTERED_USER_PROFILE_INFO.child(phoneNum).on('value', (registeredUserProfileInfo) => {
             user = registeredUserProfileInfo.val();
             if (user) {
                 if ((typeof user.imageURL === 'undefined' && typeof user.Gender === 'undefined')) {
@@ -52,26 +55,11 @@ export default class Profile extends Component {
         } else {
             return (
                 <View>
-                    <TouchableOpacity onPress={this.handleProfilePress}>
-                        <FastImage style={styles.profileIcon} source={{ uri: this.state.profilePic }} />
+                    <TouchableOpacity onPress={this.onClickProfilePic}>
+                        <FastImage style={styles.profileIconContainer} source={{ uri: this.state.profilePic }} />
                     </TouchableOpacity>
                 </View>
             )
         }
     }
 }
-
-const styles = StyleSheet.create(
-    {
-        profileIcon: {
-            alignSelf: 'center',
-            borderRadius: 25,
-            width: 50,
-            height: 50,
-            marginRight: 5,
-            marginLeft: 5,
-            marginTop: 2,
-            marginBottom: 3,
-        }
-    }
-)

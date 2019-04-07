@@ -30,4 +30,14 @@ export default StyleSheet.create({
     pickerContainerText: {
         color: 'white',
     },
+    profileIconContainer: {
+        alignSelf: 'center',
+        borderRadius: 25,
+        width: 50,
+        height: 50,
+        marginRight: 5,
+        marginLeft: 5,
+        marginTop: 2,
+        marginBottom: 3,
+    },
 })
