@@ -2,11 +2,9 @@ import React from "react";
 import firebase from "../firebase/firebase";
 import {Text, TouchableOpacity, View,ActivityIndicator, AsyncStorage} from "react-native";
 import InCallManager from 'react-native-incall-manager';
-
 import {mediaDevices, RTCIceCandidate, RTCPeerConnection, RTCSessionDescription, RTCView} from "react-native-webrtc";
 import stylings from "../Stylesheet/videocallStyles";
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import FontAwesome, {Icons} from "react-native-fontawesome";
 import styles from "../Stylesheet/styleSheet";
 
 let VIDEO_CALL_REF = firebase.database().ref("videoCallInfo");
@@ -240,11 +238,21 @@ export default class AnswerVideoCall extends React.Component{
             console.log("In the render method");
             return (
                 <View style={stylings.container1}>
-                    <RTCView streamURL={this.state.remoteStream.toURL()} style={stylings.video1}/>
+                    <View  style={stylings.remoteVideoContainer}>
+                        <RTCView objectFit='cover' streamURL={this.state.remoteStream.toURL()}/>
+                    </View>
+                    <View style={stylings.videoPreviewContainer}>
+                        <RTCView objectFit='cover' zOrder={1} streamURL={this.state.remoteStream.toURL()} />
+                    </View>
                     <View style={stylings.bottomBar}>
                         <TouchableOpacity onPress={this.handleCallHangUp}>
                             <View style={stylings.callIcon}>
                                 <Icon name="call-end" color="#fff" size={30}/>
+                            </View>
+                        </TouchableOpacity>
+                        <TouchableOpacity>
+                            <View style={stylings.callIcon}>
+                                <Icon name="volume-up" color="#fff" size={30}/>
                             </View>
                         </TouchableOpacity>
                         {(!this.state.videoEnable) ?

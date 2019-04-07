@@ -107,8 +107,23 @@ export default StyleSheet.create({
         flex: 1,
         alignSelf: 'stretch'
     },
-    video1: {
-        flex: 1
+    remoteVideoContainer: {
+        flex: 1,
+        width: "100%",
+        height: "100%",
+        alignSelf: 'stretch'
+    },
+    videoPreviewContainer: {
+        backgroundColor: 'black',
+        flex: 1,
+        zIndex:2,
+        left: "55%",
+        bottom: "70%",
+        width: "40%",
+        height: "28%",
+        position:"absolute",
+        borderRadius:10,
+        overflow:'hidden',
     },
     callIcon3:{
         color: '#cc504e',

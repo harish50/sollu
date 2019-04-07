@@ -21,7 +21,7 @@ export default class VideoCall extends Component {
         isFront: true,
         streamVideo: false,
         callStatus: "Starting sollu video call",
-        videoEnable : true
+        videoEnable : true,
     };
 
     static navigationOptions = ({navigation}) => {
@@ -278,11 +278,21 @@ export default class VideoCall extends Component {
             console.log("In the render method");
             return (
                 <View style={styles.container1}>
-                    <RTCView streamURL={this.state.ReceiverVideoURL.toURL()} style={styles.video1}/>
+                    <View  style={styles.remoteVideoContainer}>
+                        <RTCView objectFit='cover' streamURL={this.state.ReceiverVideoURL.toURL()}/>
+                    </View>
+                    <View style={styles.videoPreviewContainer}>
+                        <RTCView objectFit='cover' zOrder={1} streamURL={this.state.ReceiverVideoURL.toURL()} />
+                    </View>
                     <View style={styles.bottomBar}>
                         <TouchableOpacity onPress={this.handleCallHangUp}>
                             <View style={styles.callIcon}>
                                 <Icon name="call-end" color="#fff" size={30}/>
+                            </View>
+                        </TouchableOpacity>
+                        <TouchableOpacity>
+                            <View style={styles.callIcon}>
+                                <Icon name="volume-up" color="#fff" size={30}/>
                             </View>
                         </TouchableOpacity>
                         {(!this.state.videoEnable) ?
