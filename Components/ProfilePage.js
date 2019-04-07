@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, View, Image, TouchableOpacity, Platform, ActivityIndicator } from 'react-native';
+import { View, TouchableOpacity, Platform, ActivityIndicator } from 'react-native';
 import ImagePicker from "react-native-image-picker";
 import FastImage from 'react-native-fast-image'
 import firebase from "../firebase/firebase";
@@ -7,11 +7,15 @@ import RNFetchBlob from 'react-native-fetch-blob';
 import { Picker } from 'react-native-picker-dropdown'
 import styles from "../Stylesheet/profilePageStyle";
 
-const Blob = RNFetchBlob.polyfill.Blob
-const fs = RNFetchBlob.fs
-window.XMLHttpRequest = RNFetchBlob.polyfill.XMLHttpRequest
-window.Blob = Blob
-var options = {
+const Blob = RNFetchBlob.polyfill.Blob;
+const fs = RNFetchBlob.fs;
+window.XMLHttpRequest = RNFetchBlob.polyfill.XMLHttpRequest;
+window.Blob = Blob;
+
+let phoneNum = null;
+let user_pic = '';
+let REGISTERED_USER_PROFILE_INFO = firebase.database().ref("registeredUserProfileInfo");
+let options = {
     title: "Profile Photo  ",
     maxWidth: 800,
     maxHeight: 600,
@@ -22,14 +26,14 @@ var options = {
 
 
 export default class ProfilePage extends Component {
+
     state = {
         image_uri: "",
         gender: "Select Gender",
         isProfileSet: false
     };
 
-    static navigationOptions = ({ navigation }) => {
-        let props = navigation;
+    static navigationOptions = () => {
         return (
             {
                 headerTitle: 'Profile',
@@ -38,17 +42,14 @@ export default class ProfilePage extends Component {
                 headerStyle: {
                     fontFamily: 'Roboto-Bold',
                     backgroundColor: '#cc504e'
-                },
+                }
             }
         );
     };
 
     componentWillMount() {
-        let user_pic = '';
-        let db = firebase.database();
-        let phoneNo = this.props.navigation.getParam("phoneNo")
-        let profileimageRef = db.ref('registeredUserProfileInfo').child(phoneNo)
-        profileimageRef.on('value', (snapshot) => {
+        phoneNum = this.props.navigation.getParam("phoneNo");
+        REGISTERED_USER_PROFILE_INFO.child(phoneNum).on('value', (snapshot) => {
             let user = snapshot.val();
             let gender = user !== null ? user.Gender : "Select Gender";
             gender = typeof gender !== 'undefined' ? gender : "Select Gender";
@@ -74,34 +75,29 @@ export default class ProfilePage extends Component {
                 image_uri: user_pic,
                 isProfileSet: true
             });
-        }
-        )
+        })
     }
-    uploadImage(uri, fileName, mime = 'image/jpeg') {
+
+    uploadImage(imageURI, fileName, mime = 'image/jpeg') {
         return new Promise((resolve, reject) => {
-            let imageURI = uri;
             let uploadBlob = null;
-            const uploadUri = Platform.OS === 'ios' ? imageURI.replace('file://', '') : imageURI
+            const uploadUri = Platform.OS === 'ios' ? imageURI.replace('file://', '') : imageURI;
             const imageRef = firebase.storage().ref('images').child(fileName);
-            console.log("pushed filename to firebase")
             fs.readFile(uploadUri, 'base64')
                 .then((data) => {
                     return Blob.build(data, { type: `${mime};BASE64` })
                 })
                 .then((blob) => {
-                    uploadBlob = blob
+                    uploadBlob = blob;
                     this.setState({
                         isProfileSet: false
-                    })
+                    });
                     return imageRef.put(blob, { contentType: mime })
                 })
                 .then(() => {
                     uploadBlob.close();
                     imageRef.getDownloadURL().then((url) => {
-                        let db = firebase.database();
-                        let profileimageRef = db.ref('registeredUserProfileInfo')
-                        let phoneNo = this.props.navigation.getParam("phoneNo")
-                        profileimageRef.child(phoneNo).child('imageURL').set(url);
+                        REGISTERED_USER_PROFILE_INFO.child(phoneNum).child('imageURL').set(url);
                     });
                 })
                 .catch((error) => {
@@ -110,6 +106,7 @@ export default class ProfilePage extends Component {
         })
 
     }
+
     pickImageHandler() {
         ImagePicker.showImagePicker(options, (responce) => {
             if (responce.didCancel) {
@@ -117,23 +114,18 @@ export default class ProfilePage extends Component {
             } else if (responce.error) {
                 console.log("Error");
             } else {
-                console.log("is picking image ? ")
                 this.uploadImage(responce.uri, responce.fileName)
-                    .catch(error => console.log("Replace error from pickImage Handler"))
+                    .catch(error => console.log("Replace error from pickImage Handler"));
                 console.log("After catch")
             }
         });
     }
+
     genderChange = (itemValue) => {
-        let phoneNo = this.props.navigation.getParam("phoneNo");
-        let db = firebase.database();
-        const selectedImage = db.ref('registeredUserProfileInfo').child(phoneNo).child('Gender');
-        selectedImage.set(itemValue);
-    }
+        REGISTERED_USER_PROFILE_INFO.child(phoneNum).child('Gender').set(itemValue);
+    };
 
     render() {
-        console.log("image_uri")
-        console.log(this.state.image_uri)
         return (
             <View style={styles.container}>
                 <View>
