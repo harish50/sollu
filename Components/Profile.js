@@ -4,21 +4,23 @@ import firebase from '../firebase/firebase';
 import FastImage from 'react-native-fast-image';
 import styles from "../Stylesheet/ProfileScreen";
 
-
+let phoneNum = null;
 let REGISTERED_USER_PROFILE_INFO = firebase.database().ref("registeredUserProfileInfo");
 export default class Profile extends Component {
 
     state = {
         isProfilePicSet: false,
         profilePic: "https://firebasestorage.googleapis.com/v0/b/chatbox-992a8.appspot.com/o/images%2FgeneralUserIcon.png?alt=media&token=5aca0ddf-29f1-48f8-aa7d-78996b5a81a3",
-    }
+    };
+
     onClickProfilePic = () => {
         if (typeof this.props.navigation !== 'undefined') {
-            this.props.navigation.navigate('ProfilePage', { phoneNum: this.props.sender });
+            this.props.navigation.navigate('ProfilePage', { phoneNum: phoneNum });
         }
-    }
+    };
+
     async componentDidMount() {
-        let phoneNum = this.props.sender;
+        phoneNum = this.props.sender;
         let user;
         let user_pic = "https://firebasestorage.googleapis.com/v0/b/chatbox-992a8.appspot.com/o/images%2FgeneralUserIcon.png?alt=media&token=5aca0ddf-29f1-48f8-aa7d-78996b5a81a3";
         REGISTERED_USER_PROFILE_INFO.child(phoneNum).on('value', (registeredUserProfileInfo) => {
@@ -39,13 +41,14 @@ export default class Profile extends Component {
                         user_pic = "https://firebasestorage.googleapis.com/v0/b/chatbox-992a8.appspot.com/o/images%2FgeneralUserIcon.png?alt=media&token=5aca0ddf-29f1-48f8-aa7d-78996b5a81a3"
                     }
                 }
-            };
+            }
             this.setState({
                 isProfilePicSet: true,
                 profilePic: user_pic
             });
         });
     }
+
     render() {
         if (!this.state.isProfilePicSet) {
             return (<View style={styles.loadingIcon}>
