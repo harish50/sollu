@@ -2,11 +2,9 @@ import React from "react";
 import firebase from "../firebase/firebase";
 import {Text, TouchableOpacity, View,ActivityIndicator, AsyncStorage} from "react-native";
 import InCallManager from 'react-native-incall-manager';
-
 import {mediaDevices, RTCIceCandidate, RTCPeerConnection, RTCSessionDescription, RTCView} from "react-native-webrtc";
 import stylings from "../Stylesheet/videocallStyles";
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import FontAwesome, {Icons} from "react-native-fontawesome";
 import styles from "../Stylesheet/styleSheet";
 
 let VIDEO_CALL_REF = firebase.database().ref("videoCallInfo");
@@ -23,7 +21,9 @@ export default class AnswerVideoCall extends React.Component{
             streamVideo: false,
             onClickAnswerCall : false,
             callerName : '',
-            videoEnable : true
+            videoEnable : true,
+            selfVideo : null,
+            speakerEnabled : true
         };
         this.listenOnCaller= this.listenOnCaller.bind(this);
     }
@@ -54,6 +54,9 @@ export default class AnswerVideoCall extends React.Component{
             }
         }).then(async (stream) => {
             await pc.addStream(stream);
+            this.setState({
+                selfVideo : stream
+            })
             console.log("stream added");
         });
         console.log("in getLocalStream return true");
@@ -108,6 +111,7 @@ export default class AnswerVideoCall extends React.Component{
             console.log(callerSnap.key);
             if (callerSnap.key === 'VideoCallEnd') {
                 InCallManager.stopRingtone();
+                InCallManager.setSpeakerphoneOn(false);
                 InCallManager.stop()
                 VIDEO_CALL_REF.child(callee).remove();
                 console.log("videocallEnd has child 1");
@@ -138,6 +142,7 @@ export default class AnswerVideoCall extends React.Component{
             console.log(pc.close());
         }
         InCallManager.stopRingtone();
+        InCallManager.setSpeakerphoneOn(false);
         InCallManager.stop();
 
         console.log("after pc.close");
@@ -161,6 +166,7 @@ export default class AnswerVideoCall extends React.Component{
             console.log(callerSnap.key);
             if (callerSnap.key === 'VideoCallEnd') {
                 InCallManager.stopRingtone();
+                InCallManager.setSpeakerphoneOn(false);
                 InCallManager.stop();
                 VIDEO_CALL_REF.child(callee).remove();
                 console.log("videocallEnd has child 1");
@@ -227,6 +233,7 @@ export default class AnswerVideoCall extends React.Component{
         // when user pickup
         InCallManager.stopRingtone();
         InCallManager.start();
+        InCallManager.setSpeakerphoneOn(true);
         VIDEO_CALL_REF.child(callee).child('VideoCallReceived').set(true);
         this.setState({
             onClickAnswerCall : true
@@ -234,19 +241,43 @@ export default class AnswerVideoCall extends React.Component{
         this.listenOnCaller();
     }
 
+    handleSpeaker=()=>{
+        console.log(" handle speaker");
+        if(this.state.speakerEnabled){
+            InCallManager.setSpeakerphoneOn(false);
+        }
+        else{
+            InCallManager.setSpeakerphoneOn(true);
+        }
+        this.setState({
+            speakerEnabled : !this.state.speakerEnabled
+        })
+    };
 
     render() {
         if (this.state.remoteStream && this.state.streamVideo) {
             console.log("In the render method");
             return (
                 <View style={stylings.container1}>
-                    <RTCView streamURL={this.state.remoteStream.toURL()} style={stylings.video1}/>
+                        <RTCView objectFit='cover' streamURL={this.state.remoteStream.toURL()} style={stylings.remoteVideoContainer}/>
+                        <RTCView objectFit='cover' zOrder={1} streamURL={this.state.selfVideo.toURL()} style={stylings.videoPreviewContainer}/>
                     <View style={stylings.bottomBar}>
                         <TouchableOpacity onPress={this.handleCallHangUp}>
                             <View style={stylings.callIcon}>
                                 <Icon name="call-end" color="#fff" size={30}/>
                             </View>
                         </TouchableOpacity>
+                        {(!this.state.speakerEnabled) ?
+                            <TouchableOpacity onPress={this.handleSpeaker}>
+                                <View style={stylings.callIcon}>
+                                    <Icon name="volume-off" color="#fff" size={30}/>
+                                </View>
+                            </TouchableOpacity>:<TouchableOpacity onPress={this.handleSpeaker}>
+                                <View style={stylings.callIcon} onPress={this.handleSpeaker}>
+                                    <Icon name="volume-up" color="#fff" size={30}/>
+                                </View>
+                            </TouchableOpacity>
+                        }
                         {(!this.state.videoEnable) ?
                             <TouchableOpacity onPress={this.muteVideo}>
                                 <View style={stylings.callIcon}>
