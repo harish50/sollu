@@ -15,6 +15,10 @@ target 'sollu' do
   platform :ios, '9.0'
   pod 'Firebase/Core'
   pod 'Firebase/Messaging'
+  pod 'react-native-overlay', :path => '../node_modules/react-native-overlay'
+
+  pod 'react-native-blur', :path => '../node_modules/react-native-blur'
+
   target 'solluTests' do
     inherit! :search_paths
     # Pods for testing

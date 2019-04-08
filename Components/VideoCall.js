@@ -215,6 +215,7 @@ export default class VideoCall extends Component {
                 console.log("incallmanager started ringback");
 
                 VIDEO_CALL_REF.child(info.sender).child('videoSDP').set(pc.localDescription);
+                VIDEO_CALL_REF.child(info.sender).child('videoDisabled').set(false);
             })
         });
     }
@@ -247,9 +248,11 @@ export default class VideoCall extends Component {
         console.log(localStream);
         localStream.getVideoTracks()[0].enabled = !(localStream.getVideoTracks()[0].enabled);
         console.log("video track removed");
+        VIDEO_CALL_REF.child(info.sender).child('videoDisabled').set(!this.state.videoEnable);
         this.setState({
             videoEnable : !this.state.videoEnable
         })
+
         // console.log(this.state.videoEnable);
     };
     handleCallHangUp=()=>{

@@ -8,6 +8,8 @@ import stylings from "../Stylesheet/videocallStyles";
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import FontAwesome, {Icons} from "react-native-fontawesome";
 import styles from "../Stylesheet/styleSheet";
+import Overlay from "react-native-overlay";
+import BlurView from "react-native-blur"
 
 let VIDEO_CALL_REF = firebase.database().ref("videoCallInfo");
 let caller = null;
@@ -23,7 +25,8 @@ export default class AnswerVideoCall extends React.Component{
             streamVideo: false,
             onClickAnswerCall : false,
             callerName : '',
-            videoEnable : true
+            videoEnable : true,
+            remoteVideoDisabled : false
         };
         this.listenOnCaller= this.listenOnCaller.bind(this);
     }
@@ -169,6 +172,14 @@ export default class AnswerVideoCall extends React.Component{
                 pc.close();
                 this.props.navigation.navigate("HomeScreen", {sender: callee});
             }
+            if(callerSnap.key === "videoDisabled"){
+                console.log("disable check")
+                console.log(callerSnap);
+                console.log(callerSnap.val());
+                this.setState({
+                    remoteVideoDisabled : callerSnap.val()
+                })
+            }
             if (callerSnap.key === 'videoSDP') {
                 console.log("videoSDP");
                 let flag = false;
@@ -241,6 +252,11 @@ export default class AnswerVideoCall extends React.Component{
             return (
                 <View style={stylings.container1}>
                     <RTCView streamURL={this.state.remoteStream.toURL()} style={stylings.video1}/>
+                    <Overlay isVisible={this.state.remoteVideoDisabled}>
+                        <BlurView style={stylings.video1} blurType="dark">
+                            <Text style={stylings.callerStatus}>Video Disabled</Text>
+                        </BlurView>
+                    </Overlay>
                     <View style={stylings.bottomBar}>
                         <TouchableOpacity onPress={this.handleCallHangUp}>
                             <View style={stylings.callIcon}>

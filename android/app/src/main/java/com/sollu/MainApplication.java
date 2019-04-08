@@ -3,6 +3,7 @@ package com.sollu;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.cmcewen.blurview.BlurViewPackage;
 import com.dylanvann.fastimage.FastImageViewPackage;
 import io.invertase.firebase.RNFirebasePackage;
 import io.invertase.firebase.messaging.RNFirebaseMessagingPackage;
@@ -25,7 +26,6 @@ import java.util.Arrays;
 import java.util.List;
 import com.oney.WebRTCModule.WebRTCModulePackage;  // <--- Add this line
 
-
 public class MainApplication extends Application implements ReactApplication {
 
   private final ReactNativeHost mReactNativeHost = new ReactNativeHost(this) {
@@ -38,6 +38,8 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new BlurViewPackage(),
+            new WebRTCModulePackage(),
             new FastImageViewPackage(),
             new RNFirebasePackage(),
             new RNFirebaseMessagingPackage(),
@@ -50,7 +52,6 @@ public class MainApplication extends Application implements ReactApplication {
             new RNGestureHandlerPackage(),
               new VectorIconsPackage(),
             new ReactNativeContacts(),
-              new WebRTCModulePackage(),
               new InCallManagerPackage()// <--- Add this line
 
       );
