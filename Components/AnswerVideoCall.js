@@ -2,28 +2,26 @@ import React from "react";
 import firebase from "../firebase/firebase";
 import {Text, TouchableOpacity, View,ActivityIndicator, AsyncStorage} from "react-native";
 import InCallManager from 'react-native-incall-manager';
-
 import {mediaDevices, RTCIceCandidate, RTCPeerConnection, RTCSessionDescription, RTCView} from "react-native-webrtc";
 import stylings from "../Stylesheet/videocallStyles";
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import FontAwesome, {Icons} from "react-native-fontawesome";
 import styles from "../Stylesheet/styleSheet";
 
-let VIDEO_CALL_REF = firebase.database().ref("videoCallInfo");
+const VIDEO_CALL_REF = firebase.database().ref("videoCallInfo");
+let receiverIceList = [];
+let senderIceList = [];
 let caller = null;
 let callee = null;
 let pc = null;
-let receiverIceList = [];
-let senderIceList = [];
 export default class AnswerVideoCall extends React.Component{
     constructor(props){
-        super();
+        super(props);
         this.state = {
-            remoteStream: '',
-            streamVideo: false,
-            onClickAnswerCall : false,
+            remoteVideo: '',
+            readyToStreamVideo: false,
+            isCallAnswered : false,
             callerName : '',
-            videoEnable : true
+            selfVideoEnable : false
         };
         this.listenOnCaller= this.listenOnCaller.bind(this);
     }
@@ -32,11 +30,12 @@ export default class AnswerVideoCall extends React.Component{
         let props = navigation;
         return {
             headerTitle: "Sollu",
-            headerTintColor: "#cc504e",
+            headerTintColor: "#fff",
             headerBackTitle: "Back",
             headerStyle: {
                 fontFamily: "Roboto-Bold",
-                height: 60
+                height: 60,
+                backgroundColor: '#cc504e',
             }
         };
     };
@@ -100,7 +99,6 @@ export default class AnswerVideoCall extends React.Component{
         let name = await AsyncStorage.getItem(caller)
         this.setState({
             callerName: name,
-            videoEnable : false
         })
 
         VIDEO_CALL_REF.child(caller).on('child_added', async (callerSnap) => {
@@ -126,7 +124,7 @@ export default class AnswerVideoCall extends React.Component{
         localStream.getVideoTracks()[0].enabled = !(localStream.getVideoTracks()[0].enabled);
         console.log("video track removed");
         this.setState({
-            videoEnable : !this.state.videoEnable
+            selfVideoEnable : !this.state.selfVideoEnable
         })
         // console.log(this.state.videoEnable);
     };
@@ -207,7 +205,7 @@ export default class AnswerVideoCall extends React.Component{
                     console.log("No ice found");
                     VIDEO_CALL_REF.child(callee).child('ICE').set(receiverIceList);
                     this.setState({
-                        streamVideo: true
+                        readyToStreamVideo: true
                     });
                     console.log("pushing to fb");
                 }
@@ -217,7 +215,7 @@ export default class AnswerVideoCall extends React.Component{
             console.log("onaddstream");
             console.log(event.stream);
             this.setState({
-                remoteStream: event.stream
+                remoteVideo: event.stream
             });
         });
     }
@@ -229,25 +227,25 @@ export default class AnswerVideoCall extends React.Component{
         InCallManager.start();
         VIDEO_CALL_REF.child(callee).child('VideoCallReceived').set(true);
         this.setState({
-            onClickAnswerCall : true
+            isCallAnswered : true
         });
         this.listenOnCaller();
     }
 
 
     render() {
-        if (this.state.remoteStream && this.state.streamVideo) {
+        if (this.state.remoteVideo && this.state.readyToStreamVideo) {
             console.log("In the render method");
             return (
                 <View style={stylings.container1}>
-                    <RTCView streamURL={this.state.remoteStream.toURL()} style={stylings.video1}/>
+                    <RTCView streamURL={this.state.remoteVideo.toURL()} style={stylings.video1}/>
                     <View style={stylings.bottomBar}>
                         <TouchableOpacity onPress={this.handleCallHangUp}>
                             <View style={stylings.callIcon}>
                                 <Icon name="call-end" color="#fff" size={30}/>
                             </View>
                         </TouchableOpacity>
-                        {(!this.state.videoEnable) ?
+                        {(!this.state.selfVideoEnable) ?
                             <TouchableOpacity onPress={this.muteVideo}>
                                 <View style={stylings.callIcon}>
                                     <Icon name="videocam" color="#fff" size={30}/>
@@ -262,7 +260,7 @@ export default class AnswerVideoCall extends React.Component{
                 </View>
             );
         }
-        else if (this.state.onClickAnswerCall) {
+        else if (this.state.isCallAnswered) {
             return (
                 <View style={stylings.container2}>
                     <View style={styles.loadbox1}>

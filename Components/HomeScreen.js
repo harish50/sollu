@@ -20,7 +20,7 @@ let caller = null;
 let notification = null;
 let data = null;
 let contactName = null;
-let info = {
+let participants = {
     receiver: '',
     sender: ''
 };
@@ -250,7 +250,7 @@ export default class HomeScreen extends React.Component {
                 notification = notificationOpen.notification;
                 data = notification.data;
                 contactName = await AsyncStorage.getItem(data.receiver);
-                info = {
+                participants = {
                         receiver: data.receiver,
                         sender: data.sender
                 };
@@ -269,7 +269,7 @@ export default class HomeScreen extends React.Component {
                 notification = notificationOpen.notification;
                 data = notification.data;
                 contactName = await AsyncStorage.getItem(data.sender);
-                info = {
+                participants = {
                     receiver: data.sender,
                     sender: data.receiver
                 };
@@ -281,7 +281,7 @@ export default class HomeScreen extends React.Component {
     navigateToChatScreen=()=>{
         this.props.navigation.navigate(
             "ChatScreen",
-            {info: info, contactName: contactName},
+            {participants: participants, contactName: contactName},
             {onGoBack: () => this.updateCurrentUser()}
         );
     };
@@ -307,13 +307,13 @@ export default class HomeScreen extends React.Component {
     }
 
     renderName(contact) {
-        let info = {
+        let participants = {
             sender: sender,
             receiver: contact.item.key
         };
         return (
             <TouchableOpacity onPress={() => {
-                this.props.navigation.navigate('ChatScreen', { info: info, contactName: contact.item.name, onGoBack: () => this.updateCurrentUser() });
+                this.props.navigation.navigate('ChatScreen', { participants: participants, contactName: contact.item.name, onGoBack: () => this.updateCurrentUser() });
                 this.setState({ currentUser: contact.item.name })
             }} style={styles.contactContainer}>
                 <Profile sender={contact.item.key} />

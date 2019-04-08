@@ -17,7 +17,7 @@ import DateComponent from './DateComponent';
 import VideoIconComponent from "./VideoIconComponent";
 
 let navigation = null;
-let info;
+let participants;
 let CONVERSATIONS_REF = firebase.database().ref("conversations");
 let REGISTERED_USERS_REF = firebase.database().ref("registeredUsers");
 let REGISTERED_USER_PROFILE_INFO_REF = firebase.database().ref("registeredUserProfileInfo");
@@ -37,32 +37,32 @@ export default class ChatScreen extends React.Component {
 
     componentWillReceiveProps(props) {
         this.isColorDiffers();
-        info = props.navigation.getParam("info");
+        participants = props.navigation.getParam("participants");
         this.state.chatRef.off();
-        this.getChat(info.sender, info.receiver);
+        this.getChat(participants.sender, participants.receiver);
     }
 
     componentDidMount() {
         navigation = this.props;
-        info = this.props.navigation.getParam('info');
+        participants = this.props.navigation.getParam('participants');
         this.isColorDiffers();
         CONVERSATIONS_REF.once('value', (conversations) => {
             if (!conversations.hasChild(this.getPairID()))
                 this.setLastActiveTime(0);
         });
-        this.getChat(info.sender, info.receiver);
+        this.getChat(participants.sender, participants.receiver);
     }
 
     getPairID = () => {
         let key = '';
-        if (info.sender === info.receiver) {
-            key = info.sender;
+        if (participants.sender === participants.receiver) {
+            key = participants.sender;
         }
-        else if (info.sender > info.receiver) {
-            key = info.receiver + info.sender;
+        else if (participants.sender > participants.receiver) {
+            key = participants.receiver + participants.sender;
         }
         else {
-            key = info.sender + info.receiver;
+            key = participants.sender + participants.receiver;
         }
         return key;
     };
@@ -74,8 +74,8 @@ export default class ChatScreen extends React.Component {
 
     isColorDiffers = () => {
         let colorDifference = false;
-        const senderInfoRef = REGISTERED_USER_PROFILE_INFO_REF.child(info.sender);
-        const receiverInfoRef = REGISTERED_USER_PROFILE_INFO_REF.child(info.receiver);
+        const senderInfoRef = REGISTERED_USER_PROFILE_INFO_REF.child(participants.sender);
+        const receiverInfoRef = REGISTERED_USER_PROFILE_INFO_REF.child(participants.receiver);
         senderInfoRef.once('value', (senderSnap) => {
             let sender = senderSnap.val();
             receiverInfoRef.on('value', (receiverSnap) => {
@@ -129,10 +129,10 @@ export default class ChatScreen extends React.Component {
                     backgroundColor: '#cc504e',
                     height: 60,
                 },
-                headerRight: ([<VideoIconComponent info={navigation.getParam("info")}
+                headerRight: ([<VideoIconComponent participants={navigation.getParam("participants")}
                                                    contactName={navigation.getParam("contactName")}
                                                    navigation={navigation}/>,
-                    <Profile sender={navigation.getParam("info").receiver}/>]),
+                    <Profile sender={navigation.getParam("participants").receiver}/>]),
                 headerLeft: (
                     <HeaderBackButton tintColor="white"
                                       onPress={() => {
@@ -152,14 +152,14 @@ export default class ChatScreen extends React.Component {
             text: this.state.typing.trim(),
             createdAt: new Date().getTime(),
         };
-        if (info.sender === info.receiver) {
+        if (participants.sender === participants.receiver) {
             msg._id = 0;
-            REGISTERED_USERS_REF.child(info.sender).child("chat").child(info.receiver).push(msg);
+            REGISTERED_USERS_REF.child(participants.sender).child("chat").child(participants.receiver).push(msg);
         }
         else {
-            REGISTERED_USERS_REF.child(info.sender).child("chat").child(info.receiver).push(msg);
+            REGISTERED_USERS_REF.child(participants.sender).child("chat").child(participants.receiver).push(msg);
             msg._id = 1;
-            REGISTERED_USERS_REF.child(info.receiver).child("chat").child(info.sender).push(msg);
+            REGISTERED_USERS_REF.child(participants.receiver).child("chat").child(participants.sender).push(msg);
         }
         this.setLastActiveTime(msg.createdAt);
         this.setState({typing: ''});
@@ -173,7 +173,7 @@ export default class ChatScreen extends React.Component {
         }
         let messageboxstyle;
         let messagetextstyle;
-        let phoneNo = info.sender;
+        let phoneNo = participants.sender;
         if (item._id === 0) {
             messageboxstyle = styles.selfMessageContainer;
             messagetextstyle = styles.selfTextContainer;
@@ -184,7 +184,7 @@ export default class ChatScreen extends React.Component {
         } else {
             messageboxstyle = [styles.receiverMessageContainer, styles.chatBox];
             messagetextstyle = styles.receiverMessage;
-            phoneNo = info.receiver;
+            phoneNo = participants.receiver;
         }
         let minutes = '' + item.createdAt.getMinutes();
         if (minutes.length < 2) minutes = '0' + minutes;

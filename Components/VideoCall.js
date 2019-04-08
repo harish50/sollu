@@ -1,27 +1,23 @@
 import React, {Component} from "react";
-import {Text, TouchableOpacity, View,ActivityIndicator} from "react-native";
+import {ActivityIndicator, Text, TouchableOpacity, View} from "react-native";
 import styles from "../Stylesheet/videocallStyles";
 import InCallManager from 'react-native-incall-manager';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import { mediaDevices, RTCIceCandidate, RTCPeerConnection, RTCSessionDescription, RTCView } from "react-native-webrtc";
+import {mediaDevices, RTCIceCandidate, RTCPeerConnection, RTCSessionDescription, RTCView} from "react-native-webrtc";
 import firebase from "../firebase/firebase";
 
+const VIDEO_CALL_REF = firebase.database().ref("videoCallInfo");
 let senderIceList = [];
 let receiverIceList = [];
+let participants = null;
 let pc = null;
-
-let VIDEO_CALL_REF = firebase.database().ref("videoCallInfo");
-let info = null;
-let callerVideoTrack = null;
-let callerVideoMuted = false;
 export default class VideoCall extends Component {
     state = {
-        SenderVideoURL: null,
-        ReceiverVideoURL: null,
-        isFront: true,
-        streamVideo: false,
+        selfVideo: null,
+        remoteVideo: null,
+        readyToStreamVideo: false,
         callStatus: "Starting sollu video call",
-        videoEnable : true
+        selfVideoEnable: false
     };
 
     static navigationOptions = ({navigation}) => {
@@ -50,15 +46,15 @@ export default class VideoCall extends Component {
     }
 
     componentDidMount() {
-        info = this.props.navigation.getParam("info")
+        participants = this.props.navigation.getParam("participants")
         this.startVideoCall();
 
-        VIDEO_CALL_REF.child(info.receiver).on('child_added', async (callerSnap) => {
+        VIDEO_CALL_REF.child(participants.receiver).on('child_added', async (callerSnap) => {
             console.log("Let us know the key");
             console.log(callerSnap.key);
             if (callerSnap.key === 'VideoCallReceived') {
                 this.setState({
-                    callStatus: this.props.navigation.getParam("contactName")+" Answered the Call"
+                    callStatus: this.props.navigation.getParam("contactName") + " Answered the Call"
                 });
                 InCallManager.stopRingback();
                 InCallManager.start();
@@ -66,8 +62,9 @@ export default class VideoCall extends Component {
             }
         });
     }
-    componentWillUnmount(){
-        senderIceList=[];
+
+    componentWillUnmount() {
+        senderIceList = [];
     }
 
     async startVideoCall() {
@@ -79,11 +76,9 @@ export default class VideoCall extends Component {
             }]
         };
         pc = new RTCPeerConnection(servers);
-        let flag="false";
+        let flag = false;
         flag = await this.getLocalStream();
-        console.log("flag");
-        console.log(flag)
-        if (flag==="true") {
+        if (flag === true) {
             console.log("Flag is true")
             this.makeOffer();
             console.log("Completed creating Offer");
@@ -95,7 +90,7 @@ export default class VideoCall extends Component {
                 console.log("onaddstream");
                 console.log(event.stream);
                 this.setState({
-                    ReceiverVideoURL: event.stream
+                    remoteVideo: event.stream
                 })
             });
         }
@@ -103,27 +98,26 @@ export default class VideoCall extends Component {
 
     waitForAnswer() {
         console.log("Entered in to waitForCall ");
-        VIDEO_CALL_REF.child(info.receiver).on('child_added', async (snap) => {
-            if (snap.key==='VideoCallEnd') {
+        VIDEO_CALL_REF.child(participants.receiver).on('child_added', async (snap) => {
+            if (snap.key === 'VideoCallEnd') {
                 this.setState({
-                    remoteStream: '',
-                    streamVideo: false
+                    readyToStreamVideo: false
                 });
                 InCallManager.stopRingback();
                 InCallManager.stop();
                 console.log("incallmanager stopringback call declined");
                 pc.close();
-                VIDEO_CALL_REF.child(info.sender).remove();
-                VIDEO_CALL_REF.child(info.receiver).remove();
+                VIDEO_CALL_REF.child(participants.sender).remove();
+                VIDEO_CALL_REF.child(participants.receiver).remove();
                 this.props.navigation.navigate("ChatScreen", {
-                    info: info,
+                    participants: participants,
                     contactName: this.props.navigation.getParam("contactName")
                 });
             }
             if (snap.key === 'videoSDP') {
                 console.log("Getting SDP");
                 this.setState({
-                    callStatus: this.props.navigation.getParam("contactName")+" Answered the Call"
+                    callStatus: this.props.navigation.getParam("contactName") + " Answered the Call"
                 })
                 InCallManager.stopRingback();
                 console.log("incallmanager stopringback");
@@ -136,25 +130,26 @@ export default class VideoCall extends Component {
             } else if (snap.key === 'ICE') {
                 receiverIceList = snap.val();
                 console.log("got receivers ICE list");
-                let flag =false;
-                console.log("flag before addRemoteICE:",flag);
+                let flag = false;
+                console.log("flag before addRemoteICE:", flag);
                 flag = await this.addRemoteICE();
-                console.log("flag from addRemoteICE:",flag);
-                if(flag){
+                console.log("flag from addRemoteICE:", flag);
+                if (flag) {
                     console.log("addRemoteICE done");
                     this.setState({
-                        streamVideo: true
+                        readyToStreamVideo: true
                     })
 
                 }
             }
         });
     }
+
     async addRemoteICE() {
-        let temp=-1;
-        let index =0;
-        for(;index<receiverIceList.length&&temp!==index;){
-            temp=index;
+        let temp = -1;
+        let index = 0;
+        for (; index < receiverIceList.length && temp !== index;) {
+            temp = index;
             await pc.addIceCandidate(new RTCIceCandidate(receiverIceList[index])).then(
                 () => {
                     console.log("add ice succeeded");
@@ -164,8 +159,8 @@ export default class VideoCall extends Component {
                     console.log(error);
                 }
             )
-            }
-        if(index===receiverIceList.length){
+        }
+        if (index === receiverIceList.length) {
             console.log("out from addICE");
             return true;
         }
@@ -173,24 +168,14 @@ export default class VideoCall extends Component {
 
     collectAndSendICEs() {
         console.log("collect Ice here")
-         pc.onicecandidate = ( event => {
+        pc.onicecandidate = (event => {
                 if (event.candidate != null) {
                     console.log("Pushing ICE to list")
                     senderIceList.push(event.candidate);
                 }
                 else {
                     console.log("No ice found")
-                    console.log("Trying to set to FIREBASE")
-                    // let index = 0;
-                    // for (let ice in senderIceList) {
-                    //     console.log("one of the ice");
-                    //     VIDEO_CALL_REF.child(info.sender).child('ICE').push(senderIceList[ice]);
-                    //     index++;
-                    // }
-
-                    VIDEO_CALL_REF.child(info.sender).child('ICE').set(senderIceList);
-
-                    // VIDEO_CALL_REF.child(info.sender).child('ICE').push("completed");
+                    VIDEO_CALL_REF.child(participants.sender).child('ICE').set(senderIceList);
                 }
             }
         )
@@ -206,15 +191,15 @@ export default class VideoCall extends Component {
             pc.setLocalDescription(sdp).then(() => {
                 console.log("Local desc ")
                 console.log(pc.localDescription)
-                VIDEO_CALL_REF.child(info.receiver).set({caller: info.sender});
+                VIDEO_CALL_REF.child(participants.receiver).set({caller: participants.sender});
                 this.setState({
                     callStatus: "Calling..."
                 })
-                InCallManager.start({media: 'audio', ringback:'_BUNDLE_'});
+                InCallManager.start({media: 'audio', ringback: '_BUNDLE_'});
                 // InCallManager.start({media:'audio'});
                 console.log("incallmanager started ringback");
 
-                VIDEO_CALL_REF.child(info.sender).child('videoSDP').set(pc.localDescription);
+                VIDEO_CALL_REF.child(participants.sender).child('videoSDP').set(pc.localDescription);
             })
         });
     }
@@ -236,8 +221,8 @@ export default class VideoCall extends Component {
             await pc.addStream(stream);
             console.log("going out")
         })
-        console.log("Gonna return true")
-        return "true";
+
+        return true;
     }
 
     muteVideo = () => {
@@ -248,14 +233,13 @@ export default class VideoCall extends Component {
         localStream.getVideoTracks()[0].enabled = !(localStream.getVideoTracks()[0].enabled);
         console.log("video track removed");
         this.setState({
-            videoEnable : !this.state.videoEnable
+            selfVideoEnable: !this.state.selfVideoEnable
         })
-        // console.log(this.state.videoEnable);
     };
-    handleCallHangUp=()=>{
+    handleCallHangUp = () => {
         console.log("in callhangup");
         console.log(pc);
-        if(pc!==null){
+        if (pc !== null) {
             console.log(pc.close());
         }
         console.log("after pc.close");
@@ -264,28 +248,28 @@ export default class VideoCall extends Component {
         InCallManager.stopRingback();
         InCallManager.stop();
 
-        VIDEO_CALL_REF.child(info.sender).remove();
-        VIDEO_CALL_REF.child(info.sender).child('VideoCallEnd').set(true);
+        VIDEO_CALL_REF.child(participants.sender).remove();
+        VIDEO_CALL_REF.child(participants.sender).child('VideoCallEnd').set(true);
         console.log(pc);
         this.props.navigation.navigate("ChatScreen", {
-            info: info,
+            participants: participants,
             contactName: this.props.navigation.getParam("contactName")
         });
     };
 
     render() {
-        if (this.state.streamVideo && this.state.ReceiverVideoURL) {
+        if (this.state.readyToStreamVideo && this.state.remoteVideo) {
             console.log("In the render method");
             return (
                 <View style={styles.container1}>
-                    <RTCView streamURL={this.state.ReceiverVideoURL.toURL()} style={styles.video1}/>
+                    <RTCView streamURL={this.state.remoteVideo.toURL()} style={styles.video1}/>
                     <View style={styles.bottomBar}>
                         <TouchableOpacity onPress={this.handleCallHangUp}>
                             <View style={styles.callIcon}>
                                 <Icon name="call-end" color="#fff" size={30}/>
                             </View>
                         </TouchableOpacity>
-                        {(!this.state.videoEnable) ?
+                        {(!this.state.selfVideoEnable) ?
                             <TouchableOpacity onPress={this.muteVideo}>
                                 <View style={styles.callIcon}>
                                     <Icon name="videocam" color="#fff" size={30}/>

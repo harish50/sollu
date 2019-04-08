@@ -9,16 +9,16 @@ export default class VideoIconComponent extends Component {
     const name = navigation.getParam("contactName");
     this.props.navigation.navigate("VideoCall", {
       contactName: name,
-      info: navigation.getParam("info")
+        participants: navigation.getParam("participants")
     });
   };
   render() {
     let { navigation } = this.props;
-    const info = navigation.getParam("info");
+    const participants = navigation.getParam("participants");
     return (
       <TouchableOpacity onPress={this.handlePress}>
         <Text style={styles.videoIcon}>
-          {info.sender !== info.receiver && (
+          {participants.sender !== participants.receiver && (
               <Icon name="videocam" color="#fff" size={40}/>
           )}
         </Text>
