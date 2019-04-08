@@ -22,7 +22,8 @@ export default class AnswerVideoCall extends React.Component{
             onClickAnswerCall : false,
             callerName : '',
             videoEnable : true,
-            selfVideo : null
+            selfVideo : null,
+            speakerEnabled : true
         };
         this.listenOnCaller= this.listenOnCaller.bind(this);
     }
@@ -110,6 +111,7 @@ export default class AnswerVideoCall extends React.Component{
             console.log(callerSnap.key);
             if (callerSnap.key === 'VideoCallEnd') {
                 InCallManager.stopRingtone();
+                InCallManager.setSpeakerphoneOn(false);
                 InCallManager.stop()
                 VIDEO_CALL_REF.child(callee).remove();
                 console.log("videocallEnd has child 1");
@@ -140,6 +142,7 @@ export default class AnswerVideoCall extends React.Component{
             console.log(pc.close());
         }
         InCallManager.stopRingtone();
+        InCallManager.setSpeakerphoneOn(false);
         InCallManager.stop();
 
         console.log("after pc.close");
@@ -163,6 +166,7 @@ export default class AnswerVideoCall extends React.Component{
             console.log(callerSnap.key);
             if (callerSnap.key === 'VideoCallEnd') {
                 InCallManager.stopRingtone();
+                InCallManager.setSpeakerphoneOn(false);
                 InCallManager.stop();
                 VIDEO_CALL_REF.child(callee).remove();
                 console.log("videocallEnd has child 1");
@@ -229,6 +233,7 @@ export default class AnswerVideoCall extends React.Component{
         // when user pickup
         InCallManager.stopRingtone();
         InCallManager.start();
+        InCallManager.setSpeakerphoneOn(true);
         VIDEO_CALL_REF.child(callee).child('VideoCallReceived').set(true);
         this.setState({
             onClickAnswerCall : true
@@ -236,6 +241,18 @@ export default class AnswerVideoCall extends React.Component{
         this.listenOnCaller();
     }
 
+    handleSpeaker=()=>{
+        console.log(" handle speaker");
+        if(this.state.speakerEnabled){
+            InCallManager.setSpeakerphoneOn(false);
+        }
+        else{
+            InCallManager.setSpeakerphoneOn(true);
+        }
+        this.setState({
+            speakerEnabled : !this.state.speakerEnabled
+        })
+    };
 
     render() {
         if (this.state.remoteStream && this.state.streamVideo) {
@@ -250,7 +267,7 @@ export default class AnswerVideoCall extends React.Component{
                                 <Icon name="call-end" color="#fff" size={30}/>
                             </View>
                         </TouchableOpacity>
-                        <TouchableOpacity>
+                        <TouchableOpacity onPress={this.handleSpeaker}>
                             <View style={stylings.callIcon}>
                                 <Icon name="volume-up" color="#fff" size={30}/>
                             </View>
