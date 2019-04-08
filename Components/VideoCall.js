@@ -21,7 +21,7 @@ export default class VideoCall extends Component {
         isFront: true,
         streamVideo: false,
         callStatus: "Starting sollu video call",
-        videoEnable : true,
+        videoEnable : false,
         speakerEnabled: true
     };
 
@@ -184,16 +184,7 @@ export default class VideoCall extends Component {
                 else {
                     console.log("No ice found")
                     console.log("Trying to set to FIREBASE")
-                    // let index = 0;
-                    // for (let ice in senderIceList) {
-                    //     console.log("one of the ice");
-                    //     VIDEO_CALL_REF.child(info.sender).child('ICE').push(senderIceList[ice]);
-                    //     index++;
-                    // }
-
                     VIDEO_CALL_REF.child(info.sender).child('ICE').set(senderIceList);
-
-                    // VIDEO_CALL_REF.child(info.sender).child('ICE').push("completed");
                 }
             }
         )
@@ -307,11 +298,17 @@ export default class VideoCall extends Component {
                                 <Icon name="call-end" color="#fff" size={30}/>
                             </View>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={this.handleSpeaker}>
-                            <View style={styles.callIcon}>
-                                <Icon name="volume-up" color="#fff" size={30}/>
-                            </View>
-                        </TouchableOpacity>
+                        {(!this.state.speakerEnabled)?
+                            <TouchableOpacity onPress={this.handleSpeaker}>
+                                <View style={styles.callIcon}>
+                                    <Icon name="volume-off" color="#fff" size={30}/>
+                                </View>
+                            </TouchableOpacity>:<TouchableOpacity onPress={this.handleSpeaker}>
+                                <View style={styles.callIcon}>
+                                    <Icon name="volume-up" color="#fff" size={30}/>
+                                </View>
+                            </TouchableOpacity>
+                        }
                         {(!this.state.videoEnable) ?
                             <TouchableOpacity onPress={this.muteVideo}>
                                 <View style={styles.callIcon}>

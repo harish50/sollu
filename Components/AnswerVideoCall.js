@@ -267,11 +267,17 @@ export default class AnswerVideoCall extends React.Component{
                                 <Icon name="call-end" color="#fff" size={30}/>
                             </View>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={this.handleSpeaker}>
-                            <View style={stylings.callIcon}>
-                                <Icon name="volume-up" color="#fff" size={30}/>
-                            </View>
-                        </TouchableOpacity>
+                        {(!this.state.speakerEnabled) ?
+                            <TouchableOpacity onPress={this.handleSpeaker}>
+                                <View style={stylings.callIcon}>
+                                    <Icon name="volume-off" color="#fff" size={30}/>
+                                </View>
+                            </TouchableOpacity>:<TouchableOpacity onPress={this.handleSpeaker}>
+                                <View style={stylings.callIcon} onPress={this.handleSpeaker}>
+                                    <Icon name="volume-up" color="#fff" size={30}/>
+                                </View>
+                            </TouchableOpacity>
+                        }
                         {(!this.state.videoEnable) ?
                             <TouchableOpacity onPress={this.muteVideo}>
                                 <View style={stylings.callIcon}>
