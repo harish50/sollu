@@ -21,7 +21,8 @@ export default class AnswerVideoCall extends React.Component{
             streamVideo: false,
             onClickAnswerCall : false,
             callerName : '',
-            videoEnable : true
+            videoEnable : true,
+            selfVideo : null
         };
         this.listenOnCaller= this.listenOnCaller.bind(this);
     }
@@ -52,6 +53,9 @@ export default class AnswerVideoCall extends React.Component{
             }
         }).then(async (stream) => {
             await pc.addStream(stream);
+            this.setState({
+                selfVideo : stream
+            })
             console.log("stream added");
         });
         console.log("in getLocalStream return true");
@@ -238,12 +242,8 @@ export default class AnswerVideoCall extends React.Component{
             console.log("In the render method");
             return (
                 <View style={stylings.container1}>
-                    <View  style={stylings.remoteVideoContainer}>
-                        <RTCView objectFit='cover' streamURL={this.state.remoteStream.toURL()}/>
-                    </View>
-                    <View style={stylings.videoPreviewContainer}>
-                        <RTCView objectFit='cover' zOrder={1} streamURL={this.state.remoteStream.toURL()} />
-                    </View>
+                        <RTCView objectFit='cover' streamURL={this.state.remoteStream.toURL()} style={stylings.remoteVideoContainer}/>
+                        <RTCView objectFit='cover' zOrder={1} streamURL={this.state.selfVideo.toURL()} style={stylings.videoPreviewContainer}/>
                     <View style={stylings.bottomBar}>
                         <TouchableOpacity onPress={this.handleCallHangUp}>
                             <View style={stylings.callIcon}>

@@ -114,7 +114,6 @@ export default StyleSheet.create({
         alignSelf: 'stretch'
     },
     videoPreviewContainer: {
-        backgroundColor: 'black',
         flex: 1,
         zIndex:2,
         left: "55%",

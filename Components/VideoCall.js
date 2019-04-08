@@ -16,7 +16,7 @@ let callerVideoTrack = null;
 let callerVideoMuted = false;
 export default class VideoCall extends Component {
     state = {
-        SenderVideoURL: null,
+        selfVideo: null,
         ReceiverVideoURL: null,
         isFront: true,
         streamVideo: false,
@@ -234,6 +234,9 @@ export default class VideoCall extends Component {
         }).then(async stream => {
             console.log("Streaming OK", stream);
             await pc.addStream(stream);
+            this.setState({
+                selfVideo : stream
+            })
             console.log("going out")
         })
         console.log("Gonna return true")
@@ -278,12 +281,8 @@ export default class VideoCall extends Component {
             console.log("In the render method");
             return (
                 <View style={styles.container1}>
-                    <View  style={styles.remoteVideoContainer}>
-                        <RTCView objectFit='cover' streamURL={this.state.ReceiverVideoURL.toURL()}/>
-                    </View>
-                    <View style={styles.videoPreviewContainer}>
-                        <RTCView objectFit='cover' zOrder={1} streamURL={this.state.ReceiverVideoURL.toURL()} />
-                    </View>
+                        <RTCView objectFit='cover' streamURL={this.state.ReceiverVideoURL.toURL()} style={styles.remoteVideoContainer}/>
+                        <RTCView objectFit='cover' zOrder={1} streamURL={this.state.selfVideo.toURL()} style={styles.videoPreviewContainer}/>
                     <View style={styles.bottomBar}>
                         <TouchableOpacity onPress={this.handleCallHangUp}>
                             <View style={styles.callIcon}>
