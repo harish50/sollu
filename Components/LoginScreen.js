@@ -39,38 +39,32 @@ class LoginScreen extends Component {
     };
 
     handlePress = () => {
-        if(this.state.phoneNumber.length === 10){
-            AsyncStorage.setItem('phoneNumber', this.state.phoneNumber).then(
-                this.props.navigation.dispatch(
-                    StackActions.reset({
-                        index: 0,
-                        actions: [NavigationActions.navigate({
-                            routeName: "HomeScreen",
-                            params: {sender: this.state.phoneNumber}
-                        })]
-                    })
-                )
-            );
-            //Storing into firebase as a registered user
-            let db = firebase.database();
-            let taskRef = db.ref('registeredUsers');
-            taskRef.once('value', (registeredUsers) => {
-                if (!registeredUsers.hasChild(this.state.phoneNumber)) {
-                    taskRef.child(this.state.phoneNumber).set('done');
-                }
-            });
-            let userInfoRef = db.ref('registeredUserProfileInfo');
-            userInfoRef.once('value', (userInfo) => {
-                if (!userInfo.hasChild(this.state.phoneNumber)) {
-                    userInfoRef.child(this.state.phoneNumber).set('done');
-                }
-            });
-            this.props.navigation.navigate("HomeScreen", {sender: this.state.phoneNumber});
-        }
-        else{
-            console.log("less digits")
-            alert("Invalid Phone Number")
-        }
+        AsyncStorage.setItem('phoneNumber', this.state.phoneNumber).then(
+            this.props.navigation.dispatch(
+                StackActions.reset({
+                    index: 0,
+                    actions: [NavigationActions.navigate({
+                        routeName: "HomeScreen",
+                        params: {sender: this.state.phoneNumber}
+                    })]
+                })
+            )
+        );
+        //Storing into firebase as a registered user
+        let db = firebase.database();
+        let taskRef = db.ref('registeredUsers');
+        taskRef.once('value', (registeredUsers) => {
+            if (!registeredUsers.hasChild(this.state.phoneNumber)) {
+                taskRef.child(this.state.phoneNumber).set('done');
+            }
+        });
+        let userInfoRef = db.ref('registeredUserProfileInfo');
+        userInfoRef.once('value', (userInfo) => {
+            if (!userInfo.hasChild(this.state.phoneNumber)) {
+                userInfoRef.child(this.state.phoneNumber).set('done');
+            }
+        });
+        this.props.navigation.navigate("HomeScreen", {sender: this.state.phoneNumber});
     };
     static navigationOptions = ({navigation}) => {
         return (
