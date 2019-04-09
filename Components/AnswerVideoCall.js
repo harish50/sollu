@@ -45,7 +45,7 @@ export default class AnswerVideoCall extends React.Component{
             audio: true,
             video: {
                 mandatory: {
-                    minWidth: 320, // Provide your own width, height and frame rate here
+                    minWidth: 320,
                     minHeight: 240,
                     minFrameRate: 30
                 },
@@ -53,9 +53,7 @@ export default class AnswerVideoCall extends React.Component{
             }
         }).then(async (stream) => {
             await pc.addStream(stream);
-            console.log("stream added");
         });
-        console.log("in getLocalStream return true");
         return true;
     }
 
@@ -66,26 +64,21 @@ export default class AnswerVideoCall extends React.Component{
             temp = index;
             await pc.addIceCandidate(new RTCIceCandidate(senderIceList[index])).then(
                 () => {
-                    console.log("add ice succeeded");
                     index++;
                 },
                 error => {
-                    console.log("error");
                     console.log(error);
                 }
             )
         }
         if (index === senderIceList.length) {
-            console.log("out from addICE");
             return true;
         }
     }
 
     answerTheCall() {
         pc.createAnswer().then(async (sdp) => {
-            console.log("in create answer");
             pc.setLocalDescription(sdp).then(() => {
-                console.log("localdescription");
                 VIDEO_CALL_REF.child(callee).child('videoSDP').set(pc.localDescription);
             })
         });
@@ -93,7 +86,6 @@ export default class AnswerVideoCall extends React.Component{
 
     async componentDidMount() {
         InCallManager.startRingtone('_DEFAULT_');
-        console.log("Entered into AnswerVideoCall.js");
         caller = this.props.navigation.getParam("caller");
         callee = this.props.navigation.getParam("callee");
         let name = await AsyncStorage.getItem(caller)
@@ -102,15 +94,11 @@ export default class AnswerVideoCall extends React.Component{
         })
 
         VIDEO_CALL_REF.child(caller).on('child_added', async (callerSnap) => {
-            console.log("Let us know the key");
-            console.log(callerSnap.key);
             if (callerSnap.key === 'VideoCallEnd') {
                 InCallManager.stopRingtone();
                 InCallManager.stop()
                 VIDEO_CALL_REF.child(callee).remove();
-                console.log("videocallEnd has child 1");
                 VIDEO_CALL_REF.child(caller).remove();
-                console.log("videocallEnd has child21");
                 this.props.navigation.navigate("HomeScreen", {sender: callee});
             }
         });
@@ -118,28 +106,19 @@ export default class AnswerVideoCall extends React.Component{
 
     muteVideo = () => {
         //mute video of yours.
-        console.log("in mute video");
         let localStream = pc.getLocalStreams()[0];
-        console.log(localStream);
         localStream.getVideoTracks()[0].enabled = !(localStream.getVideoTracks()[0].enabled);
-        console.log("video track removed");
         this.setState({
             selfVideoEnable : !this.state.selfVideoEnable
         })
-        // console.log(this.state.videoEnable);
     };
 
     handleCallHangUp = () => {
-        console.log("in callhangup");
-        console.log(pc);
         if(pc!==null){
-            console.log(pc.close());
+          pc.close();
         }
         InCallManager.stopRingtone();
         InCallManager.stop();
-
-        console.log("after pc.close");
-        // pc=null;
         VIDEO_CALL_REF.child(callee).child('VideoCallEnd').set(true);
         this.props.navigation.navigate("HomeScreen", {sender: callee});
     };
@@ -155,25 +134,19 @@ export default class AnswerVideoCall extends React.Component{
         };
         pc = new RTCPeerConnection(servers);
         VIDEO_CALL_REF.child(caller).on('child_added', async (callerSnap) => {
-            console.log("Let us know the key");
-            console.log(callerSnap.key);
             if (callerSnap.key === 'VideoCallEnd') {
                 InCallManager.stopRingtone();
                 InCallManager.stop();
                 VIDEO_CALL_REF.child(callee).remove();
-                console.log("videocallEnd has child 1");
                 VIDEO_CALL_REF.child(caller).remove();
-                console.log("videocallEnd has child21");
                 pc.close();
                 this.props.navigation.navigate("HomeScreen", {sender: callee});
             }
             if (callerSnap.key === 'videoSDP') {
-                console.log("videoSDP");
                 let flag = false;
                 flag = await this.getLocalStream();
                 if (flag) {
                     pc.setRemoteDescription(new RTCSessionDescription(callerSnap.val())).then(() => {
-                        console.log("setremotedescription")
                     }, error => {
                         console.log(error)
                     });
@@ -184,36 +157,27 @@ export default class AnswerVideoCall extends React.Component{
                     senderIceList = [];
                 }
                 senderIceList = callerSnap.val();
-                console.log("added into senderIceList");
                 let flag;
                 flag = await this.addRemoteICE();
-                console.log("flag from addRemoteICE:", flag);
                 if (flag) {
-                    console.log("inside flag to start answer");
                     this.answerTheCall();
 
                 }
             }
         });
         pc.onicecandidate = (event => {
-                console.log('Printing event');
                 if (event.candidate != null) {
                     receiverIceList.push(event.candidate);
-                    console.log("inside onicecandidate");
                 }
                 else {
-                    console.log("No ice found");
                     VIDEO_CALL_REF.child(callee).child('ICE').set(receiverIceList);
                     this.setState({
                         readyToStreamVideo: true
                     });
-                    console.log("pushing to fb");
                 }
             }
         );
         pc.onaddstream = ((event) => {
-            console.log("onaddstream");
-            console.log(event.stream);
             this.setState({
                 remoteVideo: event.stream
             });
@@ -221,7 +185,6 @@ export default class AnswerVideoCall extends React.Component{
     }
 
     callAnswer(){
-        console.log("in callAnswering");
         // when user pickup
         InCallManager.stopRingtone();
         InCallManager.start();
@@ -235,7 +198,6 @@ export default class AnswerVideoCall extends React.Component{
 
     render() {
         if (this.state.remoteVideo && this.state.readyToStreamVideo) {
-            console.log("In the render method");
             return (
                 <View style={stylings.container1}>
                     <RTCView streamURL={this.state.remoteVideo.toURL()} style={stylings.video1}/>

@@ -107,8 +107,6 @@ export default class HomeScreen extends React.Component {
                                 if (number && registeredUsers.hasChild(number)) {
                                     const time = await this.getLastActiveTime(sender, number);
                                     if(!this.searchForContact(localContacts, number)){
-                                        console.log("Pushing the num");
-                                        console.log(number)
                                         localContacts.push({
                                             key: number,
                                             name: contacts[i].givenName,
@@ -135,11 +133,8 @@ export default class HomeScreen extends React.Component {
     }
 
     searchForContact(localContacts, num) {
-        console.log("Searching")
         for (let index = 0; index<localContacts.length; index ++){
-            console.log("For loop")
             if(localContacts[index].key===num){
-                console.log("contcat found")
                 return true;
             }
         }
@@ -241,7 +236,6 @@ export default class HomeScreen extends React.Component {
                     return;
                 }
                 if(notification.data.sender === notification.data.receiver){
-                    console.log("Self chat")
                     return
                 }
                 const localNotification = new Firebase.notifications.Notification({
@@ -282,9 +276,7 @@ export default class HomeScreen extends React.Component {
 
         const notificationOpen = await Firebase.notifications().getInitialNotification()
         if (notificationOpen) {
-            console.log("getInitialNotification");
             if(notificationOpen.notification.data.receiver === undefined){
-                console.log("if passed");
                 this.listenForVideoCall();
             }
             else{

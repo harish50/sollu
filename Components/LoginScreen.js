@@ -15,7 +15,6 @@ class LoginScreen extends Component {
     };
 
     componentDidMount() {
-        //Differentiation between users taking phone number as primary key
         AsyncStorage.getItem('phoneNumber').then((value) => {
             this.setState({phoneNumber: value, is_fetching_done: true});
             if (value.length > 1) {
@@ -32,7 +31,7 @@ class LoginScreen extends Component {
         });
     }
 
-    validNumber = (number) => {
+    setNumber = (number) => {
         this.setState({
             phoneNumber: number
         });
@@ -68,7 +67,6 @@ class LoginScreen extends Component {
             this.props.navigation.navigate("HomeScreen", {sender: this.state.phoneNumber});
         }
         else{
-            console.log("less digits")
             alert("Invalid Phone Number")
         }
     };
@@ -110,7 +108,7 @@ class LoginScreen extends Component {
                         maxLength={10}
                         keyboardType='numeric'
                         value={this.state.phoneNumber}
-                        onChangeText={this.validNumber}
+                        onChangeText={this.setNumber}
                     />
                 </View>
                 <View>

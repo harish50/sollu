@@ -116,7 +116,6 @@ export default class ProfilePage extends Component {
             } else {
                 this.uploadImage(responce.uri, responce.fileName)
                     .catch(error => console.log("Replace error from pickImage Handler"));
-                console.log("After catch")
             }
         });
     }
