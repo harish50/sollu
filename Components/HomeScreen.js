@@ -106,12 +106,18 @@ export default class HomeScreen extends React.Component {
                             if (number) {
                                 if (number && registeredUsers.hasChild(number)) {
                                     const time = await this.getLastActiveTime(sender, number);
-                                    localContacts.push({
-                                        key: number,
-                                        name: contacts[i].givenName,
-                                        lastActiveTime: time
-                                    });
-                                    AsyncStorage.setItem(number, contacts[i].givenName);
+                                    if(!this.searchForContact(localContacts, number)){
+                                        console.log("Pushing the num");
+                                        console.log(number)
+                                        localContacts.push({
+                                            key: number,
+                                            name: contacts[i].givenName,
+                                            lastActiveTime: time
+                                        });
+                                    }
+                                    if(! await AsyncStorage.getItem(number)){
+                                        AsyncStorage.setItem(number, contacts[i].givenName);
+                                    }
                                 }
                             }
                         }
@@ -126,6 +132,18 @@ export default class HomeScreen extends React.Component {
                 });
             }
         });
+    }
+
+    searchForContact(localContacts, num) {
+        console.log("Searching")
+        for (let index = 0; index<localContacts.length; index ++){
+            console.log("For loop")
+            if(localContacts[index].key===num){
+                console.log("contcat found")
+                return true;
+            }
+        }
+        return false;
     }
 
     saveLocalContactNamesInDB=()=>{
@@ -221,6 +239,10 @@ export default class HomeScreen extends React.Component {
                 };
                 if (contactName === this.state.currentUser) {
                     return;
+                }
+                if(notification.data.sender === notification.data.receiver){
+                    console.log("Self chat")
+                    return
                 }
                 const localNotification = new Firebase.notifications.Notification({
                     show_in_foreground: true
