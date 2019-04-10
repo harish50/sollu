@@ -4,9 +4,7 @@ import styles from '../../../Stylesheet/LoginScreen';
 
 
 class LoginView extends Component {
-    constructor(props) {
-        super(props)
-    }
+
     state = {
         phoneNumber: "",
     };
@@ -20,6 +18,8 @@ class LoginView extends Component {
         return (
             <View style={styles.mainBox}>
                 <View style={styles.contentContainer}>
+                    <Image source={require('../../../Icon/callerIcon3.png')}
+                           style={styles.phoneIconContainer}/>
                     <TextInput
                         style={styles.phoneNumberContainer}
                         placeholder="Enter phone number"
@@ -34,11 +34,14 @@ class LoginView extends Component {
                         style={[styles.loginButton, {backgroundColor: this.state.phoneNumber ? '#cc504e' : '#f49f8e'}]}
                         activeOpacity={.5}
                         disabled={!this.state.phoneNumber}
-                        onPress={}>
+                        onPress={() => {
+                            this.props.onLogin(this.state.phoneNumber)
+                        }}>
                         <Text style={styles.loginText}>Login</Text>
                     </TouchableOpacity>
                 </View>
             </View>
+
         );
     }
 }

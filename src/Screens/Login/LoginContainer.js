@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import {View} from 'react-native';
 import LoginView from "./LoginView"
 
 class LoginContainer extends Component {
@@ -9,14 +8,13 @@ class LoginContainer extends Component {
     }
 
     handlePress = (phno) => {
-     console.log("Hello Muruga")
+        console.log(phno);
     };
+
     render() {
-            return (
-                <View>
-                <LoginView onLogin={this.handlePress} msg="hi"/>
-                </View>
-            );
+        return (
+            <LoginView onLogin={this.handlePress}/>
+        );
     }
 }
 
