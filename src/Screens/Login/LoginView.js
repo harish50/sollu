@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {Image, Text, TextInput, TouchableOpacity, View} from 'react-native';
-import styles from '../../../Stylesheet/LoginScreen';
+import styles from './LoginStyles';
 
 
 class LoginView extends Component {
@@ -15,6 +15,8 @@ class LoginView extends Component {
     };
 
     render() {
+        let phNo = this.state.phoneNumber;
+        let props = this.props;
         return (
             <View style={styles.mainBox}>
                 <View style={styles.contentContainer}>
@@ -25,17 +27,17 @@ class LoginView extends Component {
                         placeholder="Enter phone number"
                         maxLength={10}
                         keyboardType='numeric'
-                        value={this.state.phoneNumber}
+                        value={phNo}
                         onChangeText={this.setNumber}
                     />
                 </View>
                 <View>
                     <TouchableOpacity
-                        style={[styles.loginButton, {backgroundColor: this.state.phoneNumber ? '#cc504e' : '#f49f8e'}]}
+                        style={[styles.loginButton, {backgroundColor: phNo ? '#cc504e' : '#f49f8e'}]}
                         activeOpacity={.5}
-                        disabled={!this.state.phoneNumber}
+                        disabled={!phNo}
                         onPress={() => {
-                            this.props.onLogin(this.state.phoneNumber)
+                            props.onLogin(phNo)
                         }}>
                         <Text style={styles.loginText}>Login</Text>
                     </TouchableOpacity>
