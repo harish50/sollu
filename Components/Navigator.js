@@ -5,9 +5,10 @@ import LoginScreen from './LoginScreen';
 import ProfilePage from './ProfilePage';
 import VideoCall from './VideoCall'
 import AnswerVideoCall from "./AnswerVideoCall";
+import LoginContainer from "../src/Screens/Login/LoginContainer"
 
 const isRegistered = false;
-const initialScreen = isRegistered ? "HomeScreen" : "LoginScreen";
+const initialScreen = LoginContainer
 const Navigator = createStackNavigator(
     {
         LoginScreen: LoginScreen,
@@ -18,7 +19,7 @@ const Navigator = createStackNavigator(
         AnswerVideoCall: AnswerVideoCall
     },
     {
-        initialRouteName: initialScreen,
+        initialRouteName: LoginContainer,
     }
 );
 let AppContainer;
