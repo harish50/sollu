@@ -34,7 +34,8 @@
     "jest-react-native": "^18.0.0"
   },
   "jest": {
-    "preset": "react-native"
+    "preset": "react-native",
+    "transform": { "^.+\\.js$": "/Users/harikam/Desktop/feb/sollu/node_modules/react-native/jest/preprocessor.js"}
   },
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
@@ -43,6 +44,7 @@
   "rnpm": {
     "assets": [
       "./assets/fonts"
+
     ]
   }
 }
