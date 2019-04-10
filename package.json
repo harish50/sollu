@@ -2,14 +2,14 @@
   "name": "sollu",
   "version": "0.0.1",
   "private": true,
-  "scripts": {
-    "start": "node node_modules/react-native/local-cli/cli.js start",
-    "test": "jest"
-  },
+
   "dependencies": {
     "appcenter": "1.12.0",
     "appcenter-analytics": "1.12.0",
     "appcenter-crashes": "1.12.0",
+    "babel-core": "^6.26.3",
+    "babel-loader": "^8.0.5",
+    "babel-preset-react-native": "^4.0.0",
     "firebase": "^4.9.1",
     "react": "16.6.3",
     "react-native": "0.57.8",
@@ -30,10 +30,15 @@
     "babel-jest": "23.6.0",
     "jest": "23.6.0",
     "metro-react-native-babel-preset": "0.51.1",
-    "react-test-renderer": "16.6.3"
+    "react-test-renderer": "16.6.3",
+    "jest-react-native": "^18.0.0"
   },
   "jest": {
     "preset": "react-native"
+  },
+  "scripts": {
+    "start": "node node_modules/react-native/local-cli/cli.js start",
+    "test": "jest"
   },
   "rnpm": {
     "assets": [

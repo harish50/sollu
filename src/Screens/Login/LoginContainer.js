@@ -1,5 +1,8 @@
 import React, {Component} from 'react';
 import LoginView from "./LoginView"
+import HeaderView from "../Header/HeaderView"
+import {View} from "react-native";
+
 
 class LoginContainer extends Component {
 
@@ -13,7 +16,10 @@ class LoginContainer extends Component {
 
     render() {
         return (
-            <LoginView onLogin={this.handlePress}/>
+            <View>
+                 <HeaderView/>
+                <LoginView onLogin={this.handlePress}/>
+            </View>
         );
     }
 }

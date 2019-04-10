@@ -3,6 +3,7 @@ import {Image, Text, TextInput, TouchableOpacity, View} from 'react-native';
 import styles from '../../../Stylesheet/LoginScreen';
 
 
+
 class LoginView extends Component {
 
     state = {
@@ -41,7 +42,6 @@ class LoginView extends Component {
                     </TouchableOpacity>
                 </View>
             </View>
-
         );
     }
 }
