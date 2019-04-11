@@ -30,3 +30,42 @@ describe('LoginComponent rendering', () =>{
         expect(component.find(TouchableOpacity)).toHaveLength(1);
     })
 });
+
+// describe('interaction',()=>{
+//    let wrapper;
+//    let props;
+//    beforeEach(()=>{
+//        props = {onPress:jest.fn()};
+//        wrapper = shallow(<LoginView {...props}/>);
+//    })
+//
+//     describe('clicking the button',()=>{
+//         beforeEach(()=>{
+//             wrapper.find(TouchableOpacity).prop('onPress');
+//         });
+//
+//         it('should call onclick callback',()=>{
+//             expect(props.onPress).toHaveBeenCalledTimes(1);
+//         })
+//     })
+// });
+
+describe('should create an entry in component state ',()=>{
+    const component = shallow(<LoginView/>);
+
+    const textInput = component.find('TextInput');
+
+    textInput.props().onChangeText({target:{
+            value:'myValue'
+        }});
+    it('should define the TextInput',()=>{
+        expect(component.state('phoneNumber')).toBeDefined();
+    });
+
+    it('should create entry in comonent state with TextInput event value',()=>{
+        expect(component.state('phoneNumber')).toEqual('myValue');
+    });
+
+
+});
+

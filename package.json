@@ -2,7 +2,6 @@
   "name": "sollu",
   "version": "0.0.1",
   "private": true,
-
   "dependencies": {
     "appcenter": "1.12.0",
     "appcenter-analytics": "1.12.0",
@@ -28,14 +27,26 @@
   },
   "devDependencies": {
     "babel-jest": "23.6.0",
+    "enzyme": "^3.9.0",
+    "enzyme-adapter-react-16": "^1.12.1",
+    "enzyme-to-json": "^3.3.5",
     "jest": "23.6.0",
+    "jest-react-native": "^18.0.0",
     "metro-react-native-babel-preset": "0.51.1",
-    "react-test-renderer": "16.6.3",
-    "jest-react-native": "^18.0.0"
+    "react-dom": "^16.8.6",
+    "react-test-renderer": "16.6.3"
   },
   "jest": {
+    "snapshotSerializers": [
+      "enzyme-to-json/serializer"
+    ],
+    "setupFiles": [
+      "./src/setupTests.js"
+    ],
     "preset": "react-native",
-    "transform": { "^.+\\.js$": "/Users/harikam/Desktop/feb/sollu/node_modules/react-native/jest/preprocessor.js"}
+    "transform": {
+      "^.+\\.js$": "../sollu/node_modules/react-native/jest/preprocessor.js"
+    }
   },
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
@@ -44,7 +55,6 @@
   "rnpm": {
     "assets": [
       "./assets/fonts"
-
     ]
   }
 }

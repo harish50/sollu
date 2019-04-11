@@ -7,9 +7,9 @@ class LoginView extends Component {
     state = {
         phoneNumber: "",
     };
-    setNumber = (number) => {
+    setNumber=(event)=> {
         this.setState({
-            phoneNumber: number
+            phoneNumber: event.target.value
         });
     };
 
