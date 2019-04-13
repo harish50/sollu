@@ -10,7 +10,7 @@ const Container = () => {
     const onLogin = (phoneNumber) => {
         if (isValid(phoneNumber)) {
             registerUser(phoneNumber);
-            setToLocalStorage(STRINGS.PHONENUMBER, phoneNumber)
+            setToLocalStorage(STRINGS.PHONENUMBER, phoneNumber);
         }
         else {
             alert(STRINGS.INVALID)
