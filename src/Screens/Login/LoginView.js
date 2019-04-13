@@ -4,12 +4,15 @@ import styles from './Styles';
 
 
 class LoginView extends Component {
+    constructor(props){
+        super(props)
+      }
     state = {
         phoneNumber: "",
     };
-    setNumber=(event)=> {
+    setNumber=(number)=> {
         this.setState({
-            phoneNumber: event.target.value
+            phoneNumber: number.toString()
         });
     };
 
