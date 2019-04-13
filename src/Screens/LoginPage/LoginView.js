@@ -3,8 +3,8 @@ import {Image, Text, TextInput, TouchableOpacity, View} from 'react-native';
 import styles from './LoginStyles';
 
 
-class LoginView extends Component {
-    constructor(props){
+export default class LoginView extends Component {
+    constructor(props) {
         super(props)
     }
     state = {
@@ -49,5 +49,3 @@ class LoginView extends Component {
         );
     }
 }
-
-export default LoginView;
