@@ -1,17 +1,22 @@
 import React, {Component} from 'react';
 import {Image, Text, TextInput, TouchableOpacity, View} from 'react-native';
-import styles from './Styles';
+import styles from './LoginStyles';
 
 
 class LoginView extends Component {
+    constructor(props){
+        super(props)
+    }
     state = {
         phoneNumber: "",
     };
-    setNumber=(event)=> {
+    setNumber=(number)=> {
         this.setState({
-            phoneNumber: event.target.value
+            phoneNumber: number.toString()
         });
     };
+
+
 
     render() {
         let {phoneNumber} = this.state;

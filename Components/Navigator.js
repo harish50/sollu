@@ -1,11 +1,12 @@
-import {createAppContainer, createStackNavigator} from "react-navigation";
-import LoginContainer from "../src/Screens/Login/LoginContainer"
-import HomeContainer from "../src/Screens/Home/HomeContainer"
+import { createStackNavigator, createAppContainer } from "react-navigation";
+import HomeContainer from '../src/Screens/HomePage/HomeContainer'
+import LoginContainer from '../src/Screens/LoginPage/LoginContainer'
+
 const Navigator = createStackNavigator(
     {
         LoginContainer: LoginContainer,
-        HomeContainer : HomeContainer
+        HomeContainer: HomeContainer
     }
 );
-let AppContainer;
+var AppContainer;
 export default AppContainer = createAppContainer(Navigator);

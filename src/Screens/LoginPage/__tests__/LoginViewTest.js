@@ -1,11 +1,11 @@
 import React from 'react';
 import {mount, shallow} from 'enzyme';
-import LoginView from "../LoginView";
+import View from "../View";
 import {Image, Text, TextInput, TouchableOpacity, View, Button} from 'react-native';
 
 let component;
 beforeEach(() => {
-     component = shallow(<LoginView />);
+     component = shallow(<View />);
 });
 
 describe('LoginComponent rendering', () =>{
@@ -36,7 +36,7 @@ describe('LoginComponent rendering', () =>{
 //    let props;
 //    beforeEach(()=>{
 //        props = {onPress:jest.fn()};
-//        wrapper = shallow(<LoginView {...props}/>);
+//        wrapper = shallow(<View {...props}/>);
 //    })
 //
 //     describe('clicking the button',()=>{
@@ -51,7 +51,7 @@ describe('LoginComponent rendering', () =>{
 // });
 
 describe('should create an entry in component state ',()=>{
-    const component = shallow(<LoginView/>);
+    const component = shallow(<View/>);
 
     const textInput = component.find('TextInput');
 
