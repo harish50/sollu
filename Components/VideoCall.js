@@ -172,10 +172,12 @@ export default class VideoCall extends Component {
                 if (event.candidate != null) {
                     console.log("Pushing ICE to list")
                     senderIceList.push(event.candidate);
+                    console.log(senderIceList)
+                    VIDEO_CALL_REF.child(participants.sender).child('ICE').set(senderIceList);
                 }
                 else {
                     console.log("No ice found")
-                    VIDEO_CALL_REF.child(participants.sender).child('ICE').set(senderIceList);
+
                 }
             }
         )
@@ -192,6 +194,7 @@ export default class VideoCall extends Component {
                 console.log("Local desc ")
                 console.log(pc.localDescription)
                 VIDEO_CALL_REF.child(participants.receiver).set({caller: participants.sender});
+                VIDEO_CALL_REF.child(participants.sender).child('videoSDP').set(pc.localDescription);
                 this.setState({
                     callStatus: "Calling..."
                 })
@@ -199,7 +202,7 @@ export default class VideoCall extends Component {
                 // InCallManager.start({media:'audio'});
                 console.log("incallmanager started ringback");
 
-                VIDEO_CALL_REF.child(participants.sender).child('videoSDP').set(pc.localDescription);
+
             })
         });
     }

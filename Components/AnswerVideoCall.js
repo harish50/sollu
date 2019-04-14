@@ -1,6 +1,6 @@
 import React from "react";
 import firebase from "../firebase/firebase";
-import {Text, TouchableOpacity, View,ActivityIndicator, AsyncStorage} from "react-native";
+import {ActivityIndicator, AsyncStorage, Text, TouchableOpacity, View} from "react-native";
 import InCallManager from 'react-native-incall-manager';
 import {mediaDevices, RTCIceCandidate, RTCPeerConnection, RTCSessionDescription, RTCView} from "react-native-webrtc";
 import stylings from "../Stylesheet/videocallStyles";
@@ -12,18 +12,19 @@ let receiverIceList = [];
 let senderIceList = [];
 let caller = null;
 let callee = null;
+let sdp = null;
 let pc = null;
-export default class AnswerVideoCall extends React.Component{
-    constructor(props){
+export default class AnswerVideoCall extends React.Component {
+    constructor(props) {
         super(props);
         this.state = {
             remoteVideo: '',
             readyToStreamVideo: false,
-            isCallAnswered : false,
-            callerName : '',
-            selfVideoEnable : false
+            isCallAnswered: false,
+            callerName: '',
+            selfVideoEnable: false
         };
-        this.listenOnCaller= this.listenOnCaller.bind(this);
+        this.listenOnCaller = this.listenOnCaller.bind(this);
     }
 
     static navigationOptions = ({navigation}) => {
@@ -62,8 +63,12 @@ export default class AnswerVideoCall extends React.Component{
     async addRemoteICE() {
         let temp = -1;
         let index = 0;
+        console.log("Adding ICE one by one");
+        console.log(senderIceList.length)
         for (; index < senderIceList.length && temp !== index;) {
             temp = index;
+            console.log("Here is :")
+            console.log(senderIceList[index])
             await pc.addIceCandidate(new RTCIceCandidate(senderIceList[index])).then(
                 () => {
                     console.log("add ice succeeded");
@@ -96,13 +101,13 @@ export default class AnswerVideoCall extends React.Component{
         console.log("Entered into AnswerVideoCall.js");
         caller = this.props.navigation.getParam("caller");
         callee = this.props.navigation.getParam("callee");
-        let name = await AsyncStorage.getItem(caller)
+        let name = await AsyncStorage.getItem(caller);
         this.setState({
             callerName: name,
         })
 
         VIDEO_CALL_REF.child(caller).on('child_added', async (callerSnap) => {
-            console.log("Let us know the key");
+            console.log("Key in did mount");
             console.log(callerSnap.key);
             if (callerSnap.key === 'VideoCallEnd') {
                 InCallManager.stopRingtone();
@@ -124,7 +129,7 @@ export default class AnswerVideoCall extends React.Component{
         localStream.getVideoTracks()[0].enabled = !(localStream.getVideoTracks()[0].enabled);
         console.log("video track removed");
         this.setState({
-            selfVideoEnable : !this.state.selfVideoEnable
+            selfVideoEnable: !this.state.selfVideoEnable
         })
         // console.log(this.state.videoEnable);
     };
@@ -132,7 +137,7 @@ export default class AnswerVideoCall extends React.Component{
     handleCallHangUp = () => {
         console.log("in callhangup");
         console.log(pc);
-        if(pc!==null){
+        if (pc !== null) {
             console.log(pc.close());
         }
         InCallManager.stopRingtone();
@@ -145,7 +150,7 @@ export default class AnswerVideoCall extends React.Component{
     };
 
 
-    listenOnCaller=()=> {
+    listenOnCaller = () => {
         let servers = {
             'iceServers': [{'urls': 'stun:stun.services.mozilla.com'}, {'urls': 'stun:stun.l.google.com:19302'}, {
                 'urls': 'turn:numb.viagenie.ca',
@@ -154,46 +159,82 @@ export default class AnswerVideoCall extends React.Component{
             }]
         };
         pc = new RTCPeerConnection(servers);
-        VIDEO_CALL_REF.child(caller).on('child_added', async (callerSnap) => {
+        VIDEO_CALL_REF.child(caller).once('value', async (callerSnap) => {
             console.log("Let us know the key");
             console.log(callerSnap.key);
-            if (callerSnap.key === 'VideoCallEnd') {
-                InCallManager.stopRingtone();
-                InCallManager.stop();
-                VIDEO_CALL_REF.child(callee).remove();
-                console.log("videocallEnd has child 1");
-                VIDEO_CALL_REF.child(caller).remove();
-                console.log("videocallEnd has child21");
-                pc.close();
-                this.props.navigation.navigate("HomeScreen", {sender: callee});
-            }
-            if (callerSnap.key === 'videoSDP') {
-                console.log("videoSDP");
-                let flag = false;
-                flag = await this.getLocalStream();
-                if (flag) {
-                    pc.setRemoteDescription(new RTCSessionDescription(callerSnap.val())).then(() => {
-                        console.log("setremotedescription")
-                    }, error => {
-                        console.log(error)
-                    });
-                }
-            }
-            else if (callerSnap.key === 'ICE') {
-                if (senderIceList.length !== 0) {
-                    senderIceList = [];
-                }
-                senderIceList = callerSnap.val();
-                console.log("added into senderIceList");
-                let flag;
-                flag = await this.addRemoteICE();
-                console.log("flag from addRemoteICE:", flag);
-                if (flag) {
-                    console.log("inside flag to start answer");
-                    this.answerTheCall();
+            console.log(callerSnap.val())
 
+            callerSnap.forEach((childsnap) => {
+                console.log("childSnap")
+                console.log(childsnap.key);
+                console.log(childsnap.val())
+
+                if (childsnap.key === 'videoSDP') {
+                    console.log("Got SDP")
+                    sdp = childsnap.val();
                 }
+                if (childsnap.key === 'ICE') {
+                    console.log("Found ICE");
+                    senderIceList=childsnap.val()
+                }
+            });
+            console.log("Call getLocalStream method")
+            let flag;
+            flag = this.getLocalStream();
+            if(flag){
+                pc.setRemoteDescription(new RTCSessionDescription(sdp)).then(async () => {
+                    console.log("setremotedescription");
+                    if (senderIceList.length !== 0) {
+                        flag = await this.addRemoteICE();
+                        console.log("flag from addRemoteICE:", flag);
+                        if (flag) {
+                            console.log("inside flag to start answer");
+                            this.answerTheCall();
+
+                        }
+                    }
+                }, error => {
+                    console.log(error)
+                });
             }
+            // if (callerSnap.key === 'VideoCallEnd') {
+            //     InCallManager.stopRingtone();
+            //     InCallManager.stop();
+            //     VIDEO_CALL_REF.child(callee).remove();
+            //     console.log("videocallEnd has child 1");
+            //     VIDEO_CALL_REF.child(caller).remove();
+            //     console.log("videocallEnd has child21");
+            //     pc.close();
+            //     this.props.navigation.navigate("HomeScreen", {sender: callee});
+            // }
+            // if (callerSnap.key === 'videoSDP') {
+            //     let flag = false;
+            //     flag = await this.getLocalStream();
+            //     if (flag) {
+            //         pc.setRemoteDescription(new RTCSessionDescription(callerSnap.val())).then(() => {
+            //             console.log("setremotedescription")
+            //         }, error => {
+            //             console.log(error)
+            //         });
+            //     }
+            // }
+            // else if (callerSnap.key === 'ICE') {
+            //     if (senderIceList.length !== 0) {
+            //         senderIceList = [];
+            //     }
+            //     senderIceList = callerSnap.val();
+            //     console.log(callerSnap.val());
+            //     console.log(senderIceList)
+            //     console.log("added into senderIceList");
+            //     let flag;
+            //     flag = await this.addRemoteICE();
+            //     console.log("flag from addRemoteICE:", flag);
+            //     if (flag) {
+            //         console.log("inside flag to start answer");
+            //         this.answerTheCall();
+            //
+            //     }
+            // }
         });
         pc.onicecandidate = (event => {
                 console.log('Printing event');
@@ -220,14 +261,14 @@ export default class AnswerVideoCall extends React.Component{
         });
     }
 
-    callAnswer(){
+    callAnswer() {
         console.log("in callAnswering");
         // when user pickup
         InCallManager.stopRingtone();
         InCallManager.start();
         VIDEO_CALL_REF.child(callee).child('VideoCallReceived').set(true);
         this.setState({
-            isCallAnswered : true
+            isCallAnswered: true
         });
         this.listenOnCaller();
     }
