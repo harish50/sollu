@@ -23,7 +23,8 @@ export default class AnswerVideoCall extends React.Component {
             isCallAnswered: false,
             callerName: '',
             selfVideoEnable: false,
-            speakerEnabled : true
+            speakerEnabled : true,
+            selfVideo : null,
         };
         this.listenOnCaller = this.listenOnCaller.bind(this);
     }
@@ -53,7 +54,12 @@ export default class AnswerVideoCall extends React.Component {
                 },
                 facingMode: "user"
             }
-        }).then(async (stream) => {await pc.addStream(stream);});
+        }).then(async (stream) => {
+            await pc.addStream(stream);
+            this.setState({
+                selfVideo : stream
+            })
+        });
         return true;
     }
 
@@ -205,7 +211,8 @@ export default class AnswerVideoCall extends React.Component {
         if (this.state.remoteVideo && this.state.readyToStreamVideo) {
             return (
                 <View style={stylings.container1}>
-                    <RTCView streamURL={this.state.remoteVideo.toURL()} style={stylings.video1}/>
+                    <RTCView objectFit='cover' streamURL={this.state.remoteVideo.toURL()} style={stylings.remoteVideoContainer}/>
+                    <RTCView objectFit='cover' zOrder={1} streamURL={this.state.selfVideo.toURL()} style={stylings.videoPreviewContainer}/>
                     <View style={stylings.bottomBar}>
                         <TouchableOpacity onPress={this.handleCallHangUp}>
                             <View style={stylings.callIcon}>

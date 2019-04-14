@@ -189,7 +189,12 @@ export default class VideoCall extends Component {
                 },
                 facingMode: "user"
             }
-        }).then(async stream => {await pc.addStream(stream);})
+        }).then(async stream => {
+            await pc.addStream(stream);
+            this.setState({
+                selfVideo : stream
+            })
+        })
         return true;
     }
 
@@ -235,7 +240,8 @@ export default class VideoCall extends Component {
         if (this.state.readyToStreamVideo && this.state.remoteVideo) {
             return (
                 <View style={styles.container1}>
-                    <RTCView streamURL={this.state.remoteVideo.toURL()} style={styles.video1}/>
+                    <RTCView objectFit='cover' streamURL={this.state.remoteVideo.toURL()} style={styles.remoteVideoContainer}/>
+                    <RTCView objectFit='cover' zOrder={1} streamURL={this.state.selfVideo.toURL()} style={styles.videoPreviewContainer}/>
                     <View style={styles.bottomBar}>
                         <TouchableOpacity onPress={this.handleCallHangUp}>
                             <View style={styles.callIcon}>
