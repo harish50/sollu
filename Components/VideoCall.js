@@ -17,7 +17,8 @@ export default class VideoCall extends Component {
         remoteVideo: null,
         readyToStreamVideo: false,
         callStatus: "Starting sollu video call",
-        selfVideoEnable: false
+        selfVideoEnable: false,
+        speakerEnabled: true
     };
 
     static navigationOptions = ({navigation}) => {
@@ -56,6 +57,7 @@ export default class VideoCall extends Component {
                 });
                 InCallManager.stopRingback();
                 InCallManager.start();
+                InCallManager.setSpeakerphoneOn(true);
             }
         });
     }
@@ -95,7 +97,8 @@ export default class VideoCall extends Component {
                     readyToStreamVideo: false
                 });
                 InCallManager.stopRingback();
-                InCallManager.stop();;
+                InCallManager.setSpeakerphoneOn(false);
+                InCallManager.stop();
                 pc.close();
                 VIDEO_CALL_REF.child(participants.sender).remove();
                 VIDEO_CALL_REF.child(participants.receiver).remove();
@@ -109,6 +112,7 @@ export default class VideoCall extends Component {
                     callStatus: this.props.navigation.getParam("contactName") + " Answered the Call"
                 })
                 InCallManager.stopRingback();
+                InCallManager.setSpeakerphoneOn(true);
                 pc.setRemoteDescription(new RTCSessionDescription(snap.val()));
                 this.setState({
                     callStatus: "Connecting to video call"
@@ -197,11 +201,26 @@ export default class VideoCall extends Component {
             selfVideoEnable: !this.state.selfVideoEnable
         })
     };
+
+    handleSpeaker=()=>{
+        console.log(" handle speaker");
+        if(this.state.speakerEnabled){
+            InCallManager.setSpeakerphoneOn(false);
+        }
+        else{
+            InCallManager.setSpeakerphoneOn(true);
+        }
+        this.setState({
+            speakerEnabled : !this.state.speakerEnabled
+        })
+    };
+
     handleCallHangUp = () => {
         if (pc !== null) {
             console.log(pc.close());
         }
         InCallManager.stopRingback();
+        InCallManager.setSpeakerphoneOn(false);
         InCallManager.stop();
 
         VIDEO_CALL_REF.child(participants.sender).remove();
@@ -223,6 +242,17 @@ export default class VideoCall extends Component {
                                 <Icon name="call-end" color="#fff" size={30}/>
                             </View>
                         </TouchableOpacity>
+                        {(!this.state.speakerEnabled)?
+                            <TouchableOpacity onPress={this.handleSpeaker}>
+                                <View style={styles.callIcon}>
+                                    <Icon name="volume-off" color="#fff" size={30}/>
+                                </View>
+                            </TouchableOpacity>:<TouchableOpacity onPress={this.handleSpeaker}>
+                                <View style={styles.callIcon}>
+                                    <Icon name="volume-up" color="#fff" size={30}/>
+                                </View>
+                            </TouchableOpacity>
+                        }
                         {(!this.state.selfVideoEnable) ?
                             <TouchableOpacity onPress={this.muteVideo}>
                                 <View style={styles.callIcon}>

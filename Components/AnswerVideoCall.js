@@ -22,7 +22,8 @@ export default class AnswerVideoCall extends React.Component {
             readyToStreamVideo: false,
             isCallAnswered: false,
             callerName: '',
-            selfVideoEnable: false
+            selfVideoEnable: false,
+            speakerEnabled : true
         };
         this.listenOnCaller = this.listenOnCaller.bind(this);
     }
@@ -93,6 +94,7 @@ export default class AnswerVideoCall extends React.Component {
         VIDEO_CALL_REF.child(caller).on('child_added', async (callerSnap) => {
             if (callerSnap.key === 'VideoCallEnd') {
                 InCallManager.stopRingtone();
+                InCallManager.setSpeakerphoneOn(false);
                 InCallManager.stop()
                 VIDEO_CALL_REF.child(callee).remove();
                 VIDEO_CALL_REF.child(caller).remove();
@@ -114,6 +116,7 @@ export default class AnswerVideoCall extends React.Component {
             console.log(pc.close());
         }
         InCallManager.stopRingtone();
+        InCallManager.setSpeakerphoneOn(false);
         InCallManager.stop();
         VIDEO_CALL_REF.child(callee).child('VideoCallEnd').set(true);
         this.props.navigation.navigate("HomeScreen", {sender: callee});
@@ -176,12 +179,26 @@ export default class AnswerVideoCall extends React.Component {
     callAnswer() {
         InCallManager.stopRingtone();
         InCallManager.start();
+        InCallManager.setSpeakerphoneOn(true);
         VIDEO_CALL_REF.child(callee).child('VideoCallReceived').set(true);
         this.setState({
             isCallAnswered: true
         });
         this.listenOnCaller();
     }
+
+    handleSpeaker=()=>{
+        console.log(" handle speaker");
+        if(this.state.speakerEnabled){
+            InCallManager.setSpeakerphoneOn(false);
+        }
+        else{
+            InCallManager.setSpeakerphoneOn(true);
+        }
+        this.setState({
+            speakerEnabled : !this.state.speakerEnabled
+        })
+    };
 
 
     render() {
@@ -195,6 +212,17 @@ export default class AnswerVideoCall extends React.Component {
                                 <Icon name="call-end" color="#fff" size={30}/>
                             </View>
                         </TouchableOpacity>
+                        {(!this.state.speakerEnabled) ?
+                            <TouchableOpacity onPress={this.handleSpeaker}>
+                                <View style={stylings.callIcon}>
+                                    <Icon name="volume-off" color="#fff" size={30}/>
+                                </View>
+                            </TouchableOpacity>:<TouchableOpacity onPress={this.handleSpeaker}>
+                                <View style={stylings.callIcon} onPress={this.handleSpeaker}>
+                                    <Icon name="volume-up" color="#fff" size={30}/>
+                                </View>
+                            </TouchableOpacity>
+                        }
                         {(!this.state.selfVideoEnable) ?
                             <TouchableOpacity onPress={this.muteVideo}>
                                 <View style={stylings.callIcon}>
