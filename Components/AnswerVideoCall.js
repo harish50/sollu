@@ -14,6 +14,7 @@ let caller = null;
 let callee = null;
 let sdp = null;
 let pc = null;
+let local = false;
 export default class AnswerVideoCall extends React.Component {
     constructor(props) {
         super(props);
@@ -69,7 +70,9 @@ export default class AnswerVideoCall extends React.Component {
         for (; index < senderIceList.length && temp !== index;) {
             temp = index;
             await pc.addIceCandidate(new RTCIceCandidate(senderIceList[index])).then(
-                () => {index++;},
+                () => {
+                    index++;
+                },
                 error => {
                     console.log(error);
                 }
@@ -81,10 +84,8 @@ export default class AnswerVideoCall extends React.Component {
     }
 
     answerTheCall() {
-        pc.createAnswer().then(async (sdp) => {
-            pc.setLocalDescription(sdp).then(() => {
-                VIDEO_CALL_REF.child(callee).child('videoSDP').set(pc.localDescription);
-            })
+        pc.createAnswer().then((sdp) => {
+            pc.setLocalDescription(sdp)
         });
     }
 
@@ -102,6 +103,9 @@ export default class AnswerVideoCall extends React.Component {
                 InCallManager.stopRingtone();
                 InCallManager.setSpeakerphoneOn(false);
                 InCallManager.stop()
+                local = false;
+                receiverIceList = [];
+                senderIceList = [];
                 VIDEO_CALL_REF.child(callee).remove();
                 VIDEO_CALL_REF.child(caller).remove();
                 this.props.navigation.navigate("HomeScreen", {sender: callee});
@@ -118,6 +122,7 @@ export default class AnswerVideoCall extends React.Component {
     };
 
     handleCallHangUp = () => {
+        local = false;
         if (pc !== null) {
             console.log(pc.close());
         }
@@ -144,6 +149,9 @@ export default class AnswerVideoCall extends React.Component {
                     sdp = childsnap.val();
                 }
                 if (childsnap.key === 'ICE') {
+                    if(senderIceList.length!==0){
+                        senderIceList = []
+                    }
                     senderIceList = childsnap.val()
                 }
             });
@@ -163,15 +171,19 @@ export default class AnswerVideoCall extends React.Component {
             }
         });
         pc.onicecandidate = (event => {
-
                 if (event.candidate != null) {
                     receiverIceList.push(event.candidate);
-                }
-                else {
                     VIDEO_CALL_REF.child(callee).child('ICE').set(receiverIceList);
+                    if (!local) {
+                        local = true;
+                        VIDEO_CALL_REF.child(callee).child('videoSDP').set(pc.localDescription);
+                    }
                     this.setState({
                         readyToStreamVideo: true
                     });
+                }
+                else {
+                    console.log("No ice found");
                 }
             }
         );
@@ -192,7 +204,6 @@ export default class AnswerVideoCall extends React.Component {
         });
         this.listenOnCaller();
     }
-
     handleSpeaker=()=>{
         console.log(" handle speaker");
         if(this.state.speakerEnabled){
@@ -205,7 +216,6 @@ export default class AnswerVideoCall extends React.Component {
             speakerEnabled : !this.state.speakerEnabled
         })
     };
-
 
     render() {
         if (this.state.remoteVideo && this.state.readyToStreamVideo) {
