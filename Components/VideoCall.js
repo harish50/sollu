@@ -10,14 +10,18 @@ const VIDEO_CALL_REF = firebase.database().ref("videoCallInfo");
 let senderIceList = [];
 let receiverIceList = [];
 let participants = null;
+let local = false
 let pc = null;
 export default class VideoCall extends Component {
+
+    _isMounted = false;
     state = {
         selfVideo: null,
         remoteVideo: null,
         readyToStreamVideo: false,
         callStatus: "Starting sollu video call",
-        selfVideoEnable: false
+        selfVideoEnable: false,
+        speakerEnabled: true
     };
 
     static navigationOptions = ({navigation}) => {
@@ -46,24 +50,24 @@ export default class VideoCall extends Component {
     }
 
     componentDidMount() {
+        this._isMounted = true;
         participants = this.props.navigation.getParam("participants")
         this.startVideoCall();
 
         VIDEO_CALL_REF.child(participants.receiver).on('child_added', async (callerSnap) => {
-            console.log("Let us know the key");
-            console.log(callerSnap.key);
             if (callerSnap.key === 'VideoCallReceived') {
                 this.setState({
                     callStatus: this.props.navigation.getParam("contactName") + " Answered the Call"
                 });
                 InCallManager.stopRingback();
                 InCallManager.start();
-                console.log("videocallreceived");
+                InCallManager.setSpeakerphoneOn(true);
             }
         });
     }
 
     componentWillUnmount() {
+        this._isMounted = false;
         senderIceList = [];
     }
 
@@ -79,16 +83,23 @@ export default class VideoCall extends Component {
         let flag = false;
         flag = await this.getLocalStream();
         if (flag === true) {
-            console.log("Flag is true")
             this.makeOffer();
-            console.log("Completed creating Offer");
-            this.collectAndSendICEs();
-            console.log("Back to method");
+            pc.onicecandidate = (event => {
+                    if (event.candidate != null) {
+                        if(senderIceList.length!==0){
+                            senderIceList = [];
+                        }
+                        senderIceList.push(event.candidate);
+                        VIDEO_CALL_REF.child(participants.sender).child('ICE').set(senderIceList);
+                    }
+                    else {
+                        console.log("No ice found")
+                    }
+                }
+            )
             this.waitForAnswer();
 
             pc.onaddstream = ((event) => {
-                console.log("onaddstream");
-                console.log(event.stream);
                 this.setState({
                     remoteVideo: event.stream
                 })
@@ -97,15 +108,17 @@ export default class VideoCall extends Component {
     }
 
     waitForAnswer() {
-        console.log("Entered in to waitForCall ");
         VIDEO_CALL_REF.child(participants.receiver).on('child_added', async (snap) => {
             if (snap.key === 'VideoCallEnd') {
+                local = false
+                receiverIceList = [];
+                senderIceList = [];
                 this.setState({
                     readyToStreamVideo: false
                 });
                 InCallManager.stopRingback();
+                InCallManager.setSpeakerphoneOn(false);
                 InCallManager.stop();
-                console.log("incallmanager stopringback call declined");
                 pc.close();
                 VIDEO_CALL_REF.child(participants.sender).remove();
                 VIDEO_CALL_REF.child(participants.receiver).remove();
@@ -115,36 +128,30 @@ export default class VideoCall extends Component {
                 });
             }
             if (snap.key === 'videoSDP') {
-                console.log("Getting SDP");
-                this.setState({
-                    callStatus: this.props.navigation.getParam("contactName") + " Answered the Call"
-                })
-                InCallManager.stopRingback();
-                console.log("incallmanager stopringback");
-
-                pc.setRemoteDescription(new RTCSessionDescription(snap.val()));
-                this.setState({
-                    callStatus: "Connecting to video call"
-                })
-                console.log("Done setting SDP")
-            } else if (snap.key === 'ICE') {
-                receiverIceList = snap.val();
-                console.log("got receivers ICE list");
-                let flag = false;
-                console.log("flag before addRemoteICE:", flag);
-                flag = await this.addRemoteICE();
-                console.log("flag from addRemoteICE:", flag);
-                if (flag) {
-                    console.log("addRemoteICE done");
+                if(!local){
+                    local = true;
                     this.setState({
-                        readyToStreamVideo: true
+                        callStatus: this.props.navigation.getParam("contactName") + " Answered the Call"
                     })
-
+                    InCallManager.stopRingback();
+                    InCallManager.setSpeakerphoneOn(true);
+                    pc.setRemoteDescription(new RTCSessionDescription(snap.val())).then(() => {
+                        if(receiverIceList.length!==0){
+                            this.addRemoteICE();
+                        }
+                    });
+                    this.setState({
+                        callStatus: "Connecting to video call"
+                    })
                 }
+            } else if (snap.key === 'ICE') {
+                if(senderIceList.length!==0){
+                    receiverIceList = []
+                }
+                receiverIceList = snap.val();
             }
         });
     }
-
     async addRemoteICE() {
         let temp = -1;
         let index = 0;
@@ -152,7 +159,6 @@ export default class VideoCall extends Component {
             temp = index;
             await pc.addIceCandidate(new RTCIceCandidate(receiverIceList[index])).then(
                 () => {
-                    console.log("add ice succeeded");
                     index++;
                 },
                 error => {
@@ -161,51 +167,31 @@ export default class VideoCall extends Component {
             )
         }
         if (index === receiverIceList.length) {
-            console.log("out from addICE");
-            return true;
+            if(this._isMounted){
+                this.setState({
+                    readyToStreamVideo: true
+                })
+            }
         }
     }
 
-    collectAndSendICEs() {
-        console.log("collect Ice here")
-        pc.onicecandidate = (event => {
-                if (event.candidate != null) {
-                    console.log("Pushing ICE to list")
-                    senderIceList.push(event.candidate);
-                }
-                else {
-                    console.log("No ice found")
-                    VIDEO_CALL_REF.child(participants.sender).child('ICE').set(senderIceList);
-                }
-            }
-        )
-        console.log("Completed collecting ICEs")
-    }
-
     makeOffer() {
-        console.log("Creating Offer")
         pc.createOffer({
             OfferToReceiveAudio: true,
             OfferToReceiveVideo: true
         }).then((sdp) => {
             pc.setLocalDescription(sdp).then(() => {
-                console.log("Local desc ")
-                console.log(pc.localDescription)
                 VIDEO_CALL_REF.child(participants.receiver).set({caller: participants.sender});
+                VIDEO_CALL_REF.child(participants.sender).child('videoSDP').set(pc.localDescription);
                 this.setState({
                     callStatus: "Calling..."
                 })
                 InCallManager.start({media: 'audio', ringback: '_BUNDLE_'});
-                // InCallManager.start({media:'audio'});
-                console.log("incallmanager started ringback");
-
-                VIDEO_CALL_REF.child(participants.sender).child('videoSDP').set(pc.localDescription);
             })
         });
     }
 
     async getLocalStream() {
-        console.log("Getting my media")
         await mediaDevices.getUserMedia({
             audio: true,
             video: {
@@ -217,58 +203,71 @@ export default class VideoCall extends Component {
                 facingMode: "user"
             }
         }).then(async stream => {
-            console.log("Streaming OK", stream);
             await pc.addStream(stream);
-            console.log("going out")
+            this.setState({
+                selfVideo : stream
+            })
         })
-
         return true;
     }
 
     muteVideo = () => {
-        //mute video of yours.
-        console.log("in mute video");
         let localStream = pc.getLocalStreams()[0];
-        console.log(localStream);
         localStream.getVideoTracks()[0].enabled = !(localStream.getVideoTracks()[0].enabled);
-        console.log("video track removed");
         this.setState({
             selfVideoEnable: !this.state.selfVideoEnable
         })
     };
     handleCallHangUp = () => {
-        console.log("in callhangup");
-        console.log(pc);
+        local = false
         if (pc !== null) {
             console.log(pc.close());
         }
-        console.log("after pc.close");
-        // pc=null;
-        console.log("incallmanager stop");
         InCallManager.stopRingback();
+        InCallManager.setSpeakerphoneOn(false);
         InCallManager.stop();
-
         VIDEO_CALL_REF.child(participants.sender).remove();
         VIDEO_CALL_REF.child(participants.sender).child('VideoCallEnd').set(true);
-        console.log(pc);
         this.props.navigation.navigate("ChatScreen", {
             participants: participants,
             contactName: this.props.navigation.getParam("contactName")
         });
     };
-
+    handleSpeaker=()=>{
+        console.log(" handle speaker");
+        if(this.state.speakerEnabled){
+            InCallManager.setSpeakerphoneOn(false);
+        }
+        else{
+            InCallManager.setSpeakerphoneOn(true);
+        }
+        this.setState({
+            speakerEnabled : !this.state.speakerEnabled
+        })
+    };
     render() {
         if (this.state.readyToStreamVideo && this.state.remoteVideo) {
-            console.log("In the render method");
             return (
                 <View style={styles.container1}>
-                    <RTCView streamURL={this.state.remoteVideo.toURL()} style={styles.video1}/>
+                    <RTCView objectFit='cover' streamURL={this.state.remoteVideo.toURL()} style={styles.remoteVideoContainer}/>
+                    <RTCView objectFit='cover' zOrder={1} streamURL={this.state.selfVideo.toURL()} style={styles.videoPreviewContainer}/>
                     <View style={styles.bottomBar}>
                         <TouchableOpacity onPress={this.handleCallHangUp}>
                             <View style={styles.callIcon}>
                                 <Icon name="call-end" color="#fff" size={30}/>
                             </View>
                         </TouchableOpacity>
+                        {(!this.state.speakerEnabled)?
+                            <TouchableOpacity onPress={this.handleSpeaker}>
+                                <View style={styles.callIcon}>
+                                    <Icon name="volume-off" color="#fff" size={30}/>
+                                </View>
+                            </TouchableOpacity>:<TouchableOpacity onPress={this.handleSpeaker}>
+                                <View style={styles.callIcon}>
+                                    <Icon name="volume-up" color="#fff" size={30}/>
+                                </View>
+                            </TouchableOpacity>
+                        }
                         {(!this.state.selfVideoEnable) ?
                             <TouchableOpacity onPress={this.muteVideo}>
                                 <View style={styles.callIcon}>

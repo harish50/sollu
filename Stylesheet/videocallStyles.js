@@ -31,6 +31,23 @@ export default StyleSheet.create({
         color:'#cc504e',
         marginTop:10,
     },
+    remoteVideoContainer: {
+        flex: 1,
+        width: "100%",
+        height: "100%",
+        alignSelf: 'stretch'
+    },
+    videoPreviewContainer: {
+        flex: 1,
+        zIndex:2,
+        left: "65%",
+        bottom:"75%",
+        width:"30%",
+        height:"20%",
+        position:"absolute",
+        borderRadius:10,
+        overflow:'hidden',
+    },
     loadbox:{
         flex: 1,
         justifyContent: 'center'
