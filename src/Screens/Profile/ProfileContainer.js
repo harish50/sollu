@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
 import ProfileView from "./ProfileView";
 import {getFromLocalStorage} from "../../Utilities/LocalStorage";
-import {ProfileIcons} from "../../Utilities/ProfileDefaultIconsStore";
+import {PROFILEICONS} from "./ProfileStore";
 import {Platform} from "react-native";
-import firebase from "../../../firebase/firebase";
 import ImagePicker from "react-native-image-picker";
 import RNFetchBlob from "react-native-fetch-blob";
-import {changeGender} from "./ProfileService";
+import {changeGender, setProfileURL, storeImage} from "./ProfileService";
 
 const Blob = RNFetchBlob.polyfill.Blob;
 const fs = RNFetchBlob.fs;
@@ -20,18 +19,16 @@ let options = {
         path: 'sourceImages',
     },
 };
-const REGISTERED_USER_PROFILE_INFO = firebase.database().ref("registeredUserProfileInfo");
 export default class ProfileContainer extends Component{
     state = {
-        image_uri:ProfileIcons.GENERALICON,
+        image_uri:'',
         isProfilePicSet : false,
-        gender:''
+        gender:'',
     }
     componentDidMount(){
-
         this.setState({
             isProfilePicSet:true,
-            image_uri:ProfileIcons.GENERALICON,
+            image_uri:PROFILEICONS.GENERALICON,
         });
     }
     setGender = (gender) => {
@@ -45,7 +42,7 @@ export default class ProfileContainer extends Component{
         return new Promise((resolve, reject) => {
             let uploadBlob = null;
             const uploadUri = Platform.OS === 'ios' ? imageURI.replace('file://', '') : imageURI;
-            const imageRef = firebase.storage().ref('images').child(fileName);
+            let imageRef =  storeImage(fileName);
             fs.readFile(uploadUri, 'base64')
                 .then((data) => {
                     return Blob.build(data, { type: `${mime};BASE64` })
@@ -59,9 +56,9 @@ export default class ProfileContainer extends Component{
                 })
                 .then(() => {
                     uploadBlob.close();
-                    // imageRef.getDownloadURL().then((url) => {
-                    //     REGISTERED_USER_PROFILE_INFO.child(phoneNum).child('imageURL').set(url);
-                    // });
+                    imageRef.getDownloadURL().then((url) => {
+                    setProfileURL(url)
+                    });
                 })
                 .catch((error) => {
                     console.log(" reject error occured")
@@ -70,7 +67,7 @@ export default class ProfileContainer extends Component{
 
     }
 
-    pickImageHandler() {
+    pickImageHandler = ()  => {
         ImagePicker.showImagePicker(options, (responce) => {
             if (responce.didCancel) {
                 console.log("User cancelled!");
@@ -79,13 +76,12 @@ export default class ProfileContainer extends Component{
             } else {
                 this.uploadImage(responce.uri, responce.fileName)
                     .catch(error => console.log("Replace error from pickImage Handler"));
-                console.log("After catch")
             }
         });
     }
     render() {
         return (
-            <ProfileView image_uri={this.state.image_uri} isProfilePicSet={this.state.isProfilePicSet} setGender={this.setGender} gender={this.state.gender} pickImageHandler={this.pickImageHandler}/>
+            <ProfileView image_uri={this.state.image_uri} setGender={this.setGender} gender={this.state.gender} pickImageHandler={this.pickImageHandler}/>
         )
     }
 }

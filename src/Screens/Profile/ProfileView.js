@@ -4,7 +4,6 @@ import FastImage from 'react-native-fast-image'
 import styles from "/Users/harikam/Desktop/feb/sollu/Stylesheet/ProfileScreen.js";
 import { Picker } from 'react-native-picker-dropdown'
 
-
 export default class ProfileView extends Component{
 
     render() {
