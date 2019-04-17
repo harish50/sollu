@@ -9,14 +9,16 @@ export default class HomeView extends Component {
     }
 
 
-    renderName(contact) {
-
+    renderName = (contact) =>{
+    console.log("Contact");
+    console.log(contact)
         return (
-            <Text>contact</Text>
+            <Text>{contact.item.name}</Text>
         );
     }
 
     render() {
+        console.log("Home view render")
         if (this.props.contacts.length === 0) {
             return (
                 <View style={styles.loadingIcon}>
@@ -32,7 +34,7 @@ export default class HomeView extends Component {
                 <View>
                     <FlatList
                         data={this.props.contacts}
-                        renderItem={this.renderName.bind(this)}
+                        renderItem={this.renderName}
                     />
                 </View>
             );

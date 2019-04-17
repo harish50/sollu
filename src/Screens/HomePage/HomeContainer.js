@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
-import {AsyncStorage, PermissionsAndroid, Platform} from 'react-native'
 import HomeView from './HomeView'
+import {getSolluContacts, requestContactsPermission} from "./Contacts";
+import {setToLocalStorage} from "../../Utilities/LocalStorage";
 
 export default class HomeContainer extends Component {
     state = {
@@ -8,40 +9,41 @@ export default class HomeContainer extends Component {
     };
 
     componentDidMount() {
-        if (this.getPermissionToLocalContacts()) {
-            this.getSolluLocalContacts()
-        }
-        else {
-            alert("Permission denied")
-        }
+        this.getPermissionToLocalContacts().then((permission)=>{
+            if(!permission){
+                alert(permission);
+                return;
+            }
+            console.log("Permision granted")
+                this.getSolluLocalContacts()
+        })
     }
 
-    getPermissionToLocalContacts() {
-        this.requestContactsPermission().then((permission) => {
-            return !!permission;
-        });
-
+    async getPermissionToLocalContacts() {
+        return await requestContactsPermission();
     }
 
-    async requestContactsPermission() {
-        try {
-            const granted = await PermissionsAndroid.request(
-                PermissionsAndroid.PERMISSIONS.READ_CONTACTS
-            );
-            return granted === PermissionsAndroid.RESULTS.GRANTED;
-        } catch (error) {
-            return false;
-        }
-    }
-
-    async getSolluLocalContacts() {
-        let localSolluContacts = await AsyncStorage.getItem('SolluContacts');
-        if (localSolluContacts) {
-            this.setState({
-                contacts: await JSON.parse(localSolluContacts) || []
-            });
-        }
-    }
+     async getSolluLocalContacts() {
+         // setToLocalStorage("SolluContacts", this.state.contacts)
+         // let localSolluContacts = getFromLocalStorage('SolluContacts');
+         // console.log(localSolluContacts);
+         // if (localSolluContacts) {
+         //     this.setState({
+         //         contacts: await JSON.parse(localSolluContacts) || []
+         //     });
+         // }
+         // else {
+         //     getSolluContacts();
+         // }
+         getSolluContacts().then((solluContacts)=>{
+             console.log("Go there");
+             console.log(solluContacts);
+             setToLocalStorage("solluContacts", JSON.stringify(solluContacts));
+             this.setState({
+                 contacts : solluContacts
+             })
+         })
+     }
 
     render() {
 

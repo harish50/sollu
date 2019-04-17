@@ -20,6 +20,7 @@ export default class LoginView extends Component {
 
     render() {
         let {phoneNumber} = this.state;
+        console.log("Login view render")
         return (
             <View style={styles.mainBox}>
                 <View style={styles.contentContainer}>
