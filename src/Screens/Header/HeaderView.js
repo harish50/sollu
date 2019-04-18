@@ -1,6 +1,6 @@
 import React from 'react';
 
-export const Header = (title) =>{
+export const Header = (title, headerLeft, headerRight) =>{
     return (
         {
             headerTitle: title,
@@ -13,7 +13,9 @@ export const Header = (title) =>{
             headerTitleStyle: {
                 textAlign: "left",
                 flex: 1
-            }
+            },
+            headerLeft: headerLeft,
+            headerRight: headerRight
         }
     );
 };
