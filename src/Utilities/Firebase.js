@@ -50,22 +50,3 @@ export const getChat = (sender, receiver) =>{
         }
     });
 };
-// export const getChat = (sender, receiver) => {
-//     const chatRef = REGISTERED_USERS_REF.child(sender).child("chat").child(receiver);
-//    chatRef.on('value', (data) => {
-//         console.log("getting chat info");
-//         let Chat = [];
-//         let chatData = data.val();
-//         for (let chatID in chatData) {
-//             const message = {
-//                 _id: chatData[chatID]._id,
-//                 text: chatData[chatID].text,
-//                 createdAt: new Date(chatData[chatID].createdAt),
-//             };
-//             Chat.push(message);
-//         }
-//         console.log("in get Chat",Chat);
-//         // let messages = this.filterMessagesDayWise(Chat);
-//        return Chat;
-//     })
-// };

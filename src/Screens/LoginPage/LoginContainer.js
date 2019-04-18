@@ -5,7 +5,7 @@ import styles from "../../../Stylesheet/styleSheet";
 import {Header} from "../Header/HeaderView";
 import {NavigationActions, StackActions} from "react-navigation";
 import {getFromLocalStorage, setToLocalStorage} from '../../Utilities/LocalStorage'
-import {registerUser} from '../../Utilities/Firebase'
+import {registerUser} from './LoginService'
 import {STRINGS} from "../../Utilities/StringsStore";
 import {isValid} from "../../Utilities/PhoneNumber";
 

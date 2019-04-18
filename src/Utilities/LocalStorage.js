@@ -10,7 +10,7 @@ export const setToLocalStorage = async (key, value) => {
     }
 };
 
-export const getNameFromLocalStorage = async (key) => {
+export const getFromLocalStorage = async (key) => {
     try {
         const value = await AsyncStorage.getItem(key);
         return value;
