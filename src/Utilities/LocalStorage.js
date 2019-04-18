@@ -11,9 +11,9 @@ export const setToLocalStorage = async (key, value) => {
 };
 
 export const getFromLocalStorage = async (key) => {
+    console.log("Getting from local")
     try {
-        const value = await AsyncStorage.getItem(key);
-        return value;
+        return await AsyncStorage.getItem(key);
     }
     catch (e) {
         console.log(e);

@@ -7,20 +7,19 @@ export default class LoginView extends Component {
     constructor(props) {
         super(props)
     }
+
     state = {
         phoneNumber: "",
     };
-    setNumber=(number)=> {
+    setNumber = (number) => {
         this.setState({
             phoneNumber: number.toString()
         });
     };
 
 
-
     render() {
         let {phoneNumber} = this.state;
-        console.log("Login view render")
         return (
             <View style={styles.mainBox}>
                 <View style={styles.contentContainer}>

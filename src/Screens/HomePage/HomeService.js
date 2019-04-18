@@ -1,13 +1,12 @@
 import firebase from "../../../firebase/firebase";
-
+import _ from 'lodash'
 
 const dbRef = firebase.database();
 export const getData = (path) => {
     return new Promise(function (resolve, reject) {
-        console.log("getData")
         try {
             dbRef.ref(path).once('value', (data) => {
-                if (typeof data.val() === 'undefined') {
+                if (_.isUndefined(data)) {
                     resolve(null)
                 }
                 else {
@@ -15,8 +14,6 @@ export const getData = (path) => {
                 }
             })
         } catch (e) {
-            console.log("one")
-            console.log(e)
             reject(e)
         }
     })

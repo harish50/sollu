@@ -10,10 +10,6 @@ import {STRINGS} from "../../Utilities/StringsStore";
 import {isValid} from "../../Utilities/PhoneNumber";
 
 class LoginContainer extends Component {
-    constructor(props) {
-        super(props)
-    }
-
     state = {
         isLoggedIn: true
     }

@@ -1,6 +1,6 @@
 import React from 'react'
 import Contacts from "react-native-contacts";
-import {PermissionsAndroid} from "react-native";
+import {PermissionsAndroid, AsyncStorage} from "react-native";
 import {getData} from "./HomeService";
 import _ from 'lodash'
 
@@ -18,20 +18,15 @@ export const requestContactsPermission = async () => {
 export const getSolluContacts = () => {
     return new Promise(function (resolve, reject) {
         try {
-            console.log("getSolluContacts")
             let solluContacts = [];
-            Contacts.getAll( (err, contacts) => {
+            Contacts.getAll( async (err, contacts) => {
                 if (!err) {
-                    // let selfNumber = getFromLocalStorage("PhoneNumber")
-                    // solluContacts.push({
-                    //     key: selfNumber,
-                    //     name: "You",
-                    // });
-                    // console.log("check self num");
-                    // console.log(solluContacts)
+                    let selfNumber = await AsyncStorage.getItem("PhoneNumber")
+                    solluContacts.push({
+                        key: selfNumber,
+                        name: "You",
+                    });
                     getData("registeredUsers").then((registeredUsers) => {
-                        console.log("Registedred users : ");
-                        console.log(registeredUsers)
                         _.each(contacts, function (contact) {
                             let phoneNumber = trim(contact);
                             if (phoneNumber && registeredUsers.hasChild(phoneNumber)) {
@@ -41,19 +36,11 @@ export const getSolluContacts = () => {
                                 });
                             }
                         });
-                        console.log("Unique");
-                        solluContacts = _.uniqBy(solluContacts, 'key');
-                        resolve(solluContacts)
+                        resolve(_.uniqBy(solluContacts, 'key'))
                     });
-                }
-                else {
-                    console.log("Error here");
-                    console.log(err)
-                    throw err;
                 }
             })
         } catch (e) {
-            console.log("Catch here")
             reject(e)
         }
     })
