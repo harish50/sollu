@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import {View, TouchableOpacity} from 'react-native';
+import {View, TouchableOpacity,ActivityIndicator} from 'react-native';
 import FastImage from 'react-native-fast-image'
-import styles from "/Users/harikam/Desktop/feb/sollu/Stylesheet/ProfileScreen.js";
+import styles from "../../../src/Screens/Profile/ProfileStyles";
 import { Picker } from 'react-native-picker-dropdown'
 
 export default class ProfileView extends Component{
@@ -11,9 +11,14 @@ export default class ProfileView extends Component{
             <View style={styles.container}>
                 <View>
                     <View style={styles.imageContainer}>
-                            <TouchableOpacity onPress={this.props.pickImageHandler}>
-                                <FastImage style={styles.iconPlaceholder} source={{ uri: this.props.image_uri }} />
-                            </TouchableOpacity>
+                        {
+                            (!this.props.isProfilePicSet) ? <View style={styles.iconPlaceholder}>
+                                    <ActivityIndicator size="large" color='#cc504e' style={styles.loadingPosition} />
+                                </View> :
+                                <TouchableOpacity onPress={this.props.pickImageHandler}>
+                                    <FastImage style={styles.iconPlaceholder} source={{ uri: this.props.profile_pic }} />
+                                </TouchableOpacity>
+                        }
                     </View>
                     <View style={styles.dropdownContainer}>
                         <Picker
