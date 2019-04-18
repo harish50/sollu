@@ -12,7 +12,7 @@ export default class ProfileView extends Component{
                 <View>
                     <View style={styles.imageContainer}>
                             <TouchableOpacity onPress={this.props.pickImageHandler}>
-                                <FastImage style={styles.iconPlaceholder} source={{ uri: this.props.image_uri }} />
+                                <FastImage style={styles.iconPlaceholder} source={{ uri: this.props.profile_pic }} />
                             </TouchableOpacity>
                     </View>
                     <View style={styles.dropdownContainer}>
