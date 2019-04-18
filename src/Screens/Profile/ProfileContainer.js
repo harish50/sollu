@@ -1,45 +1,39 @@
 import React, { Component } from 'react';
 import ProfileView from "./ProfileView";
-import {PROFILEICONS} from "./ProfileStore";
+import {GENDER, PROFILEICONS} from "./ProfileStore";
 import {Platform} from "react-native";
 import ImagePicker from "react-native-image-picker";
 import RNFetchBlob from "react-native-fetch-blob";
 import {changeGender, ProfileInfo, setProfileURL, storeImage} from "./ProfileService";
 import _ from 'lodash'
+import {Header} from "../Header/HeaderView";
 
-const Blob = RNFetchBlob.polyfill.Blob;
-const fs = RNFetchBlob.fs;
-window.XMLHttpRequest = RNFetchBlob.polyfill.XMLHttpRequest;
-window.Blob = Blob;
-let options = {
-    title: "Profile Photo  ",
-    maxWidth: 800,
-    maxHeight: 600,
-    storageOptions: {
-        path: 'sourceImages',
-    },
-};
 export default class ProfileContainer extends Component{
+
     state = {
         profile_pic:'',
         isProfilePicSet : false,
         userGender:'',
     }
+
     componentDidMount() {
         this.setProfilePic()
     }
+
     setProfilePic = () => {
-        let profile_pic = ''
         ProfileInfo().then((profileInfo) => {
-            let userGender = profileInfo !== null ? profileInfo.userGender : "Select Gender"
-            userGender = _.isUndefined(userGender) ? "Select Gender" : userGender
+            let profile_pic = ''
+           let userGender = _.isUndefined(profileInfo.userGender) ? "Select Gender" : profileInfo.userGender
             if(_.isUndefined(profileInfo.imageURLdb)){
                 switch (userGender) {
-                    case 'Female':
+                    case GENDER.FEMALE:
                         profile_pic = PROFILEICONS.FEMALEICON
                         break;
-                    case 'Male':
+                    case GENDER.MALE:
                         profile_pic = PROFILEICONS.MALEICON
+                        break;
+                    case GENDER.SELECTGENDER:
+                        profile_pic = PROFILEICONS.GENERALICON
                         break;
                 }
             }else
@@ -51,6 +45,7 @@ export default class ProfileContainer extends Component{
             });
             })
     }
+
     setGender = (gender) => {
         changeGender(gender)
         this.setProfilePic()
@@ -60,6 +55,10 @@ export default class ProfileContainer extends Component{
     }
 
     uploadImage = (imageURI, fileName, mime = 'image/jpeg') => {
+        const Blob = RNFetchBlob.polyfill.Blob;
+        const fs = RNFetchBlob.fs;
+        window.XMLHttpRequest = RNFetchBlob.polyfill.XMLHttpRequest;
+        window.Blob = Blob;
         return new Promise((resolve, reject) => {
             let uploadBlob = null;
             const uploadUri = Platform.OS === 'ios' ? imageURI.replace('file://', '') : imageURI;
@@ -70,9 +69,9 @@ export default class ProfileContainer extends Component{
                 })
                 .then((blob) => {
                     uploadBlob = blob;
-                    // this.setState({
-                    //     isProfileSet: false
-                    // });
+                    this.setState({
+                        isProfilePicSet: false
+                    });
                     return imageRef.put(blob, { contentType: mime })
                 })
                 .then(() => {
@@ -80,7 +79,8 @@ export default class ProfileContainer extends Component{
                     imageRef.getDownloadURL().then((url) => {
                     setProfileURL(url)
                         this.setState({
-                            profile_pic:url
+                            profile_pic:url,
+                            isProfilePicSet: true
                         })
                     });
                 })
@@ -92,6 +92,7 @@ export default class ProfileContainer extends Component{
     }
 
     pickImageHandler = ()  => {
+        let options = {title: "Profile Photo", maxWidth: 800, maxHeight: 600, storageOptions: { path: 'sourceImages'}};
         ImagePicker.showImagePicker(options, (responce) => {
             if (responce.didCancel) {
                 console.log("User cancelled!");
@@ -103,9 +104,17 @@ export default class ProfileContainer extends Component{
             }
         });
     }
-    render() {
+
+    static navigationOptions = ({navigation}) => {
         return (
-            <ProfileView profile_pic={this.state.profile_pic} setGender={this.setGender} gender={this.state.userGender} pickImageHandler={this.pickImageHandler}/>
+            Header("Sollu")
+        )
+    };
+
+    render() {
+        let props = {setGender:this.setGender, gender:this.state.userGender, profile_pic:this.state.profile_pic, isProfilePicSet:this.state.isProfilePicSet}
+        return (
+            <ProfileView {...props} pickImageHandler={this.pickImageHandler}/>
         )
     }
 }

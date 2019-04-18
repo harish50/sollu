@@ -5,7 +5,7 @@ export const PROFILEICONS = {
 }
 
 export const GENDER = {
-    SELECTGENDER:"selectGender",
-    MALE:"male",
-    FEMALE:"female"
+    SELECTGENDER:"Select Gender",
+    MALE:"Male",
+    FEMALE:"Female"
 }

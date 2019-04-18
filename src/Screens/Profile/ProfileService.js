@@ -15,10 +15,11 @@ export const storeImage = (fileName) => {
 export const setProfileURL = (url) =>{
     REGISTERED_USER_PROFILE_INFO.child('9505517958').child('imageURLdb').set(url);
 }
+
 export const ProfileInfo = () => {
     return new Promise(function(resolve,reject){
         try{
-            firebase.database().ref("registeredUserProfileInfo").child('9505517958').on('value', (snap) =>{
+            REGISTERED_USER_PROFILE_INFO.child('9505517958').on('value', (snap) =>{
                 if (_.isUndefined(snap.val())) {
                     resolve(null)
                 }
