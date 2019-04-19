@@ -1,4 +1,4 @@
-import {getNameFromLocalStorage, setToLocalStorage} from '../LocalStorage';
+import {getFromLocalStorage, setToLocalStorage} from '../LocalStorage';
 import MockAsyncStorage from 'mock-async-storage'
 
 const mock = () => {
@@ -11,14 +11,13 @@ mock();
 
 it('should test Mock Async Storage', async () => {
     await setToLocalStorage('Anjali', '8333960577');
-    const value = await getNameFromLocalStorage('Anjali');
+    const value = await getFromLocalStorage('Anjali');
     console.log(value);
     expect(value).toBe('8333960577');
 });
 
 it('should tests mock async storage set and get functionality', async () => {
     await setToLocalStorage('Harika', 1234567890);
-    const value = await getNameFromLocalStorage('Harika');
-    console.log(value);
+    const value = await getFromLocalStorage('Harika');
     expect(value).toBe(1234567890);
 });

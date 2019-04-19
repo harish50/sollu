@@ -20,43 +20,49 @@ export const getTime = (item) => {
 };
 
 export const getMessageRenderingStyles = (participants, item) => {
-    let messageboxstyle;
-    let messagetextstyle;
-    let phoneNo = participants.sender;
-    if (item._id === 0) {
-        messageboxstyle = styles.selfMessageContainer;
-        messagetextstyle = styles.selfTextContainer;
+    if (!_.isNil(participants) && !_.isNil(item)) {
+        let messageboxstyle;
+        let messagetextstyle;
+        let phoneNo = participants.sender;
+        if (item._id === 0) {
+            messageboxstyle = styles.selfMessageContainer;
+            messagetextstyle = styles.selfTextContainer;
+        }
+        else if (item._id === 2) {
+            messageboxstyle = [styles.senderMessageContainer, styles.chatBox];
+            messagetextstyle = styles.senderMessage;
+        } else {
+            messageboxstyle = [styles.receiverMessageContainer, styles.chatBox];
+            messagetextstyle = styles.receiverMessage;
+            phoneNo = participants.receiver;
+        }
+        return [messageboxstyle, messagetextstyle, phoneNo];
     }
-    else if (item._id === 2) {
-        messageboxstyle = [styles.senderMessageContainer, styles.chatBox];
-        messagetextstyle = styles.senderMessage;
-    } else {
-        messageboxstyle = [styles.receiverMessageContainer, styles.chatBox];
-        messagetextstyle = styles.receiverMessage;
-        phoneNo = participants.receiver;
-    }
-    return [messageboxstyle, messagetextstyle, phoneNo];
+    return false;
 };
 
 export const sendMessageAndSetLastActiveTime = (participants, message) => {
     if (_.isEmpty(message.trim())) {
         return;
     }
-    let msg = {
-        _id: 2,
-        text: message.trim(),
-        createdAt: new Date().getTime(),
-    };
-    if (_.isEqual(participants.sender,participants.receiver)) {
-        msg._id = 0;
-        sendMessage(participants.sender, participants.receiver, msg);
+    if(!_.isNil(participants)) {
+        let msg = {
+            _id: 2,
+            text: message.trim(),
+            createdAt: new Date().getTime(),
+        };
+        if (_.isEqual(participants.sender, participants.receiver)) {
+            msg._id = 0;
+            sendMessage(participants.sender, participants.receiver, msg);
+        }
+        else {
+            sendMessage(participants.sender, participants.receiver, msg);
+            msg._id = 1;
+            sendMessage(participants.receiver, participants.sender, msg);
+        }
+        setLastActiveTime(participants, msg.createdAt);
     }
-    else {
-        sendMessage(participants.sender, participants.receiver, msg);
-        msg._id = 1;
-        sendMessage(participants.receiver, participants.sender, msg);
-    }
-    setLastActiveTime(participants, msg.createdAt);
+    return null;
 };
 
 export const setLastActiveTime = (participants, time) => {
