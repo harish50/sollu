@@ -1,30 +1,31 @@
 import React from 'react';
-import styles from "../../../Stylesheet/styleSheet";
-import {SafeAreaView, Header} from 'react-navigation';
-import {
-    Platform,
-    View,
-    Text,
-    TextInput,
-    KeyboardAvoidingView,
-    FlatList,
-    TouchableOpacity,
-    ImageBackground
-} from 'react-native';
+import styles from "./ChatStyles";
+import {SafeAreaView} from 'react-navigation';
+import {View, Text, FlatList, ImageBackground} from 'react-native';
 import {getTime, getMessageRenderingStyles, sendMessageAndSetLastActiveTime} from "./ChatFunctions";
 import Profile from "../../../Components/Profile";
 import DateComponent from "../../../Components/DateComponent";
+import ChatPageFooter from "./ChatPageFooter";
 
-export default class ChatView extends React.Component{
+export default class ChatView extends React.Component {
 
-    constructor(props){
-        super(props);
-    }
     state = {
-        typing: "",
+        textInputValue: "",
     };
 
-    renderItem=(item)=> {
+    sendMessage = () => {
+        sendMessageAndSetLastActiveTime(this.props.participants, this.state.textInputValue);
+        this.props.updateComponent();
+        this.setState({textInputValue: ''})
+    };
+
+    updateInputValue = (value) => {
+        this.setState({
+            textInputValue: value
+        })
+    };
+
+    renderMessage = (item) => {
         if (item.header) {
             return (
                 <DateComponent item={item}/>
@@ -32,7 +33,7 @@ export default class ChatView extends React.Component{
         }
         const time = getTime(item);
         const stylesAndNum = getMessageRenderingStyles(this.props.participants, item);
-        let messageboxstyle = stylesAndNum[0], messagetextstyle = stylesAndNum[1], phoneNo= stylesAndNum[2];
+        let messageboxstyle = stylesAndNum[0], messagetextstyle = stylesAndNum[1], phoneNo = stylesAndNum[2];
         if (this.props.colourDifference) {
             let Icon;
             if (item._id === 2) {
@@ -68,15 +69,7 @@ export default class ChatView extends React.Component{
         }
     };
 
-    sendMessage=()=>{
-        sendMessageAndSetLastActiveTime(this.props.participants, this.state.typing);
-        this.props.updateComponent();
-        this.setState({typing:''})
-    };
-
     render() {
-        const keyboardVerticalOffset = Platform.OS === 'ios' ? Header.HEIGHT + 35 : 0;
-        const padding = Platform.OS === 'ios' ? "padding" : '';
         return (
             <SafeAreaView style={styles.safeAreaView}>
                 <View style={styles.container}>
@@ -84,7 +77,7 @@ export default class ChatView extends React.Component{
                         <FlatList
                             data={this.props.messages}
                             extraData={this.props.messages}
-                            renderItem={(item) => this.renderItem(item.item)}
+                            renderItem={(item) => this.renderMessage(item.item)}
                             keyExtractor={(item, index) => index.toString()}
                             ref={ref => this.flatList = ref}
                             onContentSizeChange={() => {
@@ -92,23 +85,8 @@ export default class ChatView extends React.Component{
                             }}
                         />
                     </View>
-                    <KeyboardAvoidingView
-                        keyboardVerticalOffset={keyboardVerticalOffset}
-                        behavior={padding}
-                    >
-                        <View style={styles.footer}>
-                            <TextInput
-                                value={this.state.typing}
-                                onChangeText={text => this.setState({typing: text})}
-                                style={styles.input}
-                                underlineColorAndroid="transparent"
-                                placeholder="Type something nice"
-                            />
-                            <TouchableOpacity onPress={this.sendMessage}>
-                                <Text style={styles.send}>Send</Text>
-                            </TouchableOpacity>
-                        </View>
-                    </KeyboardAvoidingView>
+                    <ChatPageFooter textInputValue={this.state.textInputValue} updateInputValue={this.updateInputValue}
+                                    sendMessage={this.sendMessage}/>
                 </View>
             </SafeAreaView>
         );
