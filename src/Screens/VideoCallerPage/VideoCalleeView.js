@@ -1,15 +1,14 @@
 import React, {Component} from 'react';
 import styles from "../../../Stylesheet/videocallStyles";
-import {View, TouchableOpacity,ActivityIndicator} from 'react-native';
+import {View, TouchableOpacity} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 
-export default class VideoReceiverView extends Component{
+export default class VideoCalleeView extends Component{
     render(){
         console.log("in view")
         return (
             <View style={styles.container1}>
-                
                 <View style={styles.bottomBar}>
                     <TouchableOpacity>
                         <View style={styles.callIcon}>
