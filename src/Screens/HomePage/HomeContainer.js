@@ -1,14 +1,14 @@
 import React, {Component} from 'react';
 import HomeView from './HomeView'
 import {getSolluContacts, requestContactsPermission} from "./Contacts";
-import {AsyncStorage, Text, TouchableOpacity} from "react-native";
+import {AsyncStorage} from "react-native";
 import {Header} from "../Header/HeaderView";
-import styles from "../../../Stylesheet/styleSheet";
 
 export default class HomeContainer extends Component {
     state = {
         contacts: [],
     };
+
     componentDidMount() {
         this.getPermissionToLocalContacts().then((permission) => {
             if (!permission) {
@@ -40,23 +40,17 @@ export default class HomeContainer extends Component {
             }
         });
     }
-    renderContact = (contact) => {
-        return (
-            <TouchableOpacity onPress={() => {
-                this.onContactPress(contact)
-            }} style={styles.contactContainer}>
-                <Text style={styles.item}> {contact.item.name} </Text>
-            </TouchableOpacity>
 
-        );
-    };
-    onContactPress = (contact) => {
+     navigateToChatScreen = (receiverPhoneNumber, receiverName) => {
         let participants = {
             sender: "9491173782",
-            receiver: contact.item.key
+            receiver: receiverPhoneNumber
         };
         this.props.navigation.navigate('ChatScreen',
-            {participants: participants, contactName: contact.item.name});
+            {participants: participants, contactName: receiverName});
+    }
+    onContactPress = (contact) => {
+       this.navigateToChatScreen(contact.item.key, contact.item.name)
     };
 
     static navigationOptions = ({navigation}) => {
@@ -65,7 +59,7 @@ export default class HomeContainer extends Component {
 
     render() {
         return (
-            <HomeView contacts={this.state.contacts} renderContact = {this.renderContact}/>
+            <HomeView contacts={this.state.contacts} onContactPress={this.onContactPress}/>
         )
     }
 }

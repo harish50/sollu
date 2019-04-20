@@ -1,6 +1,6 @@
 import React from 'react'
 import Contacts from "react-native-contacts";
-import {PermissionsAndroid, AsyncStorage} from "react-native";
+import {AsyncStorage, PermissionsAndroid} from "react-native";
 import {getData} from "./HomeService";
 import _ from 'lodash'
 
@@ -19,7 +19,7 @@ export const getSolluContacts = () => {
     return new Promise(function (resolve, reject) {
         try {
             let solluContacts = [];
-            Contacts.getAll( async (err, contacts) => {
+            Contacts.getAll(async (err, contacts) => {
                 if (!err) {
                     let selfNumber = await AsyncStorage.getItem("PhoneNumber")
                     solluContacts.push({

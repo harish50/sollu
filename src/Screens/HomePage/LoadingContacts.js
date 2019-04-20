@@ -1,13 +1,13 @@
 import React from 'react'
 import {ActivityIndicator, Text, View} from 'react-native';
-import styles from "../../../Stylesheet/styleSheet";
+import styles from "./HomeStyles";
 
 export const LoadingContacts = () => {
     return (
         <View style={styles.loadingIcon}>
             <ActivityIndicator size="large" color="#cc504e"/>
             <View>
-                <Text style={styles.loadingtextbox}>Getting contacts...</Text>
+                <Text style={styles.loadingText}>Getting contacts...</Text>
             </View>
         </View>
     );
