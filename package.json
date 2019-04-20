@@ -10,6 +10,10 @@
     "babel-loader": "^8.0.5",
     "babel-preset-react-native": "^4.0.0",
     "firebase": "^4.9.1",
+    "firebase-admin": "^7.2.0",
+    "firebase-functions": "^2.2.1",
+    "lodash": "^4.17.11",
+    "mock-async-storage": "^2.0.5",
     "react": "16.6.3",
     "react-native": "0.57.8",
     "react-native-contacts": "^2.2.5",
@@ -30,8 +34,11 @@
     "enzyme": "^3.9.0",
     "enzyme-adapter-react-16": "^1.12.1",
     "enzyme-to-json": "^3.3.5",
+    "firebase-mock": "^2.2.10",
     "jest": "23.6.0",
     "jest-react-native": "^18.0.0",
+    "jsdom": "14.0.0",
+    "jsdom-global": "3.0.2",
     "metro-react-native-babel-preset": "0.51.1",
     "react-dom": "^16.8.6",
     "react-test-renderer": "16.6.3"
@@ -50,7 +57,7 @@
   },
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
-    "test": "jest"
+    "test": "jest --detectOpenHandles"
   },
   "rnpm": {
     "assets": [
