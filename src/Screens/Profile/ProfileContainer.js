@@ -6,7 +6,9 @@ import ImagePicker from "react-native-image-picker";
 import RNFetchBlob from "react-native-fetch-blob";
 import {changeGender, ProfileInfo, setProfileURL, storeImage} from "./ProfileService";
 import _ from 'lodash'
+import ProfileIcon from "./ProfileIcon";
 import {Header} from "../Header/HeaderView";
+
 
 export default class ProfileContainer extends Component{
 
@@ -54,7 +56,7 @@ export default class ProfileContainer extends Component{
         })
     }
 
-    uploadImage = (imageURI, fileName, mime = 'image/jpeg') => {
+    updateImage = (imageURI, fileName, mime = 'image/jpeg') => {
         const Blob = RNFetchBlob.polyfill.Blob;
         const fs = RNFetchBlob.fs;
         window.XMLHttpRequest = RNFetchBlob.polyfill.XMLHttpRequest;
@@ -90,31 +92,25 @@ export default class ProfileContainer extends Component{
         })
 
     }
-
-    pickImageHandler = ()  => {
+    changeProfilePic = ()  => {
         let options = {title: "Profile Photo", maxWidth: 800, maxHeight: 600, storageOptions: { path: 'sourceImages'}};
         ImagePicker.showImagePicker(options, (responce) => {
-            if (responce.didCancel) {
-                console.log("User cancelled!");
-            } else if (responce.error) {
-                console.log("Error");
-            } else {
-                this.uploadImage(responce.uri, responce.fileName)
+            if (!responce.didCancel && !responce.error) {
+                this.updateImage(responce.uri, responce.fileName)
                     .catch(error => console.log("Replace error from pickImage Handler"));
             }
         });
     }
 
+
     static navigationOptions = ({navigation}) => {
-        return (
-            Header("Sollu")
-        )
+        return (Header("Sollu"))
     };
 
     render() {
         let props = {setGender:this.setGender, gender:this.state.userGender, profile_pic:this.state.profile_pic, isProfilePicSet:this.state.isProfilePicSet}
         return (
-            <ProfileView {...props} pickImageHandler={this.pickImageHandler}/>
+            <ProfileView {...props} changeProfilePic={this.changeProfilePic}/>
         )
     }
 }
