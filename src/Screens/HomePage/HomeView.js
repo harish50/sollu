@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {FlatList, Text, TouchableOpacity, View} from 'react-native';
-import {LoadingContacts} from "./LoadingContacts";
+import {Loading} from "./Loading";
 import styles from "./HomeStyles";
 
 export default class HomeView extends Component {
@@ -18,7 +18,7 @@ export default class HomeView extends Component {
     render() {
         if (this.props.contacts.length === 0) {
             return (
-                <LoadingContacts/>
+                <Loading message = {"Getting Contacts"}/>
             )
         }
         else {

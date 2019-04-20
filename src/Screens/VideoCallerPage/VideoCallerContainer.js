@@ -1,13 +1,13 @@
 import React from 'react';
-import VideoCallView from "./VideoCallView";
+import VideoCallerView from "./VideoCallerView";
 import {Header} from "../Header/HeaderView";
-import {handleCallHangUp, navigateToChatScreen} from "./VideoCallFunctions";
+import {handleCallHangUp, navigateToChatScreen} from "./VideoCallerFunctions";
 
 
 let pc = null;
 let participants = null;
 let navigation = null;
-export default class VideoCallContainer extends React.Component{
+export default class VideoCallerContainer extends React.Component{
 
     state = {
         selfVideo: null,
@@ -22,8 +22,13 @@ export default class VideoCallContainer extends React.Component{
     };
 
     callHangUp=()=>{
-        handleCallHangUp(pc, participants);
-        navigateToChatScreen(participants, navigation.getParam("contactName"));
+        console.log("Hangup")
+        // handleCallHangUp(pc, participants);
+         participants = {
+            sender: "9491173782",
+            receiver: "9440179801"
+        };
+        navigateToChatScreen(this.props.navigation, participants, "Testing");
     };
 
     //mute video need to be added
@@ -36,11 +41,11 @@ export default class VideoCallContainer extends React.Component{
             remoteVideo: this.state.remoteVideo,
             selfVideoEnable: this.state.selfVideoEnable,
             callStatus: this.state.callStatus,
-            handleCallHangUp: this.callHangUp,
+            callHangUp: this.callHangUp,
             muteVideo: this.muteVideo
         };
         return(
-        <VideoCallView {...props}/>
+        <VideoCallerView {...props}/>
         )
     }
 }
