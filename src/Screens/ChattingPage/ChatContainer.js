@@ -3,18 +3,19 @@ import {getChatFromDB} from "./ChatService";
 import {ActivityIndicator, View} from 'react-native';
 import {dayWiseFilteredMessages, isColorDiffers} from "./ChatFunctions";
 import ChatView from "./ChatView";
-import VideoIconComponent from "../../../Components/VideoIconComponent";
 import Profile from "../../../Components/Profile";
 import {HeaderBackButton} from "react-navigation";
 import styles from "./ChatStyles";
 import {Header} from "../Header/HeaderView";
+import VideoCallIconContainer from "../VideoCallIcon/VideoCallIconContainer";
 
 let participants = null;
 
 export default class ChatContainer extends Component {
 
     state = {
-        messages: []
+        messages: [],
+        isGettingChat: true
     };
 
     componentDidMount() {
@@ -23,9 +24,20 @@ export default class ChatContainer extends Component {
 
     getUpdatedChat = (participants) => {
         getChatFromDB(participants.sender, participants.receiver).then((result) => {
-            this.setState({
-                messages: dayWiseFilteredMessages(result)
-            })
+            console.log("check result length");
+            console.log(result.length);
+            if (result.length > 0) {
+                this.setState({
+                    messages: dayWiseFilteredMessages(result),
+                    isGettingChat: false
+                })
+            }
+            else {
+                this.setState({
+                    messages: [],
+                    isGettingChat: false
+                })
+            }
         }).catch((error) => {
             console.log(error);
         });
@@ -36,12 +48,11 @@ export default class ChatContainer extends Component {
     };
 
     static navigationOptions = ({navigation}) => {
-        const headerRight = [<VideoIconComponent participants={navigation.getParam("participants")}
-                                                 contactName={navigation.getParam("contactName")}
-                                                 navigation={navigation}/>,
+        const headerRight = [<VideoCallIconContainer participants={navigation.getParam("participants")}
+                                                     contactName={navigation.getParam("contactName")}
+                                                     navigation={navigation}/>,
             <Profile sender={navigation.getParam("participants").receiver}/>];
         const headerLeft = <HeaderBackButton tintColor="white" onPress={() => {
-            navigation.state.params.onGoBack();
             navigation.goBack();
         }}/>;
         return (Header(navigation.getParam("contactName"), headerLeft, headerRight))
@@ -49,7 +60,13 @@ export default class ChatContainer extends Component {
 
     render() {
         participants = this.props.navigation.getParam("participants");
-        if (this.state.messages.length) {
+        if (this.state.isGettingChat) {
+            return (
+                <View style={styles.loadingIcon}>
+                    <ActivityIndicator size="large" color="#cc504e"/>
+                </View>)
+        }
+        else {
             let props = {
                 participants: participants,
                 messages: this.state.messages,
@@ -60,8 +77,5 @@ export default class ChatContainer extends Component {
                 <ChatView {...props}/>
             )
         }
-        return (<View style={styles.loadingIcon}>
-            <ActivityIndicator size="large" color="#cc504e"/>
-        </View>)
     }
 }

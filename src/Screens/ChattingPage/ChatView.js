@@ -1,8 +1,8 @@
 import React from 'react';
 import styles from "./ChatStyles";
 import {SafeAreaView} from 'react-navigation';
-import {View, Text, FlatList, ImageBackground} from 'react-native';
-import {getTime, getMessageRenderingStyles, sendMessageAndSetLastActiveTime} from "./ChatFunctions";
+import {FlatList, ImageBackground, Text, View} from 'react-native';
+import {getMessageRenderingStyles, getTime, sendMessageAndSetLastActiveTime} from "./ChatFunctions";
 import Profile from "../../../Components/Profile";
 import DateComponent from "../../../Components/DateComponent";
 import ChatPageFooter from "./ChatPageFooter";
@@ -73,18 +73,24 @@ export default class ChatView extends React.Component {
         return (
             <SafeAreaView style={styles.safeAreaView}>
                 <View style={styles.container}>
-                    <View style={styles.container}>
-                        <FlatList
-                            data={this.props.messages}
-                            extraData={this.props.messages}
-                            renderItem={(item) => this.renderMessage(item.item)}
-                            keyExtractor={(item, index) => index.toString()}
-                            ref={ref => this.flatList = ref}
-                            onContentSizeChange={() => {
-                                this.flatList.scrollToEnd({animated: false})
-                            }}
-                        />
-                    </View>
+                    {(this.props.messages.length > 0) ?
+                        <View style={styles.container}>
+                            <FlatList
+                                data={this.props.messages}
+                                extraData={this.props.messages}
+                                renderItem={(item) => this.renderMessage(item.item)}
+                                keyExtractor={(item, index) => index.toString()}
+                                ref={ref => this.flatList = ref}
+                                onContentSizeChange={() => {
+                                    this.flatList.scrollToEnd({animated: false})
+                                }}
+                            />
+                        </View> :
+                        <View style={styles.noChatContainer}>
+                            <Text style={styles.noChatText}>No conversation</Text>
+                        </View>
+                    }
+
                     <ChatPageFooter textInputValue={this.state.textInputValue} updateInputValue={this.updateInputValue}
                                     sendMessage={this.sendMessage}/>
                 </View>
