@@ -1,6 +1,6 @@
 import 'jsdom-global/register';
 import React from 'react';
-import {isValid} from '../PhoneNumber';
+import {isValid} from '../../Screens/LoginPage/PhoneNumber';
 
 describe("isValid test", () => {
 

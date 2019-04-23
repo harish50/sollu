@@ -1,18 +1,18 @@
 import React, {Component} from 'react';
 import LoginView from './LoginView';
-import {ActivityIndicator, View} from "react-native";
-import styles from "../../../Stylesheet/styleSheet";
 import {Header} from "../Header/HeaderView";
 import {NavigationActions, StackActions} from "react-navigation";
 import {getFromLocalStorage, setToLocalStorage} from '../../Utilities/LocalStorage'
 import {registerUser} from './LoginService'
 import {STRINGS} from "../../Utilities/StringsStore";
-import {isValid} from "../../Utilities/PhoneNumber";
+import {isValid} from "./PhoneNumber";
+import LoadingIndicator from "./LoadingIndicator";
 
-class LoginContainer extends Component {
+export default class LoginContainer extends Component {
     state = {
-        isLoggedIn: true
-    }
+        isLoggedIn: true,
+        phoneNumber: "",
+    };
     navigateToHomePage = () => {
         this.props.navigation.dispatch(
             StackActions.reset({
@@ -22,6 +22,12 @@ class LoginContainer extends Component {
                 })]
             })
         )
+    };
+    setNumber = (phoneNumber) => {
+        console.log(phoneNumber);
+        this.setState({
+            phoneNumber: phoneNumber
+        });
     };
     onLogin = (phoneNumber) => {
         if (isValid(phoneNumber)) {
@@ -59,16 +65,15 @@ class LoginContainer extends Component {
     render() {
         if (this.state.isLoggedIn) {
             return (
-                <View style={styles.loadingIcon}>
-                    <ActivityIndicator size="large" color="#cc504e"/>
-                </View>
+                <LoadingIndicator/>
             );
         }
         return (
-            <LoginView onLogin={this.onLogin}/>
+            <LoginView
+                onLogin={this.onLogin}
+                setNumber={this.setNumber}
+                phoneNumber={this.state.phoneNumber}/>
         );
     }
 
 }
-
-export default LoginContainer;
