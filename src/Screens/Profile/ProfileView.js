@@ -7,8 +7,6 @@ import { Picker } from 'react-native-picker-dropdown'
 export default class ProfileView extends Component{
 
     render() {
-        console.log("profilepic ijijkj")
-        console.log(this.props.profile_pic)
         return (
             <View style={styles.container}>
                 <View>

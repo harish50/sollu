@@ -31,4 +31,6 @@ export const ProfileInfo = () => {
             reject(e)
         }
     })
+
 };
+
