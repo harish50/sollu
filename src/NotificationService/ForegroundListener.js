@@ -1,7 +1,27 @@
 import Firebase from "react-native-firebase";
-import {Platform} from "react-native";
+import {AsyncStorage, Platform} from "react-native";
+import firebase from "../../firebase/firebase";
 
 export const foregroundListener = () => {
+    incomingVideoCallListener();
+    incomingMessageListener();
+};
+const incomingVideoCallListener = async () => {
+    let phoneNumber = await AsyncStorage.getItem('PhoneNumber');
+    let VIDEO_CALL_REF = firebase.database().ref("videoCallInfo");
+    VIDEO_CALL_REF.child(phoneNumber).child("flag").set(true);
+    VIDEO_CALL_REF.child(phoneNumber).on("value", (snapshot) => {
+        let videoCallInfo = snapshot.val();
+        let caller = videoCallInfo !== null ? videoCallInfo.caller : null;
+        if (caller && videoCallInfo != null) {
+            this.props.navigation.navigate("AnswerVideoCall", {
+                callee: phoneNumber,
+                caller: caller
+            });
+        }
+    });
+};
+const incomingMessageListener = () => {
     Firebase.notifications().android.createChannel(channel);
     const notificationListener = Firebase.notifications().onNotification(async notification => {
         let localNotification = createLocalNotification(notification);
@@ -16,7 +36,8 @@ const channel = new Firebase.notifications.Android.Channel(
 ).setDescription("Channel");
 
 const createLocalNotification = (notification) => {
-    const contactName = "Example"
+    console.log(notification.title)
+    const contactName = notification.title;
     const data = {
         sender: notification.data.receiver,
         receiver: notification.data.sender

@@ -5,6 +5,7 @@ import {AsyncStorage} from "react-native";
 import {Header} from "../Header/HeaderView";
 import {createNotificationListeners} from "../../NotificationService/Listeners";
 import ProfileIconContainer from "../Profile/ProfileIconContainer";
+import {saveLocalContactNamesInDB} from "./HomeService";
 
 export default class HomeContainer extends Component {
     state = {
@@ -28,6 +29,7 @@ export default class HomeContainer extends Component {
         if (this.state.isPermitted) {
             getSolluContacts().then((solluContacts) => {
                 AsyncStorage.setItem("solluContacts", JSON.stringify(solluContacts));
+                saveLocalContactNamesInDB(solluContacts);
             });
         }
     }

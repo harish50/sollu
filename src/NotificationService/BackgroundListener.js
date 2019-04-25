@@ -7,7 +7,7 @@ export const backgroundListener = async (navigation) => {
     if (notificationOpen) {
         let notification = notificationOpen.notification;
         let data = notification.data;
-        let contactName = "Example";
+        // let contactName = notification.data.senderName;
         AsyncStorage.getItem(data.sender);
         let participants = {
             receiver: data.sender,
@@ -15,6 +15,6 @@ export const backgroundListener = async (navigation) => {
         };
         navigation.navigate(
             "ChatContainer",
-            {participants: participants, contactName: contactName});
+            {participants: participants, contactName: "Adding sender name"});
     }
 }
