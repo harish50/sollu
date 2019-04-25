@@ -5,6 +5,7 @@ import VideoCallerContainer from "../src/Screens/VideoCallerPage/VideoCallerCont
 import ChatContainer from "../src/Screens/ChatPage/ChatContainer";
 import ProfileIconContainer from "../src/Screens/Profile/ProfileIconContainer";
 import ProfileContainer from "../src/Screens/Profile/ProfileContainer";
+import AnswerVideoCall from "./AnswerVideoCall";
 
 const Navigator = createStackNavigator(
     {
@@ -13,7 +14,8 @@ const Navigator = createStackNavigator(
         ChatContainer:ChatContainer,
         VideoCallerContainer : VideoCallerContainer,
         ProfileIconContainer :ProfileIconContainer,
-        ProfileContainer: ProfileContainer
+        ProfileContainer: ProfileContainer,
+        AnswerVideoCall : AnswerVideoCall
     }
 );
 var AppContainer;

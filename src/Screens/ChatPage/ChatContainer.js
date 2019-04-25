@@ -8,6 +8,7 @@ import {HeaderBackButton} from "react-navigation";
 import styles from "./ChatStyles";
 import {Header} from "../Header/HeaderView";
 import VideoCallIconContainer from "../VideoCallIcon/VideoCallIconContainer";
+import {resetCurrentUser} from "./CurrentUser";
 
 let participants = null;
 
@@ -53,6 +54,7 @@ export default class ChatContainer extends Component {
                                                      navigation={navigation}/>,
             <Profile sender={navigation.getParam("participants").receiver}/>];
         const headerLeft = <HeaderBackButton tintColor="white" onPress={() => {
+            resetCurrentUser();
             navigation.goBack();
         }}/>;
         return (Header(navigation.getParam("contactName"), headerLeft, headerRight))

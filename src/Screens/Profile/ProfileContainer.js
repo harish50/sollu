@@ -6,7 +6,6 @@ import ImagePicker from "react-native-image-picker";
 import RNFetchBlob from "react-native-fetch-blob";
 import {changeGender, ProfileInfo, setProfileURL, storeImage} from "./ProfileService";
 import _ from 'lodash'
-import ProfileIcon from "./ProfileIcon";
 import {Header} from "../Header/HeaderView";
 
 
