@@ -6,6 +6,7 @@ import {getMessageRenderingStyles, getTime, sendMessageAndSetLastActiveTime} fro
 import Profile from "../../../Components/Profile";
 import DateComponent from "../../../Components/DateComponent";
 import ChatPageFooter from "./ChatPageFooter";
+import ChatPageBody from "./ChatPageBody";
 
 export default class ChatView extends React.Component {
 
@@ -73,24 +74,7 @@ export default class ChatView extends React.Component {
         return (
             <SafeAreaView style={styles.safeAreaView}>
                 <View style={styles.container}>
-                    {(this.props.messages.length > 0) ?
-                        <View style={styles.container}>
-                            <FlatList
-                                data={this.props.messages}
-                                extraData={this.props.messages}
-                                renderItem={(item) => this.renderMessage(item.item)}
-                                keyExtractor={(item, index) => index.toString()}
-                                ref={ref => this.flatList = ref}
-                                onContentSizeChange={() => {
-                                    this.flatList.scrollToEnd({animated: false})
-                                }}
-                            />
-                        </View> :
-                        <View style={styles.noChatContainer}>
-                            <Text style={styles.noChatText}>No conversation</Text>
-                        </View>
-                    }
-
+                    <ChatPageBody messages = {this.props.messages} renderMessage = {this.renderMessage}/>
                     <ChatPageFooter textInputValue={this.state.textInputValue} updateInputValue={this.updateInputValue}
                                     sendMessage={this.sendMessage}/>
                 </View>
