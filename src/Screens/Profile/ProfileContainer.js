@@ -1,13 +1,12 @@
 import React, { Component } from 'react';
 import ProfileView from "./ProfileView";
-import {GENDER, PROFILEICONS} from "./ProfileStore";
 import {Platform} from "react-native";
 import ImagePicker from "react-native-image-picker";
 import RNFetchBlob from "react-native-fetch-blob";
-import {changeGender, ProfileInfo, setProfileURL, storeImage} from "./ProfileService";
-import _ from 'lodash'
-import ProfileIcon from "./ProfileIcon";
+import {changeGender,setProfileURL, storeImage} from "./ProfileService";
 import {Header} from "../Header/HeaderView";
+import {HeaderBackButton} from "react-navigation";
+import {ProfilePicFetch} from "./ProfilePicFetch";
 
 
 export default class ProfileContainer extends Component{
@@ -22,33 +21,17 @@ export default class ProfileContainer extends Component{
         this.setProfilePic()
     }
 
-    setProfilePic = () => {
-        ProfileInfo().then((profileInfo) => {
-            let profile_pic = ''
-           let userGender = _.isUndefined(profileInfo.userGender) ? "Select Gender" : profileInfo.userGender
-            if(_.isUndefined(profileInfo.imageURLdb)){
-                switch (userGender) {
-                    case GENDER.FEMALE:
-                        profile_pic = PROFILEICONS.FEMALEICON
-                        break;
-                    case GENDER.MALE:
-                        profile_pic = PROFILEICONS.MALEICON
-                        break;
-                    case GENDER.SELECTGENDER:
-                        profile_pic = PROFILEICONS.GENERALICON
-                        break;
-                }
-            }else
-                profile_pic = profileInfo.imageURLdb
+    setProfilePic = async () => {
+        await ProfilePicFetch().then((props) => {
             this.setState({
-                isProfilePicSet:true,
-                profile_pic:profile_pic,
-                userGender:userGender
+                isProfilePicSet: true,
+                profile_pic: props.profile_pic,
+                userGender:props.userGender
             });
-            })
+        })
     }
 
-    setGender = (gender) => {
+    changeGenderandsetProfile = (gender) => {
         changeGender(gender)
         this.setProfilePic()
         this.setState({
@@ -104,11 +87,15 @@ export default class ProfileContainer extends Component{
 
 
     static navigationOptions = ({navigation}) => {
-        return (Header("Sollu"))
+        const headerLeft = <HeaderBackButton tintColor="white" onPress={() => {
+            navigation.state.params.onGoBack();
+            navigation.goBack();
+        }}/>;
+        return (Header("Sollu",headerLeft,null))
     };
 
     render() {
-        let props = {setGender:this.setGender, gender:this.state.userGender, profile_pic:this.state.profile_pic, isProfilePicSet:this.state.isProfilePicSet}
+        let props = {setGender:this.changeGenderandsetProfile, gender:this.state.userGender, profile_pic:this.state.profile_pic, isProfilePicSet:this.state.isProfilePicSet}
         return (
             <ProfileView {...props} changeProfilePic={this.changeProfilePic}/>
         )
