@@ -3,10 +3,13 @@ import HomeView from './HomeView'
 import {getSolluContacts, requestContactsPermission} from "./Contacts";
 import {AsyncStorage} from "react-native";
 import {Header} from "../Header/HeaderView";
+import {createNotificationListeners} from "../../NotificationService/Listeners";
+import ProfileIconContainer from "../Profile/ProfileIconContainer";
 
 export default class HomeContainer extends Component {
     state = {
         contacts: [],
+        isPermitted: false
     };
 
     componentDidMount() {
@@ -15,46 +18,54 @@ export default class HomeContainer extends Component {
                 alert(permission);
                 return;
             }
-            this.getSolluLocalContacts()
+            this.setState({isPermitted: true});
+            this.getSolluLocalContacts();
+            createNotificationListeners(this.props.navigation).done();
         });
     }
 
-    async getPermissionToLocalContacts() {
-        return await requestContactsPermission();
+    componentWillUnmount() {
+        if (this.state.isPermitted) {
+            getSolluContacts().then((solluContacts) => {
+                AsyncStorage.setItem("solluContacts", JSON.stringify(solluContacts));
+            });
+        }
     }
 
-    async getSolluLocalContacts() {
+    getPermissionToLocalContacts = async () => {
+        return await requestContactsPermission();
+    };
+
+    getSolluLocalContacts = async () => {
         await AsyncStorage.getItem('solluContacts').then(async (localSolluContacts) => {
             if (localSolluContacts) {
-                this.setState({
-                    contacts: await JSON.parse(localSolluContacts) || [],
-                });
+                this.setState({contacts: await JSON.parse(localSolluContacts) || []});
             }
             else {
                 getSolluContacts().then((solluContacts) => {
                     AsyncStorage.setItem("solluContacts", JSON.stringify(solluContacts));
-                    this.setState({
-                        contacts: solluContacts,
-                    })
+                    this.setState({contacts: solluContacts})
                 })
             }
         });
-    }
+    };
 
-     navigateToChatScreen = (receiverPhoneNumber, receiverName) => {
+    navigateToChatScreen = async (receiverPhoneNumber, receiverName) => {
+        let sender = await AsyncStorage.getItem('PhoneNumber');
         let participants = {
-            sender: "9491173782",
+            sender: sender,
             receiver: receiverPhoneNumber
         };
-        this.props.navigation.navigate('ChatScreen',
+        this.props.navigation.navigate('ChatContainer',
             {participants: participants, contactName: receiverName});
     }
     onContactPress = (contact) => {
-       this.navigateToChatScreen(contact.item.key, contact.item.name)
+        this.navigateToChatScreen(contact.item.key, contact.item.name)
     };
 
     static navigationOptions = ({navigation}) => {
-        return (Header("Sollu"))
+        const headerRight = <ProfileIconContainer navigation={navigation}/>
+        return (Header("Sollu", null, headerRight))
     };
 
     render() {

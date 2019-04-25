@@ -1,11 +1,12 @@
 import React from 'react';
 import styles from "./ChatStyles";
 import {SafeAreaView} from 'react-navigation';
-import {View, Text, FlatList, ImageBackground} from 'react-native';
-import {getTime, getMessageRenderingStyles, sendMessageAndSetLastActiveTime} from "./ChatFunctions";
+import {FlatList, ImageBackground, Text, View} from 'react-native';
+import {getMessageRenderingStyles, getTime, sendMessageAndSetLastActiveTime} from "./ChatFunctions";
 import Profile from "../../../Components/Profile";
 import DateComponent from "../../../Components/DateComponent";
 import ChatPageFooter from "./ChatPageFooter";
+import ChatPageBody from "./ChatPageBody";
 
 export default class ChatView extends React.Component {
 
@@ -73,18 +74,7 @@ export default class ChatView extends React.Component {
         return (
             <SafeAreaView style={styles.safeAreaView}>
                 <View style={styles.container}>
-                    <View style={styles.container}>
-                        <FlatList
-                            data={this.props.messages}
-                            extraData={this.props.messages}
-                            renderItem={(item) => this.renderMessage(item.item)}
-                            keyExtractor={(item, index) => index.toString()}
-                            ref={ref => this.flatList = ref}
-                            onContentSizeChange={() => {
-                                this.flatList.scrollToEnd({animated: false})
-                            }}
-                        />
-                    </View>
+                    <ChatPageBody messages = {this.props.messages} renderMessage = {this.renderMessage}/>
                     <ChatPageFooter textInputValue={this.state.textInputValue} updateInputValue={this.updateInputValue}
                                     sendMessage={this.sendMessage}/>
                 </View>

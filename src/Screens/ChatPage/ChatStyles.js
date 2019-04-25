@@ -98,5 +98,17 @@ export default StyleSheet.create({
         flex: 1,
         backgroundColor: '#fff',
     },
+    noChatContainer:{
+        flex: 1,
+        justifyContent: 'center',
+    },
+    noChatText:{
+        justifyContent: 'space-around',
+        padding: 100,
+        fontSize: 20,
+        fontFamily: 'Roboto-Regular',
+        textAlign: 'center',
+        color: '#cc504e',
+    }
 
 })
