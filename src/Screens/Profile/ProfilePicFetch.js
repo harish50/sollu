@@ -6,8 +6,8 @@ let profile_pic = ''
 export const ProfilePicFetch = async () => {
     let userGender = ''
     await ProfileInfo().then((profileInfo) => {
-        userGender = _.isUndefined(profileInfo.userGender) ? "Select Gender" : profileInfo.userGender
-        if (_.isUndefined(profileInfo.imageURLdb)) {
+        userGender = _.isUndefined(profileInfo.Gender) ? "Select Gender" : profileInfo.Gender
+        if (_.isUndefined(profileInfo.imageURL)) {
             switch (userGender) {
                 case GENDER.FEMALE:
                     profile_pic = PROFILEICONS.FEMALEICON
@@ -20,7 +20,7 @@ export const ProfilePicFetch = async () => {
                     break;
             }
         } else
-            profile_pic = profileInfo.imageURLdb
+            profile_pic = profileInfo.imageURL
     })
     return { profile_pic,userGender}
 }
