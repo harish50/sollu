@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {FlatList, Text, TouchableOpacity, View} from 'react-native';
 import {Loading} from "./Loading";
 import styles from "./HomeStyles";
+import ProfileIconContainer from "../Profile/ProfileIconContainer";
 
 export default class HomeView extends Component {
 
@@ -10,6 +11,7 @@ export default class HomeView extends Component {
             <TouchableOpacity onPress={() => {
                 this.props.onContactPress(contact)
             }} style={styles.contactContainer}>
+                <ProfileIconContainer user={contact.item.key}/>
                 <Text style={styles.item}> {contact.item.name} </Text>
             </TouchableOpacity>
 

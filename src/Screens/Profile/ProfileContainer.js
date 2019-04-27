@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import ProfileView from "./ProfileView";
-import {Platform} from "react-native";
+import {Platform, AsyncStorage} from "react-native";
 import ImagePicker from "react-native-image-picker";
 import RNFetchBlob from "react-native-fetch-blob";
 import {changeGender,setProfileURL, storeImage} from "./ProfileService";
@@ -22,7 +22,8 @@ export default class ProfileContainer extends Component{
     }
 
     setProfilePic = async () => {
-        await ProfilePicFetch().then((props) => {
+        let user = await AsyncStorage.getItem('PhoneNumber')
+        await ProfilePicFetch(user).then((props) => {
             this.setState({
                 isProfilePicSet: true,
                 profile_pic: props.profile_pic,

@@ -3,9 +3,9 @@ import _ from "lodash";
 import {GENDER, PROFILEICONS} from "./ProfileStore";
 
 let profile_pic = ''
-export const ProfilePicFetch = async () => {
+export const ProfilePicFetch = async (user) => {
     let userGender = ''
-    await ProfileInfo().then((profileInfo) => {
+    await ProfileInfo(user).then((profileInfo) => {
         userGender = _.isUndefined(profileInfo.Gender) ? "Select Gender" : profileInfo.Gender
         if (_.isUndefined(profileInfo.imageURL)) {
             switch (userGender) {

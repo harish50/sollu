@@ -7,21 +7,24 @@ import {createNotificationListeners} from "../../NotificationService/Listeners";
 import ProfileIconContainer from "../Profile/ProfileIconContainer";
 import {saveLocalContactNamesInDB} from "./HomeService";
 import {setCurrentUser} from "../ChatPage/CurrentUser";
+import {getFromLocalStorage} from "../../Utilities/LocalStorage";
 
+let user = null;
 export default class HomeContainer extends Component {
     state = {
         contacts: [],
         isPermitted: false
     };
 
-    componentDidMount() {
+    async componentDidMount() {
+        user = await getFromLocalStorage('PhoneNumber');
         this.getPermissionToLocalContacts().then((permission) => {
             if (!permission) {
                 alert(permission);
                 return;
             }
             this.setState({isPermitted: true});
-            this.getSolluLocalContacts();
+            this.getSolluLocalContacts().done();
             createNotificationListeners(this.props.navigation).done();
         });
     }
@@ -54,9 +57,8 @@ export default class HomeContainer extends Component {
     };
 
     navigateToChatScreen = async (receiverPhoneNumber, receiverName) => {
-        let sender = await AsyncStorage.getItem('PhoneNumber');
         let participants = {
-            sender: sender,
+            sender: user,
             receiver: receiverPhoneNumber
         };
         this.props.navigation.navigate('ChatContainer',
@@ -68,7 +70,7 @@ export default class HomeContainer extends Component {
     };
 
     static navigationOptions = ({navigation}) => {
-        const headerRight = <ProfileIconContainer navigation={navigation}/>
+        const headerRight = <ProfileIconContainer navigation={navigation} user={user}/>
         return (Header("Sollu", null, headerRight))
     };
 

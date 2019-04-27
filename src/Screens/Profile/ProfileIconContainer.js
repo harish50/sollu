@@ -1,31 +1,38 @@
 import React, { Component } from 'react';
+import {AsyncStorage} from 'react-native'
 import ProfileIconView from "./ProfileIconView";
 import {ProfilePicFetch} from "./ProfilePicFetch";
+import _ from "lodash";
 
 export default class ProfileIconContainer extends Component{
     state={
         profile_pic:''
     }
     onClickHandler = () => {
-        this.navigateToProfileScreen(this.props.navigation)
+        if(!_.isUndefined(this.props.navigation)) {
+            this.navigateToProfileScreen(this.props.navigation)
+        }
     }
-    navigateToProfileScreen=(navigation)=>{
-        navigation.navigate("ProfileContainer",{onGoBack: () => this.updateProfilePic()})
+    navigateToProfileScreen= async (navigation) => {
+        let user = await AsyncStorage.getItem('PhoneNumber')
+        navigation.navigate("ProfileContainer", {
+            onGoBack: () => {
+                this.updateProfilePic(user)
+            }
+        })
     };
 
-    componentDidMount(){
-        this.updateProfilePic()
+    async componentDidMount() {
+        let user = this.props.user ? this.props.user : await AsyncStorage.getItem('PhoneNumber');
+        this.updateProfilePic(user)
     }
 
-    updateProfilePic = async () => {
-        await ProfilePicFetch().then((props) => {
+    updateProfilePic = async (user) => {
+        await ProfilePicFetch(user).then((props) => {
             this.setState({
                 profile_pic: props.profile_pic,
             });
         })
-        this.setState({
-            profile_pic:profile_pic,
-        });
     }
 
     render(){

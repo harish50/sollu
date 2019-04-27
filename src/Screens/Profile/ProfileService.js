@@ -18,11 +18,11 @@ export const setProfileURL = async (url) =>{
     REGISTERED_USER_PROFILE_INFO.child(phoneNumber).child('imageURL').set(url);
 }
 
-export const ProfileInfo = () => {
+export const ProfileInfo = (user) => {
     return new Promise(async function (resolve, reject) {
         try {
-            let phoneNumber = await AsyncStorage.getItem('PhoneNumber');
-            REGISTERED_USER_PROFILE_INFO.child(phoneNumber).on('value', (snap) => {
+            // let phoneNumber = await AsyncStorage.getItem('PhoneNumber');
+            REGISTERED_USER_PROFILE_INFO.child(user).on('value', (snap) => {
                 if (_.isUndefined(snap.val())) {
                     resolve(null)
                 }
