@@ -1,6 +1,7 @@
 import Firebase from "react-native-firebase";
 import {AsyncStorage, Platform} from "react-native";
 import firebase from "../../firebase/firebase";
+import {getCurrentUser} from "../Screens/ChatPage/CurrentUser";
 
 export const foregroundListener = () => {
     incomingVideoCallListener();
@@ -24,10 +25,14 @@ const incomingVideoCallListener = async () => {
 const incomingMessageListener = () => {
     Firebase.notifications().android.createChannel(channel);
     const notificationListener = Firebase.notifications().onNotification(async notification => {
-        let localNotification = createLocalNotification(notification);
-        Firebase.notifications()
-            .displayNotification(localNotification)
-            .catch(err => console.error(err));
+        let self = await AsyncStorage.getItem('PhoneNumber');
+        if (notification.data.sender !== self && notification.data.sender !== currentUser) {
+            console.log("inside ifff")
+            let localNotification = createLocalNotification(notification);
+            Firebase.notifications()
+                .displayNotification(localNotification)
+                .catch(err => console.error(err));
+        }
     });
 };
 const channel = new Firebase.notifications.Android.Channel(

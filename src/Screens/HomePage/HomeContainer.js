@@ -6,6 +6,7 @@ import {Header} from "../Header/HeaderView";
 import {createNotificationListeners} from "../../NotificationService/Listeners";
 import ProfileIconContainer from "../Profile/ProfileIconContainer";
 import {saveLocalContactNamesInDB} from "./HomeService";
+import {setCurrentUser} from "../ChatPage/CurrentUser";
 
 export default class HomeContainer extends Component {
     state = {
@@ -62,6 +63,7 @@ export default class HomeContainer extends Component {
             {participants: participants, contactName: receiverName});
     }
     onContactPress = (contact) => {
+        setCurrentUser(contact.item.key)
         this.navigateToChatScreen(contact.item.key, contact.item.name)
     };
 
