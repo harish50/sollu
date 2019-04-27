@@ -4,7 +4,8 @@ import styles from "../../../Stylesheet/videocallStyles";
 import RTCView from "react-native-webrtc/RTCView";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import {HangUpButton} from "./HangUpButton";
-import {Loading} from "../HomePage/Loading";
+import {Loading} from "../../Generics/Components/LoadingIndicator";
+
 
 export default class VideoCallerView extends React.Component{
     render(){
