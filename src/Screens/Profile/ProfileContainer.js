@@ -12,7 +12,7 @@ import {ProfilePicFetch} from "./ProfilePicFetch";
 export default class ProfileContainer extends Component{
 
     state = {
-        profile_pic:'',
+        profilePic:'',
         isProfilePicSet : false,
         userGender:'',
     }
@@ -26,13 +26,13 @@ export default class ProfileContainer extends Component{
         await ProfilePicFetch(user).then((props) => {
             this.setState({
                 isProfilePicSet: true,
-                profile_pic: props.profile_pic,
+                profilePic: props.profilePic,
                 userGender:props.userGender
             });
         })
     }
 
-    changeGenderandsetProfile = (gender) => {
+    changeGenderandSetProfile = (gender) => {
         changeGender(gender)
         this.setProfilePic()
         this.setState({
@@ -48,33 +48,34 @@ export default class ProfileContainer extends Component{
         return new Promise((resolve, reject) => {
             let uploadBlob = null;
             const uploadUri = Platform.OS === 'ios' ? imageURI.replace('file://', '') : imageURI;
-            let imageRef =  storeImage(fileName);
-            fs.readFile(uploadUri, 'base64')
-                .then((data) => {
-                    return Blob.build(data, { type: `${mime};BASE64`})
-                })
-                .then((blob) => {
-                    uploadBlob = blob;
-                    this.setState({
-                        isProfilePicSet: false
-                    });
-                    return imageRef.put(blob, { contentType: mime })
-                })
-                .then(() => {
-                    uploadBlob.close();
-                    imageRef.getDownloadURL().then((url) => {
-                    setProfileURL(url)
+            storeImage(fileName).then((response) => {
+                if(response){
+                    fs.readFile(uploadUri, 'base64')
+                    .then((data) => {
+                        return Blob.build(data, { type: `${mime};BASE64`})
+                    })
+                    .then((blob) => {
+                        uploadBlob = blob;
                         this.setState({
-                            profile_pic:url,
-                            isProfilePicSet: true
-                        })
-                    });
-                })
-                .catch((error) => {
-                    console.log(" reject error occured")
-                })
+                            isProfilePicSet: false
+                        });
+                        return response.put(blob, { contentType: mime })
+                    })
+                    .then(() => {
+                        uploadBlob.close();
+                        response.getDownloadURL().then((url) => {
+                            setProfileURL(url)
+                            this.setState({
+                                profilePic:url,
+                                isProfilePicSet: true
+                            })
+                        });
+                    })
+                    .catch((error) => {
+                        console.log(" reject error occured")
+                    })}
+            })
         })
-
     }
     changeProfilePic = ()  => {
         let options = {title: "Profile Photo", maxWidth: 800, maxHeight: 600, storageOptions: { path: 'sourceImages'}};
@@ -96,7 +97,7 @@ export default class ProfileContainer extends Component{
     };
 
     render() {
-        let props = {setGender:this.changeGenderandsetProfile, gender:this.state.userGender, profile_pic:this.state.profile_pic, isProfilePicSet:this.state.isProfilePicSet}
+        let props = {setGender:this.changeGenderandSetProfile, gender:this.state.userGender, profilePic:this.state.profilePic, isProfilePicSet:this.state.isProfilePicSet}
         return (
             <ProfileView {...props} changeProfilePic={this.changeProfilePic}/>
         )

@@ -8,7 +8,7 @@ export default class ProfileIconView extends Component{
         return(
             <View>
                 <TouchableOpacity onPress={this.props.onClickHandler}>
-                    <FastImage style={styles.profileIconContainer} source={{ uri:this.props.profile }} />
+                    <FastImage style={styles.profileIconContainer} source={{ uri:this.props.profilePic }} />
                 </TouchableOpacity>
             </View>
         )
