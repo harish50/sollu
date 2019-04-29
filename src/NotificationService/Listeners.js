@@ -5,7 +5,6 @@ import {onNotifOpenHandler} from "./OnNotifOpenHandler";
 import {backgroundListener} from "./BackgroundListener";
 
 export const createNotificationListeners = async (navigation) => {
-    console.log("Creating listeners")
     checkPermissionToNotification();
     foregroundListener();
     backgroundListener(navigation);

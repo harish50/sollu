@@ -7,7 +7,6 @@ export const backgroundListener = async (navigation) => {
     if (notificationOpen) {
         let notification = notificationOpen.notification;
         let data = notification.data;
-        // let contactName = notification.data.senderName;
         AsyncStorage.getItem(data.sender);
         let participants = {
             receiver: data.sender,

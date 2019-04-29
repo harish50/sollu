@@ -72,7 +72,7 @@ export default class ProfileContainer extends Component{
                         });
                     })
                     .catch((error) => {
-                        console.log(" reject error occured")
+                        error;
                     })}
             })
         })
@@ -82,7 +82,7 @@ export default class ProfileContainer extends Component{
         ImagePicker.showImagePicker(options, (responce) => {
             if (!responce.didCancel && !responce.error) {
                 this.updateImage(responce.uri, responce.fileName)
-                    .catch(error => console.log("Replace error from pickImage Handler"));
+                    .catch(error => error);
             }
         });
     }
