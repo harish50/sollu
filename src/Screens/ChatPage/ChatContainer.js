@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {getChatFromDB} from "./ChatService";
 import {ActivityIndicator, View} from 'react-native';
-import {dayWiseFilteredMessages, isColorDiffers} from "./ChatFunctions";
+import {dayWiseFilteredMessages, getColorDifference} from "./ChatFunctions";
 import ChatView from "./ChatView";
 import Profile from "../../../Components/Profile";
 import {HeaderBackButton} from "react-navigation";
@@ -38,7 +38,7 @@ export default class ChatContainer extends Component {
                 })
             }
         }).catch((error) => {
-            (error);
+           return (error);
         });
     };
 
@@ -70,7 +70,7 @@ export default class ChatContainer extends Component {
             let props = {
                 participants: participants,
                 messages: this.state.messages,
-                colourDifference: isColorDiffers(participants),
+                colourDifference: getColorDifference(participants),
                 updateComponent: this.updateComponent
             };
             return (

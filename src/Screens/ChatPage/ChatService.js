@@ -1,4 +1,4 @@
-import firebase from "../../../firebase/firebase";
+import firebase from "../../../Firebase/firebase";
 import _ from 'lodash';
 
 let REGISTERED_USERS_REF = firebase.database().ref("registeredUsers");

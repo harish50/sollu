@@ -1,4 +1,4 @@
-import firebase from '../../../firebase/firebase';
+import firebase from '../../../Firebase/firebase';
 import {CONSTANTS} from "../../Utilities/Constants";
 
 const dbRef = firebase.database();

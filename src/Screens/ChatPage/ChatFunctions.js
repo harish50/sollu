@@ -1,6 +1,6 @@
 import {sendMessage} from "./ChatService";
-import {getPairID} from "../../Utilities/Others";
-import firebase from "../../../firebase/firebase";
+import {getPairID} from "../../Utilities/GenericFunctions";
+import firebase from "../../../Firebase/firebase";
 import styles from "./ChatStyles";
 import _ from 'lodash'
 
@@ -70,7 +70,7 @@ export const setLastActiveTime = (participants, time) => {
     CONVERSATIONS_REF.child(key).set({'lastActiveTime': time});
 };
 
-export const isColorDiffers = (participants) => {
+export const getColorDifference = (participants) => {
     let colorDifference = false;
     const senderInfoRef = REGISTERED_USER_PROFILE_INFO_REF.child(participants.sender);
     const receiverInfoRef = REGISTERED_USER_PROFILE_INFO_REF.child(participants.receiver);

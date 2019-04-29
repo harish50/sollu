@@ -1,5 +1,5 @@
 import InCallManager from "react-native-incall-manager";
-import firebase from "../../../firebase/firebase";
+import firebase from "../../../Firebase/firebase";
 
 const VIDEO_CALL_REF = firebase.database().ref("videoCallInfo");
 

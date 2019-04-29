@@ -1,6 +1,6 @@
 import Firebase from "react-native-firebase";
 import {AsyncStorage, Platform} from "react-native";
-import firebase from "../../firebase/firebase";
+import firebase from "../../Firebase/firebase";
 
 export const foregroundListener = () => {
     incomingVideoCallListener();
