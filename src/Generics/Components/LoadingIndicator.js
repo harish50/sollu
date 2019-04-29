@@ -3,7 +3,6 @@ import {ActivityIndicator, Text, View} from 'react-native';
 import styles from '../Styles/LoadingIndicator'
 
 export const Loading = (props) => {
-    console.log(props)
     return (
         <View style={styles.loadingIcon}>
             <ActivityIndicator size="large" color="#cc504e"/>

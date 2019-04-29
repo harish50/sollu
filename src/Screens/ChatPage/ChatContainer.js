@@ -25,8 +25,6 @@ export default class ChatContainer extends Component {
 
     getUpdatedChat = (participants) => {
         getChatFromDB(participants.sender, participants.receiver).then((result) => {
-            console.log("check result length");
-            console.log(result.length);
             if (result.length > 0) {
                 this.setState({
                     messages: dayWiseFilteredMessages(result),
@@ -40,7 +38,7 @@ export default class ChatContainer extends Component {
                 })
             }
         }).catch((error) => {
-            console.log(error);
+            (error);
         });
     };
 

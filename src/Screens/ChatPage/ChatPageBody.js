@@ -4,7 +4,6 @@ import styles from "./ChatStyles";
 
 export default class ChatPageBody extends Component {
     render() {
-        console.log("Chat Content called'")
         if (this.props.messages.length > 0) {
             return (
                 <View style={styles.container}>

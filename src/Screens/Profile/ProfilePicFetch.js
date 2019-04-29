@@ -2,7 +2,7 @@ import {ProfileInfo} from "./ProfileService";
 import _ from "lodash";
 import {GENDER, PROFILEICONS} from "./ProfileStore";
 
-let profile_pic = ''
+let profilePic = ''
 export const ProfilePicFetch = async (user) => {
     let userGender = ''
     await ProfileInfo(user).then((profileInfo) => {
@@ -10,17 +10,17 @@ export const ProfilePicFetch = async (user) => {
         if (_.isUndefined(profileInfo.imageURL)) {
             switch (userGender) {
                 case GENDER.FEMALE:
-                    profile_pic = PROFILEICONS.FEMALEICON
+                    profilePic = PROFILEICONS.FEMALEICON
                     break;
                 case GENDER.MALE:
-                    profile_pic = PROFILEICONS.MALEICON
+                    profilePic = PROFILEICONS.MALEICON
                     break;
                 case GENDER.SELECTGENDER:
-                    profile_pic = PROFILEICONS.GENERALICON
+                    profilePic = PROFILEICONS.GENERALICON
                     break;
             }
         } else
-            profile_pic = profileInfo.imageURL
+            profilePic = profileInfo.imageURL
     })
-    return { profile_pic,userGender}
+    return { profilePic,userGender}
 }
