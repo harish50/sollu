@@ -15,7 +15,7 @@ export const requestContactsPermission = async () => {
     }
 };
 
-export const getSolluContacts = () => {
+export const getSolluContactsFromDB = () => {
     return new Promise(function (resolve, reject) {
         try {
             let solluContacts = [];

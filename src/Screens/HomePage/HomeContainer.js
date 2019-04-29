@@ -1,11 +1,10 @@
 import React, {Component} from 'react';
 import HomeView from './HomeView'
-import {getSolluContacts, requestContactsPermission} from "./Contacts";
+import {getSolluContactsFromDB, requestContactsPermission} from "./Contacts";
 import {AsyncStorage} from "react-native";
 import {Header} from "../Header/HeaderView";
 import {createNotificationListeners} from "../../NotificationService/Listeners";
 import ProfileIconContainer from "../Profile/ProfileIconContainer";
-import {saveLocalContactNamesInDB} from "./HomeService";
 import {setCurrentUser} from "../ChatPage/CurrentUser";
 import {getFromLocalStorage} from "../../Utilities/LocalStorage";
 
@@ -24,18 +23,9 @@ export default class HomeContainer extends Component {
                 return;
             }
             this.setState({isPermitted: true});
-            this.getSolluLocalContacts().done();
+            this.getSolluLocalContacts();
             createNotificationListeners(this.props.navigation).done();
         });
-    }
-
-    componentWillUnmount() {
-        if (this.state.isPermitted) {
-            getSolluContacts().then((solluContacts) => {
-                AsyncStorage.setItem("solluContacts", JSON.stringify(solluContacts));
-                saveLocalContactNamesInDB(solluContacts);
-            });
-        }
     }
 
     getPermissionToLocalContacts = async () => {
@@ -47,13 +37,11 @@ export default class HomeContainer extends Component {
             if (localSolluContacts) {
                 this.setState({contacts: await JSON.parse(localSolluContacts) || []});
             }
-            else {
-                getSolluContacts().then((solluContacts) => {
-                    AsyncStorage.setItem("solluContacts", JSON.stringify(solluContacts));
-                    this.setState({contacts: solluContacts})
-                })
-            }
         });
+        getSolluContactsFromDB().then((solluContacts) => {
+            AsyncStorage.setItem("solluContacts", JSON.stringify(solluContacts));
+            this.setState({contacts: solluContacts})
+        })
     };
 
     navigateToChatScreen = async (receiverPhoneNumber, receiverName) => {
