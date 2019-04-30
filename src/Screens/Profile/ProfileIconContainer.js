@@ -6,7 +6,7 @@ import _ from "lodash";
 
 export default class ProfileIconContainer extends Component{
     state={
-        profile_pic:''
+        profilePic:''
     }
     onClickHandler = () => {
         if(!_.isUndefined(this.props.navigation)) {
@@ -30,14 +30,14 @@ export default class ProfileIconContainer extends Component{
     updateProfilePic = async (user) => {
         await ProfilePicFetch(user).then((props) => {
             this.setState({
-                profile_pic: props.profile_pic,
+                profilePic: props.profilePic,
             });
         })
     }
 
     render(){
         return(
-            <ProfileIconView onClickHandler={this.onClickHandler} profile={this.state.profile_pic}/>
+            <ProfileIconView onClickHandler={this.onClickHandler} profilePic={this.state.profilePic}/>
         )
     }
 }

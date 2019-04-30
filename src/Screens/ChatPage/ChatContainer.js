@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {getChatFromDB} from "./ChatService";
 import {ActivityIndicator, View} from 'react-native';
-import {dayWiseFilteredMessages, isColorDiffers} from "./ChatFunctions";
+import {dayWiseFilteredMessages, getColorDifference} from "./ChatFunctions";
 import ChatView from "./ChatView";
 import Profile from "../../../Components/Profile";
 import {HeaderBackButton} from "react-navigation";
@@ -25,8 +25,6 @@ export default class ChatContainer extends Component {
 
     getUpdatedChat = (participants) => {
         getChatFromDB(participants.sender, participants.receiver).then((result) => {
-            console.log("check result length");
-            console.log(result.length);
             if (result.length > 0) {
                 this.setState({
                     messages: dayWiseFilteredMessages(result),
@@ -40,7 +38,7 @@ export default class ChatContainer extends Component {
                 })
             }
         }).catch((error) => {
-            console.log(error);
+           return (error);
         });
     };
 
@@ -72,7 +70,7 @@ export default class ChatContainer extends Component {
             let props = {
                 participants: participants,
                 messages: this.state.messages,
-                colourDifference: isColorDiffers(participants),
+                colourDifference: getColorDifference(participants),
                 updateComponent: this.updateComponent
             };
             return (

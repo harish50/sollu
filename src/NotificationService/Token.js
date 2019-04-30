@@ -1,7 +1,7 @@
 import React from 'react'
 import {AsyncStorage} from "react-native";
 import Firebase from "react-native-firebase";
-import firebase from "../../firebase/firebase";
+import firebase from "../../Firebase/firebase";
 
 let REGISTERED_USER_PROFILE_INFO_REF = firebase.database().ref("registeredUserProfileInfo");
 export const getToken = () => {

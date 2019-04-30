@@ -16,7 +16,7 @@ export default class ProfileView extends Component{
                                     <ActivityIndicator size="large" color='#cc504e' style={styles.loadingPosition} />
                                 </View> :
                                 <TouchableOpacity onPress={this.props.changeProfilePic}>
-                                    <FastImage style={styles.iconPlaceholder} source={{ uri: this.props.profile_pic }} />
+                                    <FastImage style={styles.iconPlaceholder} source={{ uri: this.props.profilePic }} />
                                 </TouchableOpacity>
                         }
                     </View>

@@ -1,4 +1,4 @@
-import firebase from '../../../firebase/firebase';
+import firebase from '../../../Firebase/firebase';
 import {getNameFromLocalStorage} from "../../Utilities/LocalStorage";
 import _ from 'lodash'
 import {AsyncStorage} from 'react-native'
@@ -10,7 +10,14 @@ export const changeGender = async (gender) => {
 }
 
 export const storeImage = (fileName) => {
-    return firebase.storage().ref('profilePics').child(fileName);
+    return new Promise(function(resolve,reject){
+        try{
+            const storageRef = firebase.storage().ref('profilePics').child(fileName)
+            resolve(storageRef)
+        }catch (e) {
+          reject(e)
+        }
+    })
 }
 
 export const setProfileURL = async (url) =>{
@@ -21,7 +28,6 @@ export const setProfileURL = async (url) =>{
 export const ProfileInfo = (user) => {
     return new Promise(async function (resolve, reject) {
         try {
-            // let phoneNumber = await AsyncStorage.getItem('PhoneNumber');
             REGISTERED_USER_PROFILE_INFO.child(user).on('value', (snap) => {
                 if (_.isUndefined(snap.val())) {
                     resolve(null)

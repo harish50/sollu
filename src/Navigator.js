@@ -1,11 +1,11 @@
 import { createStackNavigator, createAppContainer } from "react-navigation";
-import HomeContainer from '../src/Screens/HomePage/HomeContainer'
-import LoginContainer from '../src/Screens/LoginPage/LoginContainer'
-import VideoCallerContainer from "../src/Screens/VideoCallerPage/VideoCallerContainer";
-import ChatContainer from "../src/Screens/ChatPage/ChatContainer";
-import ProfileIconContainer from "../src/Screens/Profile/ProfileIconContainer";
-import ProfileContainer from "../src/Screens/Profile/ProfileContainer";
-import AnswerVideoCall from "./AnswerVideoCall";
+import HomeContainer from './Screens/HomePage/HomeContainer'
+import LoginContainer from './Screens/LoginPage/LoginContainer'
+import VideoCallerContainer from "./Screens/VideoCallerPage/VideoCallerContainer";
+import ChatContainer from "./Screens/ChatPage/ChatContainer";
+import ProfileIconContainer from "./Screens/Profile/ProfileIconContainer";
+import ProfileContainer from "./Screens/Profile/ProfileContainer";
+import AnswerVideoCall from "../Components/AnswerVideoCall";
 
 const Navigator = createStackNavigator(
     {

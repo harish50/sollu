@@ -1,11 +1,10 @@
 import React from 'react'
 import {ActivityIndicator, Text, View} from 'react-native';
-import styles from "./HomeStyles";
+import styles from '../Styles/LoadingIndicator'
 
 export const Loading = (props) => {
-    console.log(props)
     return (
-        <View>
+        <View style={styles.loadingIcon}>
             <ActivityIndicator size="large" color="#cc504e"/>
             <View>
                 <Text style={styles.loadingText}>{props.message}</Text>

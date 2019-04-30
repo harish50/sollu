@@ -5,7 +5,6 @@ import {HangUpButton} from "./HangUpButton";
 import {Loading} from "../HomePage/Loading";
 import RTCView from "react-native-webrtc/RTCView";
 import Icon from "react-native-vector-icons/MaterialIcons";
-import {Loading} from "../../Generics/Components/LoadingIndicator";
 
 export default class VideoCallergView extends React.Component {
     render() {

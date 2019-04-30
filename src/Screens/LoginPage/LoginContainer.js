@@ -4,13 +4,13 @@ import {Header} from "../Header/HeaderView";
 import {NavigationActions, StackActions} from "react-navigation";
 import {getFromLocalStorage, setToLocalStorage} from '../../Utilities/LocalStorage'
 import {registerUser} from './LoginService'
-import {STRINGS} from "../../Utilities/StringsStore";
+import {CONSTANTS} from "../../Utilities/Constants";
 import {isValid} from "./PhoneNumber";
-import LoadingIndicator from "./LoadingIndicator";
+import {Loading} from "../../Generics/Components/LoadingIndicator";
 
 export default class LoginContainer extends Component {
     state = {
-        isLoggedIn: true,
+        isLoggingIn: true,
         phoneNumber: "",
     };
     navigateToHomePage = () => {
@@ -24,38 +24,49 @@ export default class LoginContainer extends Component {
         )
     };
     setNumber = (phoneNumber) => {
-        console.log(phoneNumber);
         this.setState({
             phoneNumber: phoneNumber
         });
     };
     onLogin = (phoneNumber) => {
         if (isValid(phoneNumber)) {
-            registerUser(phoneNumber);
-            setToLocalStorage(STRINGS.PHONENUMBER, phoneNumber);
-            this.navigateToHomePage()
-
+            registerUser(phoneNumber).then((response) => {
+                if (response) {
+                    setToLocalStorage(CONSTANTS.PHONENUMBER, phoneNumber);
+                    this.navigateToHomePage()
+                }
+                else {
+                    alert(CONSTANTS.FAILED)
+                }
+            });
         }
         else {
-            alert(STRINGS.INVALID)
+            alert(CONSTANTS.INVALID)
         }
-
     };
-    isLoggedIn = async () => {
-        await getFromLocalStorage('PhoneNumber').then((phoneNumber) => {
-            if (phoneNumber) {
+    isLoggedIn = () => {
+        return new Promise(async function (resolve, reject) {
+            try {
+                await getFromLocalStorage('PhoneNumber').then((phoneNumber) => {
+                    phoneNumber ? resolve(true) : resolve(false)
+                });
+            } catch (e) {
+                reject(e)
+            }
+        })
+    };
+
+    componentDidMount() {
+        this.isLoggedIn().then((response) => {
+            if (response) {
                 this.navigateToHomePage()
             }
             else {
                 this.setState({
-                    isLoggedIn: false
+                    isLoggingIn: false
                 })
             }
         });
-    };
-
-    componentDidMount() {
-        this.isLoggedIn();
     }
 
     static navigationOptions = ({navigation}) => {
@@ -63,9 +74,9 @@ export default class LoginContainer extends Component {
     };
 
     render() {
-        if (this.state.isLoggedIn) {
+        if (this.state.isLoggingIn) {
             return (
-                <LoadingIndicator/>
+                <Loading message={"Please wait"}/>
             );
         }
         return (
