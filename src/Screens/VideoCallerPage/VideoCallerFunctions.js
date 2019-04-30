@@ -2,9 +2,6 @@ import InCallManager from "react-native-incall-manager";
 import {listenForAnswer, pushICEToDB, pushNumberToMakeAnOffer, removeDataFromDB} from "./VideoCallerService";
 import mediaDevices from "react-native-webrtc/MediaDevices";
 import RTCPeerConnection from "react-native-webrtc/RTCPeerConnection";
-import RTCSessionDescription from "react-native-webrtc/RTCSessionDescription";
-
-import VideoCallerContainer from "./VideoCallerContainer"
 
 
 export const handleCallHangUp = (pc, participants) => {
